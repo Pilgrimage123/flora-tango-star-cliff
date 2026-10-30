@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Lovec upírů: Venca Česnekáč",
+      "hasCanvas": false,
+      "bodyTextLen": 1107,
+      "bodyTextHash": "983c6e33a767c34bdda60a1b23c5f2e69f03a82ddbc68691924c1f62c776aba7",
+      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ · Akt I: Zatuchlé předhradí a berňák · Předhradí:",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Lovec upírů: Venca Česnekáč",
+      "hasCanvas": false,
+      "bodyTextLen": 713,
+      "bodyTextHash": "9bbbf465c800200fb82d9cb59b2b869a515c423bd89ddce1673df8e9424c0c14",
+      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ 10/10 HP 💰 25 duká",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

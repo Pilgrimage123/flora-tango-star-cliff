@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Lovec upírů: Venca Česnekáč",
+      "hasCanvas": false,
+      "bodyTextLen": 106,
+      "bodyTextHash": "8756255a38a8f548c68d8182dc6de5de57f0800f690f0f464a3b727553d6c11c",
+      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ Venca Česnekáč chystá dubové kolíky a hasičskou s",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Lovec upírů: Venca Česnekáč",
+      "hasCanvas": false,
+      "bodyTextLen": 106,
+      "bodyTextHash": "8756255a38a8f548c68d8182dc6de5de57f0800f690f0f464a3b727553d6c11c",
+      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ Venca Česnekáč chystá dubové kolíky a hasičskou s",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": true,
+  "baselineReasons": [
+    "desktop: body text collapsed (1107 -> 106 chars)",
+    "mobile: body text collapsed (713 -> 106 chars)"
+  ]
+}
