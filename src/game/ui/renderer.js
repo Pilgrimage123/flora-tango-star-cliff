@@ -82,8 +82,9 @@ function setHeroPose(container, pose, frame = 0) {
   if (img.getAttribute('src') !== next) img.src = next;
 }
 
-function startHeroIdle(container) {
+function startHeroIdle(container, force = false) {
   if (isHeroDead(container)) return;
+  if (!force && heroPoseLocked) return;
   heroPoseEpoch += 1;
   clearHeroPoseTimer();
   heroPoseLocked = false;
@@ -468,7 +469,7 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1) {
 }
 
 function livingEntityAt(state, cellIdx) {
-  if (state.hero.hp > 0 && state.hero.cell === cellIdx) return state.hero;
+  if (state.hero && state.hero.hp > 0 && state.hero.cell === cellIdx) return state.hero;
   return (
     state.enemies.find((e) => e.hp > 0 && e.cell === cellIdx) ||
     state.props.find((p) => p.hp > 0 && p.cell === cellIdx) ||
@@ -478,7 +479,7 @@ function livingEntityAt(state, cellIdx) {
 
 function corpseAt(state, cellIdx) {
   if (livingEntityAt(state, cellIdx)) return null;
-  if (state.hero?.corpse && state.hero.hp <= 0 && state.hero.cell === cellIdx) return state.hero;
+  if (state.hero && state.hero.hp <= 0 && state.hero.cell === cellIdx) return state.hero;
   return (
     state.enemies.find((e) => e.corpse && e.hp <= 0 && e.cell === cellIdx) ||
     state.props.find((p) => p.corpse && p.hp <= 0 && p.cell === cellIdx) ||
@@ -610,7 +611,7 @@ async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = '🎯
   void flyEl.offsetWidth;
   flyEl.style.transition = `transform ${durationMs}ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 80ms ease-out`;
   flyEl.style.opacity = '1';
-  flyEl.style.transform = `translate(${targetX - startX - 22}px, ${targetY - startY - 22}px) scale(1.15)`;
+  flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(1.15)`;
 
   await sleep(180, animSpeed);
   flyEl.style.opacity = '0';
@@ -676,6 +677,21 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         await playEntityMove(container, ev, animSpeed);
         break;
 
+      case 'push_move':
+      case 'pull_move':
+        SFX.step();
+        await playEntityMove(
+          container,
+          {
+            entityId: ev.targetId,
+            from: ev.from,
+            to: ev.to,
+            type: ev.type
+          },
+          animSpeed
+        );
+        break;
+
       case 'swap':
         SFX.swap();
         triggerSpriteAnim(container, ev.entityAId, 'anim-leap');
@@ -731,7 +747,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         await playProjectileFly(container, ev.from, ev.to, getProjectileIcon(ev), animSpeed);
         break;
 
-      case 'damage':
+      case 'damage': {
         SFX.hit();
         triggerSpriteAnim(container, ev.targetId, 'anim-hurt');
 
@@ -779,6 +795,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         }
         await sleep(ANIMATION_TIMINGS.HIT_MS, animSpeed);
         break;
+      }
 
       case 'blocked_front_shield':
       case 'shield_blocked':
@@ -795,6 +812,24 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         await sleep(180, animSpeed);
         break;
 
+      case 'barrel_break':
+        SFX.collision();
+        spawnFloatingBadgeOnCell(container, ev.cell, '🛢️ SUD ROZBIT!', 'float-dmg');
+        await sleep(180, animSpeed);
+        break;
+
+      case 'pit_fall':
+        SFX.death();
+        spawnFloatingBadgeOnCell(container, ev.cell, '🕳️ PROPAST!', 'float-dmg');
+        await sleep(220, animSpeed);
+        break;
+
+      case 'plank_collapse':
+        SFX.collision();
+        spawnFloatingBadgeOnCell(container, ev.cell, '💥 PROLOMENÍ!', 'float-dmg');
+        await sleep(180, animSpeed);
+        break;
+
       case 'status_added':
         if (ev.statusId === 'stun') {
           SFX.bell();
@@ -802,7 +837,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         }
         break;
 
-      case 'heal':
+      case 'heal': {
         const healedEl = container.querySelector(`#entity-dom-${ev.targetId}`);
         if (healedEl && ev.remainingHp !== undefined) {
           const hpInnerEl = healedEl.querySelector('.entity-hp-bar-inner');
@@ -818,6 +853,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         spawnFloatingBadgeOnCell(container, ev.cell, `+${ev.amount} HP`, 'float-heal');
         await sleep(140, animSpeed);
         break;
+      }
 
       case 'momentum':
         SFX.friendlyFire();
@@ -830,7 +866,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         await sleep(220, animSpeed);
         break;
 
-      case 'death':
+      case 'death': {
         SFX.death();
         triggerSpriteAnim(container, ev.targetId, 'anim-death');
         const deadEl = container.querySelector(`#entity-dom-${ev.targetId}`);
@@ -860,6 +896,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         }
         await sleep(ANIMATION_TIMINGS.DEATH_MS, animSpeed);
         break;
+      }
 
       case 'enemy_queue_firing':
         spawnFloatingBadgeOnCell(container, ev.cell, '🚨 ODPALUJE FRONTU!', 'float-warn');
@@ -883,10 +920,6 @@ function triggerSpriteAnim(container, entityId, className) {
   if (className === 'anim-death') return;
   const cleanup = () => el.classList.remove(className);
   el.addEventListener('animationend', cleanup, { once: true });
-}
-
-function triggerEntityClassAnim(container, entityId, className) {
-  triggerSpriteAnim(container, entityId, className);
 }
 
 function spawnFloatingBadgeOnEntity(container, entityId, text, variantClass) {

@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-B-ezZj8A.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-Dx1tA15O.js
+import "./router-DxRFUarl.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-B-K_Ix7q.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -2136,7 +2136,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["intern_bite"],
-		queue: ["step_toward", "intern_bite"],
 		flavor: "„Mám teprve třetí noční směnu a už mě pálí žáha z česneku!“"
 	},
 	urednik: {
@@ -2152,7 +2151,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["tax_stamp_shot", "retreat_step"],
-		queue: ["retreat_step", "tax_stamp_shot"],
 		flavor: "„Kolkovné za vstup do hrobky jste uhradil?! Formulář K-13!“"
 	},
 	drab: {
@@ -2168,7 +2166,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["windup_roar", "drab_lunge"],
-		queue: ["windup_roar", "drab_lunge"],
 		flavor: "„Karbanátky z lovců dělám zásadně na cibulce!“"
 	},
 	vratny_stit: {
@@ -2184,11 +2181,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: true,
 		actionPool: ["porter_bash", "porter_guard"],
-		queue: [
-			"step_toward",
-			"porter_bash",
-			"porter_guard"
-		],
 		flavor: "„Přes vrátnici jenom s propustkou podepsanou hrabětem!“ (Blokuje přímé zásahy zepředu.)"
 	},
 	netopyr: {
@@ -2204,7 +2196,6 @@ var ENEMIES = {
 		flying: true,
 		frontShield: false,
 		actionPool: ["bat_swoop"],
-		queue: ["step_toward", "bat_swoop"],
 		flavor: "„Pííí! Doporučený dopis z finančáku!“ (Létá nad propastmi a prkny.)"
 	},
 	ucetni_buffer: {
@@ -2220,7 +2211,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["accountant_curse", "accountant_buff"],
-		queue: ["accountant_buff", "accountant_curse"],
 		flavor: "„Krevní rozvaha musí sedět na kapku přesně!“ (Léčí a posiluje spolubojovníky.)"
 	},
 	srpak: {
@@ -2236,7 +2226,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["step_toward", "sickle_cut"],
-		queue: ["step_toward", "sickle_cut"],
 		flavor: "„Srpy mám na zelí. A na krky, když zelí dojde.“"
 	},
 	kyjovec: {
@@ -2252,7 +2241,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["windup_roar", "club_smash"],
-		queue: ["windup_roar", "club_smash"],
 		flavor: "„Kyj je poctivější než vidle. Aspoň neřeže záděry.“"
 	},
 	morak: {
@@ -2268,7 +2256,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["plague_spit", "step_toward"],
-		queue: ["plague_spit", "step_toward"],
 		flavor: "„Nekašlu. To je jenom domácí slivovice s mechem.“"
 	},
 	vlkodav: {
@@ -2284,7 +2271,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["step_toward", "hound_pounce"],
-		queue: ["step_toward", "hound_pounce"],
 		flavor: "„Hodný pejsek. Jenom žere lovce, a to až po večeři.“"
 	},
 	halapartnik: {
@@ -2300,7 +2286,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["halberd_thrust", "step_toward"],
-		queue: ["halberd_thrust", "step_toward"],
 		flavor: "„Halapartna je na hosty, kteří nemají pozvánku na krev.“"
 	},
 	buldok: {
@@ -2316,7 +2301,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["step_toward", "bulldog_bite"],
-		queue: ["step_toward", "bulldog_bite"],
 		flavor: "„Obojek má proti upírům. Zuby má proti všem ostatním.“"
 	},
 	kluk_kamen: {
@@ -2332,7 +2316,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["stone_chuck"],
-		queue: ["stone_chuck"],
 		flavor: "„Kámen je zadarmo. A do čela se trefím i poslepu!“"
 	},
 	divocak: {
@@ -2348,7 +2331,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["step_toward", "boar_charge"],
-		queue: ["step_toward", "boar_charge"],
 		flavor: "„Chro chro! Zelí došlo, tak žere lovce.“"
 	},
 	upirske_prase: {
@@ -2364,7 +2346,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["step_toward", "vampig_bite"],
-		queue: ["step_toward", "vampig_bite"],
 		flavor: "„Krev má lepší buket než patoky z koryta.“"
 	},
 	sliz: {
@@ -2380,7 +2361,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["slime_slap", "slime_spit"],
-		queue: ["slime_spit", "slime_slap"],
 		flavor: "„Nesahej. To není mech, to jsem já.“"
 	},
 	carodejnice: {
@@ -2396,7 +2376,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["witch_claw", "witch_hex"],
-		queue: ["witch_hex", "witch_claw"],
 		flavor: "„Perníková chaloupka je v rekonstrukci. Dnes večeřím lovce.“"
 	},
 	drevo: {
@@ -2412,7 +2391,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["windup_roar", "axe_chop"],
-		queue: ["windup_roar", "axe_chop"],
 		flavor: "„Sekera je rezavá. To nevadí. Rez taky řeže.“"
 	},
 	sedlak_stit: {
@@ -2428,11 +2406,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: true,
 		actionPool: ["plank_bash", "plank_guard"],
-		queue: [
-			"step_toward",
-			"plank_bash",
-			"plank_guard"
-		],
 		flavor: "„Přes tuhle fošnu jenom s povolením rychtáře!“ (Blokuje přímé zásahy zepředu.)"
 	},
 	hrabenka_amalie: {
@@ -2448,7 +2421,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["rococo_claw", "rococo_laugh"],
-		queue: ["rococo_laugh", "rococo_claw"],
 		flavor: "„Krev se nosí letos k modré. A já ji nosím čerstvou.“"
 	},
 	upirka_cilka: {
@@ -2464,7 +2436,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["cylinder_bite"],
-		queue: ["step_toward", "cylinder_bite"],
 		flavor: "„Cylindr je vypůjčený. Tesáky jsou moje.“"
 	},
 	vrhac_nozu: {
@@ -2480,7 +2451,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["knife_fling"],
-		queue: ["knife_fling"],
 		flavor: "„Nůž je poctivější než vidle. A trefí i od plotu.“"
 	},
 	prase_mutant: {
@@ -2496,7 +2466,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["pustule_gore", "hnis_spit"],
-		queue: ["hnis_spit", "pustule_gore"],
 		flavor: "„To není sádlo. To jsem já, a teče to.“"
 	},
 	bazinny_sliz: {
@@ -2512,7 +2481,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["leaf_hug", "bog_shell"],
-		queue: ["bog_shell", "leaf_hug"],
 		flavor: "„Nesahej na listí. To nejsou vlasy, to jsem já.“"
 	},
 	upiri_trpaslik: {
@@ -2528,7 +2496,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["gnome_rake", "night_bite"],
-		queue: ["step_toward", "gnome_rake"],
 		flavor: "„Noční čepice je rodinné stříbro. Drápy taky.“"
 	},
 	rytir_prizrak: {
@@ -2544,7 +2511,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: true,
 		actionPool: ["flail_arc", "ghost_breath"],
-		queue: ["ghost_breath", "flail_arc"],
 		flavor: "„V přilbě nikdo není. Jenom to zelené, co po mně zbylo.“ (Zepředu ho kryje plát.)"
 	},
 	zombie_hynek: {
@@ -2560,7 +2526,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["grave_clutch", "dead_shove"],
-		queue: ["step_toward", "grave_clutch"],
 		flavor: "„Rakev jsem zaplatil. Vstávat se neplatí.“"
 	},
 	kostlivec_fabian: {
@@ -2576,7 +2541,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["bone_chuck", "shovel_smack"],
-		queue: ["bone_chuck"],
 		flavor: "„Hrob je vykopaný. Chybí jenom nájemník.“"
 	},
 	krysa_piskota: {
@@ -2592,7 +2556,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["rat_gnaw"],
-		queue: ["step_toward", "rat_gnaw"],
 		flavor: "„Klobása je moje. Česnek si nech.“"
 	},
 	morovy_felcar: {
@@ -2608,7 +2571,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: ["miasma_waft", "cane_poke"],
-		queue: ["miasma_waft"],
 		flavor: "„Otevřete ústa. Tohle není na kašel, to je na krev.“"
 	},
 	elite_drab: {
@@ -2625,11 +2587,6 @@ var ENEMIES = {
 		flying: false,
 		frontShield: false,
 		actionPool: [
-			"windup_roar",
-			"cleaver_chop",
-			"drab_lunge"
-		],
-		queue: [
 			"windup_roar",
 			"cleaver_chop",
 			"drab_lunge"
@@ -2654,11 +2611,6 @@ var ENEMIES = {
 			"porter_bash",
 			"turn_toward"
 		],
-		queue: [
-			"turn_toward",
-			"tax_stamp_shot",
-			"porter_bash"
-		],
 		flavor: "„Exekuce krve se odkládat nebude!“ (Zepředu chráněn deskami spisu.)"
 	},
 	boss_sosak: {
@@ -2680,11 +2632,6 @@ var ENEMIES = {
 		actionPool: [
 			"boss_sosak_drain",
 			"boss_sosak_summon",
-			"turn_toward"
-		],
-		queue: [
-			"step_toward",
-			"boss_sosak_drain",
 			"turn_toward"
 		],
 		flavor: "„Zrcadlový plášť z Vídně! Při kombu ze stejného směru si prohodím místo se sudem nebo netopýrem!“"
@@ -2710,11 +2657,6 @@ var ENEMIES = {
 			"boss_dagmar_thorns",
 			"accountant_buff"
 		],
-		queue: [
-			"step_toward",
-			"boss_dagmar_hex",
-			"boss_dagmar_thorns"
-		],
 		flavor: "„Moje krajky jsou tkané z půlnoční mlhy a neplacených směn!“"
 	},
 	boss_drakula: {
@@ -2738,11 +2680,6 @@ var ENEMIES = {
 			"boss_dracula_audit",
 			"boss_dracula_decree",
 			"boss_sosak_summon"
-		],
-		queue: [
-			"step_toward",
-			"boss_dracula_audit",
-			"boss_dracula_decree"
 		],
 		flavor: "„Vaše stížnost na kousnutí do krku byla postoupena oddělení věčného spánku!“"
 	}
@@ -3409,6 +3346,20 @@ function findNearestEmptyCell(state, targetCell, preferredDir = 1, ignoreId = nu
 	}
 	return null;
 }
+function hasStatus(entity, statusId) {
+	return Boolean(entity && entity.hp > 0 && entity.statuses && (entity.statuses[statusId] || 0) > 0);
+}
+function getStatusAmount(entity, statusId) {
+	if (!entity || entity.hp <= 0 || !entity.statuses) return 0;
+	return Math.max(0, entity.statuses[statusId] || 0);
+}
+function consumeStatus(entity, statusId, amount = 1) {
+	if (!entity || !entity.statuses || !entity.statuses[statusId]) return 0;
+	const consumed = Math.min(entity.statuses[statusId], amount);
+	entity.statuses[statusId] -= consumed;
+	if (entity.statuses[statusId] <= 0) delete entity.statuses[statusId];
+	return consumed;
+}
 function addStatus(entity, statusId, amount = 1, events = []) {
 	if (!entity || entity.hp <= 0 || !statusId || statusId === "stagger") return;
 	if (!entity.statuses) entity.statuses = {};
@@ -3439,9 +3390,7 @@ function applyDamage(state, target, amount, sourceInfo = {}, events = []) {
 			return 0;
 		}
 	}
-	if (target.statuses && target.statuses.shield > 0) {
-		target.statuses.shield -= 1;
-		if (target.statuses.shield <= 0) delete target.statuses.shield;
+	if (consumeStatus(target, "shield", 1) > 0) {
 		events.push({
 			type: "shield_blocked",
 			targetId: target.id,
@@ -3565,8 +3514,6 @@ function grantEnrageTile(target) {
 		existing.currentCooldown = 0;
 		if (!existing.maxCooldown) existing.maxCooldown = cooldown;
 	}
-	if (!target.queue) target.queue = [];
-	if (!target.queue.includes(tileId)) target.queue.push(tileId);
 	if (target.queueState === "ARMED_RED") return false;
 	if (!target.actionQueue) target.actionQueue = [];
 	if (target.actionQueue.includes(tileId)) return false;
@@ -3778,13 +3725,6 @@ function pullEntity(state, target, attackerCell, events = []) {
 	}
 	assertBoardInvariant(state);
 }
-function advanceEnemyTileQueue(enemy) {
-	if (enemy.queue && enemy.queue.length > 0) {
-		enemy.queueIndex = (enemy.queueIndex + 1) % enemy.queue.length;
-		const nextTileDef = ENEMY_TILES[enemy.queue[enemy.queueIndex]];
-		enemy.countdown = nextTileDef ? nextTileDef.delay : 2;
-	}
-}
 function resolveLungeLanding(state, enemy, fromCell, facing, steps) {
 	let cell = fromCell;
 	const dir = Math.sign(facing) || 1;
@@ -3937,9 +3877,8 @@ function processEnemiesPhase(state, events = []) {
 	const orderedEnemies = getSortedEnemiesByInitiative(state);
 	for (const enemy of orderedEnemies) {
 		if (enemy.hp <= 0 || state.hero.hp <= 0) continue;
-		if (enemy.statuses?.stun > 0) {
-			enemy.statuses.stun -= 1;
-			if (enemy.statuses.stun <= 0) delete enemy.statuses.stun;
+		if (hasStatus(enemy, "stun")) {
+			consumeStatus(enemy, "stun", 1);
 			events.push({
 				type: "enemy_stun_skipped",
 				enemyId: enemy.id,
@@ -3959,9 +3898,7 @@ function processEnemiesPhase(state, events = []) {
 		if (enemy.actionPool) {
 			for (const item of enemy.actionPool) if (!enemy.actionQueue?.includes(item.tileId) && item.currentCooldown > 0) item.currentCooldown = Math.max(0, item.currentCooldown - 1);
 		}
-		const isArmedQueue = (enemy.queueState === "ARMED_RED" || enemy.countdown <= 1) && (enemy.actionQueue || []).length > 0;
-		const isLegacyArmedAttack = enemy.countdown <= 1 && enemy.queue && (enemy.queueIndex > 0 || enemy.queueState === "ARMED_RED");
-		if (isArmedQueue) {
+		if ((enemy.queueState === "ARMED_RED" || enemy.countdown <= 1) && (enemy.actionQueue || []).length > 0) {
 			const targetedCells = getEnemyQueuedTargetCells(state, enemy);
 			events.push({
 				type: "enemy_queue_firing",
@@ -3971,7 +3908,7 @@ function processEnemiesPhase(state, events = []) {
 				queue: [...enemy.actionQueue],
 				targetedCells
 			});
-			if (enemy.hp > 0 && !(enemy.statuses?.stun > 0)) {
+			if (enemy.hp > 0 && !hasStatus(enemy, "stun")) {
 				events.push({
 					type: "enemy_queue_execution_start",
 					enemyId: enemy.id,
@@ -3999,10 +3936,6 @@ function processEnemiesPhase(state, events = []) {
 			});
 			enemy.actionQueue = [];
 			enemy.queueState = "EMPTY";
-		} else if (isLegacyArmedAttack) {
-			const tileDef = ENEMY_TILES[enemy.queue[enemy.queueIndex % enemy.queue.length]];
-			if (tileDef) executeSingleEnemyTile(state, enemy, tileDef, events);
-			advanceEnemyTileQueue(enemy);
 		} else if (enemy.nextAction) performEnemyAction(state, enemy, enemy.nextAction, events);
 		if (enemy.hp > 0 && state.hero.hp > 0) {
 			checkAndApplyArming(state, enemy, events);
@@ -4028,9 +3961,8 @@ function performEnemyAction(state, enemy, action, events) {
 		});
 	} else if (action.type === "step") {
 		let dir = action.dir;
-		if (enemy.statuses?.confusion > 0) {
-			enemy.statuses.confusion -= 1;
-			if (enemy.statuses.confusion <= 0) delete enemy.statuses.confusion;
+		if (hasStatus(enemy, "confusion")) {
+			consumeStatus(enemy, "confusion", 1);
 			dir = state.rng.nextFloat() < .5 ? -1 : 1;
 			events.push({
 				type: "log",
@@ -4130,9 +4062,8 @@ function executeSingleEnemyTile(state, enemy, tileDef, events = []) {
 		});
 		let moveDir = dirToHero;
 		if (tileDef.retreatIfClose && Math.abs(hero.cell - enemy.cell) <= 1) moveDir = -dirToHero;
-		if (enemy.statuses?.confusion > 0) {
-			enemy.statuses.confusion -= 1;
-			if (enemy.statuses.confusion <= 0) delete enemy.statuses.confusion;
+		if (hasStatus(enemy, "confusion")) {
+			consumeStatus(enemy, "confusion", 1);
 			moveDir = state.rng.nextFloat() < .5 ? -1 : 1;
 			events.push({
 				type: "log",
@@ -4253,7 +4184,7 @@ function executeSingleEnemyTile(state, enemy, tileDef, events = []) {
 		if (enemy.hp <= 0) return;
 	}
 	const garlicPenalty = state.terrain[enemy.cell]?.type === "garlic_cloud" ? 1 : 0;
-	const empowerBonus = enemy.statuses?.empower || 0;
+	const empowerBonus = getStatusAmount(enemy, "empower");
 	if (tileDef.projectileRange) {
 		let hitTarget = null;
 		let hitPat = null;
@@ -4419,7 +4350,7 @@ function nextEntityUid(prefix = "ent") {
 function createEnemyInstance(enemyId, cell, facing = -1) {
 	const def = ENEMIES[enemyId];
 	if (!def) throw new Error(`Neznámý nepřítel: ${enemyId}`);
-	const actionPool = (def.actionPool || def.queue || []).map((tileId) => {
+	const actionPool = (def.actionPool || []).map((tileId) => {
 		const tileDef = ENEMY_TILES[tileId];
 		return {
 			tileId,
@@ -4427,8 +4358,6 @@ function createEnemyInstance(enemyId, cell, facing = -1) {
 			currentCooldown: 0
 		};
 	});
-	const firstTileId = def.queue?.[0] || actionPool[0]?.tileId;
-	firstTileId && ENEMY_TILES[firstTileId];
 	return {
 		id: nextEntityUid(enemyId),
 		kind: enemyId,
@@ -4458,8 +4387,6 @@ function createEnemyInstance(enemyId, cell, facing = -1) {
 		actionQueue: [],
 		actionPool,
 		nextAction: null,
-		queue: [...def.queue || []],
-		queueIndex: 0,
 		countdown: 2,
 		statuses: {},
 		flavor: def.flavor || ""
@@ -5757,7 +5684,7 @@ function computeEnemyTileTargetCells(state, enemy, tileDef, bonusCtx = null) {
 	const results = [];
 	const originCell = tileDef.lungeForward ? resolveLungeLanding(state, enemy, enemy.cell, enemy.facing, tileDef.lungeForward) : enemy.cell;
 	const garlicPenalty = state.terrain[originCell]?.type === "garlic_cloud" ? 1 : 0;
-	const empowerBonus = enemy.statuses?.empower ? enemy.statuses.empower : 0;
+	const empowerBonus = getStatusAmount(enemy, "empower");
 	const synergy = bonusCtx && typeof bonusCtx.synergy === "number" ? bonusCtx.synergy : !enemy.corporateSynergy && state.enemies?.some((e) => e.hp > 0 && e.corporateSynergy && e.id !== enemy.id) ? 1 : 0;
 	const occAt = (cell) => bonusCtx?.occupancy ? bonusCtx.occupancy.get(cell) || null : getEntityAt(state, cell);
 	if (tileDef.projectileRange) for (const pat of tileDef.pattern) {
@@ -5816,11 +5743,10 @@ function computeBoardThreats(state, hoveredEnemyId = null) {
 			synergy
 		};
 		const isArmed = enemy.queueState === "ARMED_RED";
-		const usesPool = Array.isArray(enemy.actionPool) && enemy.actionPool.length > 0;
 		const liveQueue = enemy.actionQueue || [];
 		const paintQueue = (tileIds, { armed = false, imminent = false } = {}) => {
 			let simCell = enemy.cell;
-			let simEmpower = enemy.statuses?.empower || 0;
+			let simEmpower = getStatusAmount(enemy, "empower");
 			for (const tileId of tileIds) {
 				const tileDef = ENEMY_TILES[tileId];
 				if (!tileDef) continue;
@@ -5862,16 +5788,12 @@ function computeBoardThreats(state, hoveredEnemyId = null) {
 			armed: true,
 			imminent: true
 		});
-		else if (usesPool && liveQueue.length > 0) paintQueue(liveQueue, {
+		else if (liveQueue.length > 0) paintQueue(liveQueue, {
 			armed: false,
 			imminent: false
 		});
-		else if ((!usesPool || enemy.queueIndex > 0) && enemy.queue && enemy.queue.length > 0) {
-			const activeTileId = enemy.queue[enemy.queueIndex % enemy.queue.length];
-			if (activeTileId) paintQueue([activeTileId], { imminent: enemy.countdown <= 1 });
-		}
 		if (hoveredEnemyId && enemy.id === hoveredEnemyId) {
-			const inspectTileIds = enemy.actionPool && enemy.actionPool.length > 0 ? enemy.actionPool.map((p) => p.tileId) : enemy.queue || [];
+			const inspectTileIds = (enemy.actionPool || []).map((p) => p.tileId);
 			for (const tId of inspectTileIds) {
 				const tDef = ENEMY_TILES[tId];
 				if (tDef) {
@@ -5905,7 +5827,7 @@ function computePlayerQueuePreview(state, hoveredTileInstanceId = null) {
 	let simFacing = state.hero.facing;
 	const sim = {
 		firstAttackUsed: Boolean(state.firstAttackUsed),
-		empower: state.hero.statuses?.empower || 0
+		empower: getStatusAmount(state.hero, "empower")
 	};
 	const targetedCells = [];
 	const queueTiles = state.queue.map((id) => state.hand.find((t) => t.instanceId === id)).filter(Boolean);
@@ -6789,42 +6711,69 @@ var PAINTED_SCENES = {
 	}
 };
 var heroPoseTimer = null;
+var heroPoseLocked = false;
 var heroPoseEpoch = 0;
 function heroSprite(container) {
 	return container?.querySelector?.(".hero-sprite") || null;
 }
 function isHeroEntity(container, entityId) {
 	if (!entityId || !container) return false;
+	if (entityId === "hero_venca") return true;
 	const el = container.querySelector(`#entity-dom-${entityId}`);
 	return Boolean(el && el.classList.contains("entity-hero"));
+}
+function clearHeroPoseTimer() {
+	if (heroPoseTimer) {
+		clearTimeout(heroPoseTimer);
+		heroPoseTimer = null;
+	}
+}
+function isHeroDead(container) {
+	const img = heroSprite(container);
+	return Boolean(img && (img.dataset.pose === "dead" || img.getAttribute("src")?.includes("venca_dead")));
 }
 function setHeroPose(container, pose, frame = 0) {
 	const img = heroSprite(container);
 	if (!img) return;
+	if (isHeroDead(container) && pose !== "dead") return;
 	const frames = HERO_POSES[pose] || HERO_POSES.idle;
 	const next = frames[frame % frames.length];
 	img.dataset.pose = pose;
 	if (img.getAttribute("src") !== next) img.src = next;
 }
-function startHeroIdle(container) {
+function startHeroIdle(container, force = false) {
+	if (isHeroDead(container)) return;
+	if (!force && heroPoseLocked) return;
 	heroPoseEpoch += 1;
-	if (heroPoseTimer) {
-		clearInterval(heroPoseTimer);
-		heroPoseTimer = null;
-	}
+	clearHeroPoseTimer();
+	heroPoseLocked = false;
 	setHeroPose(container, "idle", 0);
+}
+function scheduleHeroIdle(container, delayMs, animSpeed = 1) {
+	if (isHeroDead(container)) return;
+	clearHeroPoseTimer();
+	const effectiveDelay = animSpeed === 0 ? 0 : Math.round(delayMs / (animSpeed || 1));
+	heroPoseTimer = setTimeout(() => {
+		if (!isHeroDead(container)) {
+			heroPoseLocked = false;
+			setHeroPose(container, "idle", 0);
+		}
+	}, effectiveDelay);
 }
 async function playHeroPose(container, pose, ms, animSpeed) {
 	const frames = HERO_POSES[pose] || HERO_POSES.idle;
-	if (!heroSprite(container)) return;
+	if (!heroSprite(container) || isHeroDead(container)) return;
 	const epoch = heroPoseEpoch;
+	heroPoseLocked = true;
+	clearHeroPoseTimer();
 	const steps = Math.max(1, frames.length);
 	const slice = Math.max(90, Math.round(ms / steps));
 	for (let i = 0; i < steps; i++) {
-		if (epoch !== heroPoseEpoch || !heroSprite(container)) return;
+		if (epoch !== heroPoseEpoch || !heroSprite(container) || isHeroDead(container)) return;
 		setHeroPose(container, pose, i);
 		await sleep(slice, animSpeed);
 	}
+	if (!isHeroDead(container)) scheduleHeroIdle(container, 80, animSpeed);
 }
 function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 	if (!container || !state) return;
@@ -6852,7 +6801,7 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
       `;
 		const iconUrl = getAssetUrl(tile.icon, tile.name);
 		return `
-      <div class="queue-slot queue-slot-filled ${state.isQueuePrepared ? "queue-slot-prepared" : ""}"
+      <div class="queue-slot queue-slot-filled"
            draggable="true"
            data-slot-index="${slotIdx}"
            data-instance-id="${tile.instanceId}"
@@ -6920,7 +6869,7 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
          <span class="tutorial-icon">🎓</span>
          <span>${STRINGS.tutorialHints[(state.turn - 1) % STRINGS.tutorialHints.length]}</span>
        </div>` : ""}
-    <div class="hero-queue-panel ${state.isQueuePrepared ? "queue-is-prepared" : ""}">
+    <div class="hero-queue-panel">
       <div class="hero-queue-label">
         <strong>⚡ Fronta komba Venci Česnekáče</strong>
         <span class="hero-queue-hint">(Fronta akcí · 1 tah vložení · Odpálení okamžité!)</span>
@@ -7011,7 +6960,8 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 		});
 		floorEl?.addEventListener("mouseleave", hideTooltip);
 	});
-	startHeroIdle(container);
+	if (state.hero && state.hero.hp > 0) startHeroIdle(container);
+	else setHeroPose(container, "dead", 0);
 }
 function renderGateBannerHtml(cellIdx, leftReinf, rightReinf, boardSize = 7) {
 	if (cellIdx === 0) return `
@@ -7077,12 +7027,12 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1) {
   `;
 }
 function livingEntityAt(state, cellIdx) {
-	if (state.hero.hp > 0 && state.hero.cell === cellIdx) return state.hero;
+	if (state.hero && state.hero.hp > 0 && state.hero.cell === cellIdx) return state.hero;
 	return state.enemies.find((e) => e.hp > 0 && e.cell === cellIdx) || state.props.find((p) => p.hp > 0 && p.cell === cellIdx) || null;
 }
 function corpseAt(state, cellIdx) {
 	if (livingEntityAt(state, cellIdx)) return null;
-	if (state.hero?.corpse && state.hero.hp <= 0 && state.hero.cell === cellIdx) return state.hero;
+	if (state.hero && state.hero.hp <= 0 && state.hero.cell === cellIdx) return state.hero;
 	return state.enemies.find((e) => e.corpse && e.hp <= 0 && e.cell === cellIdx) || state.props.find((p) => p.corpse && p.hp <= 0 && p.cell === cellIdx) || null;
 }
 function refreshBoardOverlays(container, state, uiState = {}) {
@@ -7139,14 +7089,104 @@ function getTerrainFloorLabel(terrainObj, terrainDef) {
 		default: return terrainDef.name;
 	}
 }
+function getProjectileIcon(ev) {
+	if (ev.tileId === "holy_syringe") return "💉";
+	if (ev.tileId === "silver_crucifix_beam") return "✝️";
+	if (ev.tileId === "rosary_slap") return "📿";
+	if (ev.tileId === "tax_stamp_shot") return "💮";
+	if (ev.tileId === "accountant_curse") return "📜";
+	if (ev.tileId === "bone_chuck") return "🦴";
+	if (ev.tileId === "rat_gnaw") return "🐀";
+	if (ev.tileId === "miasma_waft") return "☣️";
+	if (ev.enemyId) {
+		const id = String(ev.enemyId);
+		if (id.includes("urednik")) return "💮";
+		if (id.includes("ucetni")) return "📜";
+		if (id.includes("fabian") || id.includes("kostlivec")) return "🦴";
+		if (id.includes("felcar")) return "☣️";
+		if (id.includes("netopyr")) return "🦇";
+	}
+	return "🎯";
+}
+async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = "🎯", animSpeed = 1) {
+	if (fromCellIdx === void 0 || toCellIdx === void 0 || fromCellIdx === toCellIdx || animSpeed === 0) return;
+	const fromCell = container.querySelector(`.board-cell[data-cell-index="${fromCellIdx}"]`);
+	const toCell = container.querySelector(`.board-cell[data-cell-index="${toCellIdx}"]`);
+	if (!fromCell || !toCell) return;
+	const rFrom = fromCell.getBoundingClientRect();
+	const rTo = toCell.getBoundingClientRect();
+	const startX = rFrom.left + rFrom.width / 2;
+	const startY = rFrom.top + rFrom.height * .42;
+	const targetX = rTo.left + rTo.width / 2;
+	const targetY = rTo.top + rTo.height * .42;
+	const flyEl = document.createElement("div");
+	flyEl.className = "flying-projectile";
+	flyEl.textContent = icon;
+	flyEl.style.left = `${startX}px`;
+	flyEl.style.top = `${startY}px`;
+	flyEl.style.transform = "translate(-50%, -50%) scale(0.6)";
+	flyEl.style.opacity = "0";
+	document.body.appendChild(flyEl);
+	const durationMs = Math.max(90, Math.round(180 / (animSpeed || 1)));
+	flyEl.offsetWidth;
+	flyEl.style.transition = `transform ${durationMs}ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 80ms ease-out`;
+	flyEl.style.opacity = "1";
+	flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(1.15)`;
+	await sleep(180, animSpeed);
+	flyEl.style.opacity = "0";
+	setTimeout(() => flyEl.remove(), 100);
+}
+async function playEntityMove(container, ev, animSpeed = 1) {
+	const entityEl = container.querySelector(`#entity-dom-${ev.entityId}`);
+	const moveDuration = ev.type === "leap" ? 300 : ANIMATION_TIMINGS.MOVE_MS;
+	const effectiveMs = animSpeed === 0 ? 0 : Math.round(moveDuration / (animSpeed || 1));
+	const fromIdx = ev.from ?? ev.fromCell;
+	const toIdx = ev.to ?? ev.toCell;
+	let isBackwards = false;
+	if (fromIdx !== void 0 && toIdx !== void 0 && fromIdx !== toIdx) {
+		const moveDir = toIdx > fromIdx ? 1 : -1;
+		const facing = ev.facing ?? 1;
+		isBackwards = moveDir === 1 && facing === -1 || moveDir === -1 && facing === 1;
+	}
+	const animClass = ev.type === "leap" ? "anim-leap" : isBackwards ? "anim-walk-back" : "anim-walk";
+	triggerSpriteAnim(container, ev.entityId, animClass);
+	if (entityEl && fromIdx !== void 0 && toIdx !== void 0 && fromIdx !== toIdx) {
+		const fromCellEl = container.querySelector(`.board-cell[data-cell-index="${fromIdx}"]`);
+		const toCellEl = container.querySelector(`.board-cell[data-cell-index="${toIdx}"]`);
+		if (fromCellEl && toCellEl && effectiveMs > 0) {
+			const fromRect = fromCellEl.getBoundingClientRect();
+			const deltaX = toCellEl.getBoundingClientRect().left - fromRect.left;
+			entityEl.classList.add("entity-sliding");
+			entityEl.style.setProperty("--slide-duration", `${effectiveMs}ms`);
+			entityEl.style.transform = `translateX(${deltaX}px)`;
+			await sleep(moveDuration, animSpeed);
+			entityEl.classList.remove("entity-sliding");
+			entityEl.style.removeProperty("--slide-duration");
+			entityEl.style.transform = "";
+			const destStage = container.querySelector(`#cell-stage-${toIdx}`);
+			if (destStage && entityEl.parentElement !== destStage) destStage.appendChild(entityEl);
+			return;
+		}
+	}
+	await sleep(moveDuration, animSpeed);
+}
 async function playEngineEvents(container, events, animSpeed = 1) {
 	if (!container || !events || events.length === 0) return;
 	for (const ev of events) switch (ev.type) {
 		case "move":
 		case "leap":
 			SFX.step();
-			triggerSpriteAnim(container, ev.entityId, ev.type === "leap" ? "anim-leap" : "anim-walk");
-			await sleep(ev.type === "leap" ? 300 : ANIMATION_TIMINGS.MOVE_MS, animSpeed);
+			await playEntityMove(container, ev, animSpeed);
+			break;
+		case "push_move":
+		case "pull_move":
+			SFX.step();
+			await playEntityMove(container, {
+				entityId: ev.targetId,
+				from: ev.from,
+				to: ev.to,
+				type: ev.type
+			}, animSpeed);
 			break;
 		case "swap":
 			SFX.swap();
@@ -7179,18 +7219,39 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 			}
 			break;
 		case "strike_vfx": break;
+		case "projectile_vfx":
+			await playProjectileFly(container, ev.from, ev.to, getProjectileIcon(ev), animSpeed);
+			break;
 		case "enemy_strike_vfx":
 			triggerSpriteAnim(container, ev.enemyId, "anim-lunge");
 			await sleep(170, animSpeed);
 			break;
 		case "enemy_projectile_vfx":
 			triggerSpriteAnim(container, ev.enemyId, "anim-shoot");
-			await sleep(160, animSpeed);
+			await playProjectileFly(container, ev.from, ev.to, getProjectileIcon(ev), animSpeed);
 			break;
-		case "damage":
+		case "damage": {
 			SFX.hit();
 			triggerSpriteAnim(container, ev.targetId, "anim-hurt");
-			if (isHeroEntity(container, ev.targetId)) setHeroPose(container, "hurt", 0);
+			const damagedEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+			if (damagedEl && ev.remainingHp !== void 0) {
+				const hpInnerEl = damagedEl.querySelector(".entity-hp-bar-inner");
+				const hpTextEl = damagedEl.querySelector(".entity-hp-text");
+				if (hpInnerEl && hpTextEl) {
+					const parts = (hpTextEl.textContent || "").split("/");
+					const maxHp = Number(parts[1]) || Math.max(1, ev.remainingHp);
+					const curHp = Math.max(0, ev.remainingHp);
+					hpTextEl.textContent = `${curHp}/${maxHp}`;
+					hpInnerEl.style.width = `${Math.max(0, Math.min(100, Math.round(curHp / maxHp * 100)))}%`;
+				}
+			}
+			if (isHeroEntity(container, ev.targetId)) {
+				if ((ev.remainingHp ?? 1) > 0) {
+					heroPoseLocked = true;
+					setHeroPose(container, "hurt", 0);
+					scheduleHeroIdle(container, 340, animSpeed);
+				}
+			}
 			spawnBloodBurst(container, {
 				cell: ev.cell,
 				ichor: ev.ichor,
@@ -7202,11 +7263,17 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 			});
 			spawnFloatingBadgeOnCell(container, ev.cell, `−${ev.amount} HP`, "float-dmg");
 			if (ev.attackerId && isHeroEntity(container, ev.attackerId) && !isHeroEntity(container, ev.targetId)) {
-				triggerSpriteAnim(container, ev.attackerId, "anim-lunge");
-				if (heroSprite(container)?.dataset.pose !== "attack") setHeroPose(container, "attack", 0);
+				const heroImg = heroSprite(container);
+				if (!heroImg?.classList.contains("anim-lunge")) triggerSpriteAnim(container, ev.attackerId, "anim-lunge");
+				if (heroImg?.dataset.pose !== "attack") {
+					heroPoseLocked = true;
+					setHeroPose(container, "attack", 0);
+					scheduleHeroIdle(container, 260, animSpeed);
+				}
 			}
 			await sleep(ANIMATION_TIMINGS.HIT_MS, animSpeed);
 			break;
+		}
 		case "blocked_front_shield":
 		case "shield_blocked":
 			SFX.collision();
@@ -7220,25 +7287,64 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 			spawnFloatingBadgeOnCell(container, ev.cell, "💥 KOLIZE!", "float-dmg");
 			await sleep(180, animSpeed);
 			break;
+		case "barrel_break":
+			SFX.collision();
+			spawnFloatingBadgeOnCell(container, ev.cell, "🛢️ SUD ROZBIT!", "float-dmg");
+			await sleep(180, animSpeed);
+			break;
+		case "pit_fall":
+			SFX.death();
+			spawnFloatingBadgeOnCell(container, ev.cell, "🕳️ PROPAST!", "float-dmg");
+			await sleep(220, animSpeed);
+			break;
+		case "plank_collapse":
+			SFX.collision();
+			spawnFloatingBadgeOnCell(container, ev.cell, "💥 PROLOMENÍ!", "float-dmg");
+			await sleep(180, animSpeed);
+			break;
 		case "status_added":
 			if (ev.statusId === "stun") {
 				SFX.bell();
 				spawnFloatingBadgeOnCell(container, ev.cell, "🔔 OMRÁČENÍ!", "float-warn");
 			}
 			break;
-		case "heal":
+		case "heal": {
+			const healedEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+			if (healedEl && ev.remainingHp !== void 0) {
+				const hpInnerEl = healedEl.querySelector(".entity-hp-bar-inner");
+				const hpTextEl = healedEl.querySelector(".entity-hp-text");
+				if (hpInnerEl && hpTextEl) {
+					const parts = (hpTextEl.textContent || "").split("/");
+					const maxHp = Number(parts[1]) || Math.max(1, ev.remainingHp);
+					const curHp = Math.min(maxHp, ev.remainingHp);
+					hpTextEl.textContent = `${curHp}/${maxHp}`;
+					hpInnerEl.style.width = `${Math.max(0, Math.min(100, Math.round(curHp / maxHp * 100)))}%`;
+				}
+			}
 			spawnFloatingBadgeOnCell(container, ev.cell, `+${ev.amount} HP`, "float-heal");
 			await sleep(140, animSpeed);
 			break;
+		}
 		case "momentum":
 			SFX.friendlyFire();
 			spawnFloatingBadgeOnEntity(container, "hero_venca", `🔥 MOMENTUM! (−${ev.reduction} CD)`, "float-heal");
 			await sleep(220, animSpeed);
 			break;
-		case "death":
+		case "death": {
 			SFX.death();
 			triggerSpriteAnim(container, ev.targetId, "anim-death");
-			if (isHeroEntity(container, ev.targetId)) setHeroPose(container, "dead", 0);
+			const deadEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+			if (deadEl) {
+				const hpInnerEl = deadEl.querySelector(".entity-hp-bar-inner");
+				const hpTextEl = deadEl.querySelector(".entity-hp-text");
+				if (hpInnerEl) hpInnerEl.style.width = "0%";
+				if (hpTextEl) hpTextEl.textContent = `0/${hpTextEl.textContent?.split("/")?.[1] || "0"}`;
+			}
+			if (isHeroEntity(container, ev.targetId)) {
+				heroPoseLocked = true;
+				clearHeroPoseTimer();
+				setHeroPose(container, "dead", 0);
+			}
 			if (ev.ichor) spawnBloodBurst(container, {
 				cell: ev.cell,
 				ichor: ev.ichor,
@@ -7249,6 +7355,7 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 			});
 			await sleep(ANIMATION_TIMINGS.DEATH_MS, animSpeed);
 			break;
+		}
 		case "enemy_queue_firing":
 			spawnFloatingBadgeOnCell(container, ev.cell, "🚨 ODPALUJE FRONTU!", "float-warn");
 			await sleep(180, animSpeed);
@@ -7572,11 +7679,11 @@ function openRulesModal(modalRoot) {
             <h4>1. 1D Bojiště (7 polí) a Ekonomika tahu</h4>
             <p>Na každém ze 7 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
             <ul>
-              <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Pokud na cílovém poli stojí upír či sud a pole <em>za ním</em> je volné, Venca ho přeskočí a prohodí si s ním místo (<strong>Swap / Leapfrog</strong>)!</li>
+              <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Cílové pole musí být volné (do obsazeného pole nelze vstoupit ani ho krokem přeskočit – přes překážky skáče pouze destička <em>Hospodský přemet</em>).</li>
               <li><strong>Otočení (W):</strong> Změní směr pohledu (◀ / ▶). Stojíš-li v <strong>Česnekovém oblaku</strong>, je otočení <strong>ZDARMA (0 tahů)</strong>!</li>
               <li><strong>Čekání (S):</strong> Stojí 1 tah, sníží cooldowny tvých destiček.</li>
-              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (pokud destička nemá vlastnost <em>Rychlovka</em> = 0 tahů). Vyjmutí destičky z fronty zpět do ruky je vždy zdarma.</li>
-              <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Odpálí všechny destičky ve frontě zleva doprava za <strong>JEDEN tah</strong>!</li>
+              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
+              <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Okamžitý odpal! Všechny destičky ve frontě se provedou zleva doprava bez nutnosti přípravného nápřahu za <strong>JEDEN tah</strong>!</li>
             </ul>
           </div>
 
@@ -8085,7 +8192,7 @@ function initKeyboardInput(callbacks = {}) {
 			e.preventDefault();
 			const idx = Number(e.key) - 1;
 			callbacks.onHotkeyTile?.(idx);
-		} else if (e.key === "F1") {
+		} else if (key === "f1" || e.key === "F1") {
 			e.preventDefault();
 			callbacks.onOpenRules?.();
 		}
@@ -8094,18 +8201,10 @@ function initKeyboardInput(callbacks = {}) {
 }
 function computeSlotBonuses(state, tile, slotIndex) {
 	let dmgBonus = 0;
-	let flipTarget = false;
-	let selfEmpower = 0;
 	if ((slotIndex === 2 || slotIndex === 3) && state.talismans?.includes("oak_splinter")) dmgBonus += 1;
 	if (!state.firstAttackUsed && tile.type !== "move" && state.talismans?.includes("brass_lantern")) dmgBonus += 1;
-	if (state.hero.statuses?.empower > 0 && (tile.dmg > 0 || dmgBonus > 0)) dmgBonus += state.hero.statuses.empower;
-	return {
-		isOpener: false,
-		isFinisher: false,
-		dmgBonus,
-		flipTarget,
-		selfEmpower
-	};
+	if (hasStatus(state.hero, "empower") && (tile.dmg > 0 || dmgBonus > 0)) dmgBonus += getStatusAmount(state.hero, "empower");
+	return { dmgBonus };
 }
 function applyMomentumIfLastEnemyKilled(state, comboLength, events = []) {
 	if (comboLength < 2) return false;
@@ -8135,13 +8234,10 @@ function executeHeroTile(state, tile, slotIndex, comboLength, events = []) {
 		instanceId: tile.instanceId,
 		tileName: tile.name,
 		slotIndex,
-		isOpener: bonuses.isOpener,
-		isFinisher: bonuses.isFinisher,
 		heroId: hero.id,
 		isStrike: tile.type === "attack" || (tile.dmg || 0) > 0
 	});
 	if (tile.selfEffect) addStatus(hero, tile.selfEffect.type, tile.selfEffect.amount || 1, events);
-	if (bonuses.selfEmpower > 0) addStatus(hero, "empower", bonuses.selfEmpower, events);
 	if (tile.leapDistance) {
 		const startCell = hero.cell;
 		if (tile.leaveGarlicCloud) {
@@ -8318,18 +8414,6 @@ function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength,
 		block = hitBlockFromEvents(events, mark);
 		state.stats.damageDealt = (state.stats.damageDealt || 0) + dealt;
 	}
-	if (bonuses.flipTarget && target.hp > 0 && target.entityType === "enemy" && effectSurvivesBlock(block, "flip_target")) {
-		target.facing = -target.facing;
-		events.push({
-			type: "turn",
-			entityId: target.id,
-			facing: target.facing
-		});
-		events.push({
-			type: "log",
-			text: `🔄 Proud svěcené vody otočil postavu ${target.name} čelem vzad!`
-		});
-	}
 	for (const eff of pat.effects || []) {
 		if (target.hp <= 0) break;
 		if (!effectSurvivesBlock(block, eff.type)) continue;
@@ -8445,16 +8529,13 @@ function endPlayerTurn(state, events = [], extraCdReduction = 0) {
 	processEnemiesPhase(state, events);
 	if (checkBattleOutcome(state, events) !== "playing") return events;
 	const allLiving = [state.hero, ...state.enemies.filter((e) => e.hp > 0)];
-	for (const ent of allLiving) if (ent.hp > 0 && ent.statuses?.bleed > 0) {
+	for (const ent of allLiving) if (ent.hp > 0 && hasStatus(ent, "bleed")) {
 		events.push({
 			type: "log",
 			text: `🩸 ${ent.name} krvácí (1 DMG).`
 		});
 		applyDamage(state, ent, 1, { reason: "bleed" }, events);
-		if (ent.statuses.bleed) {
-			ent.statuses.bleed -= 1;
-			if (ent.statuses.bleed <= 0) delete ent.statuses.bleed;
-		}
+		consumeStatus(ent, "bleed", 1);
 	}
 	if (checkBattleOutcome(state, events) !== "playing") return events;
 	for (let c = 0; c < state.terrain.length; c++) {
@@ -8491,11 +8572,10 @@ function playerStepNoEnd(state, direction) {
 		events
 	};
 	const hero = state.hero;
-	const confused = (hero.statuses?.confusion || 0) > 0;
+	const confused = hasStatus(hero, "confusion");
 	if (confused) {
 		dir = state.rng.nextFloat() < .5 ? -1 : 1;
-		hero.statuses.confusion -= 1;
-		if (hero.statuses.confusion <= 0) delete hero.statuses.confusion;
+		consumeStatus(hero, "confusion", 1);
 		events.push({
 			type: "log",
 			text: `🌀 Venca má v hlavě motolici a vykročil náhodným směrem!`
@@ -8508,7 +8588,6 @@ function playerStepNoEnd(state, direction) {
 				type: "log",
 				text: `🧱 Zmatený Venca narazil do hradní zdi a ztratil tah.`
 			});
-			state.isQueuePrepared = false;
 			return {
 				ok: true,
 				events
@@ -8543,7 +8622,6 @@ function playerStepNoEnd(state, direction) {
 			type: "log",
 			text: "🧱 Zmatený Venca se zamotal do překážky a ztratil tah."
 		});
-		state.isQueuePrepared = false;
 		return {
 			ok: true,
 			events
@@ -8558,7 +8636,6 @@ function playerStepNoEnd(state, direction) {
 			events
 		};
 	}
-	state.isQueuePrepared = false;
 	assertBoardInvariant(state);
 	return {
 		ok: true,
@@ -8575,7 +8652,6 @@ function playerTurnAroundNoEnd(state) {
 	if (stunned) return stunned;
 	const hero = state.hero;
 	hero.facing = -hero.facing;
-	state.isQueuePrepared = false;
 	const inGarlic = state.terrain[hero.cell]?.type === "garlic_cloud";
 	events.push({
 		type: "turn",
@@ -8628,7 +8704,6 @@ function playerWaitNoEnd(state) {
 	};
 	const stunned = consumeHeroStun(state);
 	if (stunned) return stunned;
-	state.isQueuePrepared = false;
 	const extraCd = state.talismans?.includes("pocket_watch") ? 1 : 0;
 	events.push({
 		type: "wait",
@@ -8687,22 +8762,23 @@ function playerEnqueueTileNoEnd(state, tileInstanceId) {
 			events
 		};
 	}
+	const isQuick = Boolean(tile.quick);
 	tile.inQueue = true;
 	state.queue.push(tile.instanceId);
-	state.isQueuePrepared = false;
 	events.push({
 		type: "queue_insert",
 		instanceId: tile.instanceId,
 		tileName: tile.name,
-		slotIndex: state.queue.length - 1
+		slotIndex: state.queue.length - 1,
+		isQuick
 	});
 	events.push({
 		type: "log",
-		text: `📥 Destička „${tile.name}“ vložena do fronty (slot #${state.queue.length}). Spotřebován 1 tah.`
+		text: isQuick ? `📥 Destička „${tile.name}“ vložena do fronty jako RYCHLOVKA (slot #${state.queue.length}). Nestojí žádný tah!` : `📥 Destička „${tile.name}“ vložena do fronty (slot #${state.queue.length}). Spotřebován 1 tah.`
 	});
 	return {
 		ok: true,
-		freeTurn: false,
+		freeTurn: isQuick,
 		events
 	};
 }
@@ -8712,7 +8788,6 @@ function playerRemoveFromQueue(state, slotIndexOrInstanceId) {
 		ok: false,
 		events
 	};
-	state.isQueuePrepared = false;
 	let idx = -1;
 	if (typeof slotIndexOrInstanceId === "number") idx = slotIndexOrInstanceId;
 	else idx = state.queue.indexOf(slotIndexOrInstanceId);
@@ -8756,7 +8831,6 @@ function playerReorderQueue(state, fromIndex, toIndex) {
 		ok: false,
 		events
 	};
-	state.isQueuePrepared = false;
 	const [movedId] = state.queue.splice(fromIndex, 1);
 	state.queue.splice(toIndex, 0, movedId);
 	const tile = state.hand.find((t) => t.instanceId === movedId);
@@ -8819,7 +8893,6 @@ function executeQueuedTileStep(state, tileInstanceId, slotIndex, comboLength, ne
 function finalizeQueueExecution(state, comboLength) {
 	const events = [];
 	state.queue = [];
-	state.isQueuePrepared = false;
 	if (comboLength >= 2) state.stats.combosExecuted = (state.stats.combosExecuted || 0) + 1;
 	applyMomentumIfLastEnemyKilled(state, comboLength, events);
 	endPlayerTurn(state, events);
@@ -8830,9 +8903,9 @@ function createBattleActions(deps) {
 	async function finishPlayerAction(state, res, turnBefore, extraCd = 0) {
 		const boardContainer = document.getElementById("center-stage");
 		appendEventsToLog(state, res.events, turnBefore);
-		renderAll();
 		await playEngineEvents(boardContainer, res.events, appState.settings.animSpeed);
 		clearTransientCorpses(state);
+		renderAll();
 		if (!res.ok || res.freeTurn || checkBattleOutcome(state) !== "playing") {
 			appState.isAnimating = false;
 			renderAll();
@@ -8842,7 +8915,6 @@ function createBattleActions(deps) {
 		const enemyEvents = [];
 		endPlayerTurn(state, enemyEvents, extraCd);
 		appendEventsToLog(state, enemyEvents, turnBefore);
-		renderAll();
 		await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
 		clearTransientCorpses(state);
 		appState.isAnimating = false;
@@ -8907,9 +8979,9 @@ function createBattleActions(deps) {
 		const turnBefore = state.turn;
 		const endEvents = finalizeQueueExecution(state, comboLength);
 		appendEventsToLog(state, endEvents, turnBefore);
-		renderAll();
 		await playEngineEvents(boardContainer, endEvents, appState.settings.animSpeed);
 		clearTransientCorpses(state);
+		renderAll();
 	}
 	async function executeQueue() {
 		const state = appState.battleState;
@@ -8923,12 +8995,12 @@ function createBattleActions(deps) {
 		const stunned = consumeHeroStun(state);
 		if (stunned) {
 			appendEventsToLog(state, stunned.events, turnBefore);
-			renderAll();
 			await playEngineEvents(boardContainer, stunned.events, appState.settings.animSpeed);
+			clearTransientCorpses(state);
+			renderAll();
 			const enemyEvents = [];
 			endPlayerTurn(state, enemyEvents);
 			appendEventsToLog(state, enemyEvents, turnBefore);
-			renderAll();
 			await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
 			clearTransientCorpses(state);
 			appState.isAnimating = false;
@@ -8942,9 +9014,9 @@ function createBattleActions(deps) {
 			const nextInstanceId = queueSnapshot[i + 1] || null;
 			const stepEvents = executeQueuedTileStep(state, tileInstanceId, i, comboLength, nextInstanceId);
 			appendEventsToLog(state, stepEvents, turnBefore);
-			renderAll();
 			await playEngineEvents(boardContainer, stepEvents, appState.settings.animSpeed);
 			clearTransientCorpses(state);
+			renderAll();
 			await sleep(ANIMATION_TIMINGS.QUEUE_STEP_MS, appState.settings.animSpeed);
 			if (checkBattleOutcome(state) !== "playing") break;
 		}

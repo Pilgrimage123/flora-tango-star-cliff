@@ -18,7 +18,7 @@ import {
   openEventModal,
   openTreasureModal
 } from './ui/modal.js';
-import { initTooltips, hideTooltip } from './ui/tooltips.js';
+import { initTooltips } from './ui/tooltips.js';
 import { initKeyboardInput } from './ui/input.js';
 import { setSoundEnabled } from './ui/audio.js';
 import { createBattleActions } from './battle.js';

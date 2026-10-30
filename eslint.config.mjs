@@ -40,6 +40,8 @@ export default tseslint.config(
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "no-empty": ["error", { allowEmptyCatch: true }],
     },
   },
   // Disable rules that conflict with Prettier formatting.

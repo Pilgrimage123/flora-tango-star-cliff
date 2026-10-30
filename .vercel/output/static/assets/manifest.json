@@ -39,7 +39,10 @@
     "src": "assets/characters/venca_dead.png",
     "w": 1108,
     "h": 1044,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Venca (padlý)",
     "preload": true,
     "present": true
@@ -86,7 +89,7 @@
     "h": 472,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Srpový dráb Vendelín",
     "preload": true,
@@ -98,7 +101,7 @@
     "h": 512,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Kyjový pacholek Břéťa",
     "preload": true,
@@ -110,7 +113,7 @@
     "h": 512,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Morový sedlák Bohouš",
     "preload": true,
@@ -122,7 +125,7 @@
     "h": 365,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Panský vlkodav Čeněk",
     "preload": true,
@@ -134,7 +137,7 @@
     "h": 512,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Dvorní halapartník Šebestián",
     "preload": true,
@@ -146,7 +149,7 @@
     "h": 429,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Dvorový buldok Punťa",
     "preload": true,
@@ -156,7 +159,10 @@
     "src": "assets/enemies/kluk_kamen.png",
     "w": 340,
     "h": 356,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Vesnický kluk Lojzíček",
     "preload": true,
     "present": true
@@ -165,7 +171,10 @@
     "src": "assets/enemies/divocak.png",
     "w": 528,
     "h": 343,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Řádící divočák Čuník",
     "preload": true,
     "present": true
@@ -174,7 +183,10 @@
     "src": "assets/enemies/upirske_prase.png",
     "w": 537,
     "h": 333,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Upíří pašík Hroznata",
     "preload": true,
     "present": true
@@ -183,7 +195,10 @@
     "src": "assets/enemies/sliz.png",
     "w": 595,
     "h": 592,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Plísňový slizák Breberka",
     "preload": true,
     "present": true
@@ -192,7 +207,10 @@
     "src": "assets/enemies/carodejnice.png",
     "w": 496,
     "h": 453,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Ježibaba Bětuše",
     "preload": true,
     "present": true
@@ -201,7 +219,10 @@
     "src": "assets/enemies/drevo.png",
     "w": 398,
     "h": 538,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Dřevorubec Jáchym",
     "preload": true,
     "present": true
@@ -210,7 +231,10 @@
     "src": "assets/enemies/sedlak_stit.png",
     "w": 400,
     "h": 586,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Sedlák Vavřinec",
     "preload": true,
     "present": true
@@ -219,7 +243,10 @@
     "src": "assets/enemies/hrabenka_amalie.png",
     "w": 384,
     "h": 537,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Rokoková hraběnka Amálie",
     "preload": true,
     "present": true
@@ -228,7 +255,10 @@
     "src": "assets/enemies/upirka_cilka.png",
     "w": 270,
     "h": 469,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Upírka v cylindru Cilka",
     "preload": true,
     "present": true
@@ -237,7 +267,10 @@
     "src": "assets/enemies/vrhac_nozu.png",
     "w": 335,
     "h": 456,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Vrhač nožů Tonda",
     "preload": true,
     "present": true
@@ -246,7 +279,10 @@
     "src": "assets/enemies/prase_mutant.png",
     "w": 719,
     "h": 460,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Morové prase Řehoř",
     "preload": true,
     "present": true
@@ -255,7 +291,10 @@
     "src": "assets/enemies/bazinny_sliz.png",
     "w": 422,
     "h": 640,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Bažinná slizka Žbluňka",
     "preload": true,
     "present": true
@@ -264,7 +303,10 @@
     "src": "assets/enemies/upiri_trpaslik.png",
     "w": 379,
     "h": 560,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Upíří trpaslík Šmudla",
     "preload": true,
     "present": true
@@ -273,7 +315,10 @@
     "src": "assets/enemies/rytir_prizrak.png",
     "w": 426,
     "h": 640,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Přízračný rytíř Heřman",
     "preload": true,
     "present": true
@@ -282,7 +327,10 @@
     "src": "assets/enemies/zombie_hynek.png",
     "w": 911,
     "h": 1691,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Oživlý nebožtík Hynek",
     "preload": true,
     "present": true
@@ -291,7 +339,10 @@
     "src": "assets/enemies/kostlivec_fabian.png",
     "w": 1106,
     "h": 1688,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Hřbitovní kostlivec Fabián",
     "preload": true,
     "present": true
@@ -300,7 +351,10 @@
     "src": "assets/enemies/krysa_piskota.png",
     "w": 1104,
     "h": 1662,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Sklepní krysa Piškota",
     "preload": true,
     "present": true
@@ -309,7 +363,10 @@
     "src": "assets/enemies/morovy_felcar.png",
     "w": 1055,
     "h": 1691,
-    "pivot": [0.5, 1.0],
+    "pivot": [
+      0.5,
+      1
+    ],
     "label": "Morový felčar Kilián",
     "preload": true,
     "present": true
@@ -380,7 +437,7 @@
     "h": 512,
     "pivot": [
       0.5,
-      1.0
+      1
     ],
     "label": "Ředitel Drákula",
     "preload": true,
@@ -805,5 +862,29 @@
     "label": "Boss",
     "preload": false,
     "present": false
+  },
+  "scene.naves_yard": {
+    "src": "assets/terrain/naves-yard.jpg",
+    "w": 1920,
+    "h": 1072,
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "label": "Dvůr předhradí",
+    "preload": false,
+    "present": true
+  },
+  "scene.naves_dvur": {
+    "src": "assets/terrain/naves-dvur.jpg",
+    "w": 1500,
+    "h": 642,
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "label": "Hradní náves",
+    "preload": false,
+    "present": true
   }
 }

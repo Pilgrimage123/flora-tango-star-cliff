@@ -4,6 +4,28 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.3.0] - 2026-10-30
+
+### Opraveno
+- **Běhové prostředí a multiplatformní kompatibilita**:
+  - Opraveno volání `spawn` v `scripts/with-app-env.mjs` pro Windows (`shell: process.platform === 'win32'`), umožňující spolehlivé spuštění `vite dev` i `vite build`.
+  - Přesunuta direktiva `// @ts-nocheck` v `src/game/engine/combo.js` na první řádek, opraven pád typové kontroly `tsc --noEmit`.
+  - Opraveno poškozené kódování textů (mojibake) v hlášeních kroniky v `src/game/engine/spawner.js` a `src/game/engine/tileEffects.js`.
+- **Vizuální synchronizace a animace na bojišti**:
+  - Opravena trajektorie letících projektilů v `playProjectileFly` — nahrazen nesprávný fixní offset `-22px` přesným dynamickým centrovaným posunem `translate(calc(-50% + dx), calc(-50% + dy))`.
+  - Doplněno zpracování událostí posunu `push_move` a `pull_move` (odhození a přitažení entit na bojišti) v `playEngineEvents` pro plynulý slide animovaný pohyb.
+  - Doplněna vizuální zpětná vazba a plovoucí hlášení pro události `pit_fall` (pád do propasti), `barrel_break` (rozbití sudu) a `plank_collapse` (prolomení prkna).
+  - V `startHeroIdle` zohledněn zámek `heroPoseLocked`, aby průběžná volání překreslení nepřerušovala aktivní animace úderu či zranění hrdiny.
+  - Zajištěno zobrazení padlého hrdiny v `corpseAt` i po úklidu těl nepřátel.
+- **Kvalita kódu a linter**:
+  - Obaleny switch větve (`damage`, `heal`, `death`) blokovými závorkami pro eliminaci chyb `no-case-declarations`.
+  - Odstraněny nepoužívané importy a mrtvý kód v `src/game/ui/renderer.js`, `src/game/engine/rules.js`, `src/game/main.js`, `src/game/ui/blood.js` a `tests/engine.test.js`.
+  - Upravena konfigurace ESLint pro podporu povolených prázdných catch bloků v podpůrných knihovnách a vypnutí striktního zákazu `@ts-nocheck` v čistě JS souborech hry.
+
+### Přidáno
+- **Integrované testování enginu**:
+  - Začlenění 26 testovacích sad z `tests/engine.test.js` přímo do skriptu `npm test`.
+
 ## [1.2.0] - 2026-10-30
 
 ### Přidáno

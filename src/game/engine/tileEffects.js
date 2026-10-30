@@ -28,7 +28,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     instanceId: tile.instanceId,
     tileName: tile.name,
     slotIndex,
-        heroId: hero.id,
+    heroId: hero.id,
     isStrike: tile.type === 'attack' || (tile.dmg || 0) > 0
   });
 
@@ -37,7 +37,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     addStatus(hero, tile.selfEffect.type, tile.selfEffect.amount || 1, events);
   }
 
-  // Movement / Leap tile (e.g. HospodskĂ˝ pĹ™emet pĹ™es pupĂ­k)
+  // Movement / Leap tile (e.g. Hospodský přemet přes pupík)
   if (tile.leapDistance) {
     const startCell = hero.cell;
     if (tile.leaveGarlicCloud) {
@@ -52,7 +52,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `đź§„ Venca zanechal na poli ${startCell + 1} ĹˇtiplavĂ˝ ÄŚesnekovĂ˝ oblak!`
+        text: `🧄 Venca zanechal na poli ${startCell + 1} štiplavý Česnekový oblak!`
       });
     }
 
@@ -69,7 +69,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `đź¤¸ ${tile.name}: Venca pĹ™eskoÄŤil z pole ${startCell + 1} na pole ${landingCell + 1}!`
+        text: `🤸 ${tile.name}: Venca přeskočil z pole ${startCell + 1} na pole ${landingCell + 1}!`
       });
       triggerCellTerrainOnEnter(state, hero, landingCell, events);
       if (state.talismans?.includes('beer_frog')) {
@@ -87,7 +87,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
           addStatus(hero, 'shield', 1, events);
           events.push({
             type: 'log',
-            text: 'đź¸ PivnĂ­ ĹľĂˇba: Venca zĂ­skal po pĹ™emetu Ĺ tĂ­t!'
+            text: '🐸 Pivní žába: Venca získal po přemetu Štít!'
           });
         }
       }
@@ -97,7 +97,6 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     let hitTarget = null;
     let hitPat = null;
     let hitCell = null;
-
     for (const pat of tile.pattern || []) {
       const c = hero.cell + hero.facing * pat.offset;
       if (!isValidCell(c, state)) break;
@@ -128,7 +127,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `đź’¨ ${tile.name} prolĂ©tla prĂˇzdnou chodbou naprĂˇzdno.`
+        text: `💨 ${tile.name} prolétla prázdnou chodbou naprázdno.`
       });
     }
   } else {
@@ -157,7 +156,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
           });
           events.push({
             type: 'log',
-            text: `đź—ˇď¸Ź Z podlahy na poli ${targetCell + 1} vyrazily naostĹ™enĂ© kĹŻly!`
+            text: `🗡️ Z podlahy na poli ${targetCell + 1} vyrazily naostřené kůly!`
           });
         } else if (eff.type === 'spawn_garlic_target') {
           state.terrain[targetCell] = {
@@ -188,7 +187,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `đź’¨ ${tile.name} promĂˇchla do prĂˇzdnĂ©ho vzduchu.`
+        text: `💨 ${tile.name} promáchla do prázdného vzduchu.`
       });
     }
   }
@@ -208,7 +207,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     }
   }
 
-  // Self-flip after tile (e.g., Facka rĹŻĹľencem)
+  // Self-flip after tile (e.g., Facka růžencem)
   if (tile.selfFlipAfter && hero.hp > 0) {
     hero.facing = -hero.facing;
     events.push({
@@ -219,7 +218,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     });
     events.push({
       type: 'log',
-      text: `đź”„ Venca se po rĂˇnÄ› otoÄŤil ÄŤelem ${hero.facing === 1 ? 'vpravo â–¶' : 'vlevo â—€'}.`
+      text: `🔄 Venca se po ráně otočil čelem ${hero.facing === 1 ? 'vpravo ▶' : 'vlevo ◀'}.`
     });
   }
 
@@ -273,7 +272,7 @@ function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength,
           });
           events.push({
             type: 'log',
-            text: `đź”„ ${target.name} byl otoÄŤen ÄŤelem vzad!`
+            text: `🔄 ${target.name} byl otočen čelem vzad!`
           });
         }
         break;

@@ -25,7 +25,7 @@ function rand(a, b) {
   return a + Math.random() * (b - a);
 }
 
-function pick(list) {
+function _pick(list) {
   return list[(Math.random() * list.length) | 0];
 }
 

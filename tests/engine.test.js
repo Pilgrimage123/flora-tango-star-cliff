@@ -5,12 +5,11 @@ import {
   getStatusAmount,
   consumeStatus,
   assertBoardInvariant,
-  getEntityAt,
   pushEntity,
   pullEntity,
   triggerCellTerrainOnEnter
 } from '../src/game/engine/board.js';
-import { createBattleState, createEnemyInstance, createPropInstance } from '../src/game/engine/state.js';
+import { createBattleState, createEnemyInstance } from '../src/game/engine/state.js';
 import {
   playerStep,
   playerTurnAround,

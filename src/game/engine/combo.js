@@ -1,5 +1,5 @@
-import { getStatusAmount, hasStatus } from './board.js';
 // @ts-nocheck
+import { getStatusAmount, hasStatus } from './board.js';
 import { STRINGS } from '../config/strings.cs.js';
 
 export function computeSlotBonuses(state, tile, slotIndex) {
