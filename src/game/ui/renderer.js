@@ -129,7 +129,7 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
 
     const iconUrl = getAssetUrl(tile.icon, tile.name);
     return `
-      <div class="queue-slot queue-slot-filled ${state.isQueuePrepared ? 'queue-slot-prepared' : ''}"
+      <div class="queue-slot queue-slot-filled"
            draggable="true"
            data-slot-index="${slotIdx}"
            data-instance-id="${tile.instanceId}"
@@ -214,7 +214,7 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
 
   container.innerHTML = `
     ${tutorialHintHtml}
-    <div class="hero-queue-panel ${state.isQueuePrepared ? 'queue-is-prepared' : ''}">
+    <div class="hero-queue-panel">
       <div class="hero-queue-label">
         <strong>⚡ Fronta komba Venci Česnekáče</strong>
         <span class="hero-queue-hint">(Fronta akcí · 1 tah vložení · Odpálení okamžité!)</span>

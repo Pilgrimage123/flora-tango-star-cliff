@@ -1,10 +1,9 @@
+import { getStatusAmount, hasStatus } from './board.js';
 // @ts-nocheck
 import { STRINGS } from '../config/strings.cs.js';
 
 export function computeSlotBonuses(state, tile, slotIndex) {
   let dmgBonus = 0;
-  let flipTarget = false;
-  let selfEmpower = 0;
 
   // Talisman: Oak splinter gives +1 DMG to 3rd or 4th slot in queue
   if ((slotIndex === 2 || slotIndex === 3) && state.talismans?.includes('oak_splinter')) {
@@ -15,16 +14,12 @@ export function computeSlotBonuses(state, tile, slotIndex) {
     dmgBonus += 1;
   }
 
-  if (state.hero.statuses?.empower > 0 && (tile.dmg > 0 || dmgBonus > 0)) {
-    dmgBonus += state.hero.statuses.empower;
+  if (hasStatus(state.hero, 'empower') && (tile.dmg > 0 || dmgBonus > 0)) {
+    dmgBonus += getStatusAmount(state.hero, 'empower');
   }
 
   return {
-    isOpener: false,
-    isFinisher: false,
-    dmgBonus,
-    flipTarget,
-    selfEmpower
+    dmgBonus
   };
 }
 

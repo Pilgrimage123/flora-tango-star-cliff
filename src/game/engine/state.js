@@ -30,7 +30,7 @@ export function createEnemyInstance(enemyId, cell, facing = -1) {
     throw new Error(`Neznámý nepřítel: ${enemyId}`);
   }
 
-  const poolSource = def.actionPool || def.queue || [];
+  const poolSource = def.actionPool || [];
   const actionPool = poolSource.map((tileId) => {
     const tileDef = ENEMY_TILES[tileId];
     return {
@@ -40,8 +40,7 @@ export function createEnemyInstance(enemyId, cell, facing = -1) {
     };
   });
 
-  const firstTileId = def.queue?.[0] || actionPool[0]?.tileId;
-  const firstTileDef = firstTileId ? ENEMY_TILES[firstTileId] : null;
+  
 
   return {
     id: nextEntityUid(enemyId),
@@ -72,9 +71,6 @@ export function createEnemyInstance(enemyId, cell, facing = -1) {
     actionQueue: [], // array of up to 3 tileId
     actionPool,
     nextAction: null, // { type: 'turn' | 'step' | 'queue_tile' | 'arm' | 'execute_queue' | 'idle', dir?, tileId? }
-    // Legacy compatibility fields
-    queue: [...(def.queue || [])],
-    queueIndex: 0,
     countdown: 2,
     statuses: {},
     flavor: def.flavor || ''

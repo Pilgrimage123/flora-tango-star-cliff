@@ -29,11 +29,11 @@ export function openRulesModal(modalRoot) {
             <h4>1. 1D Bojiště (7 polí) a Ekonomika tahu</h4>
             <p>Na každém ze 7 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
             <ul>
-              <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Pokud na cílovém poli stojí upír či sud a pole <em>za ním</em> je volné, Venca ho přeskočí a prohodí si s ním místo (<strong>Swap / Leapfrog</strong>)!</li>
+              <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Cílové pole musí být volné (do obsazeného pole nelze vstoupit ani ho krokem přeskočit – přes překážky skáče pouze destička <em>Hospodský přemet</em>).</li>
               <li><strong>Otočení (W):</strong> Změní směr pohledu (◀ / ▶). Stojíš-li v <strong>Česnekovém oblaku</strong>, je otočení <strong>ZDARMA (0 tahů)</strong>!</li>
               <li><strong>Čekání (S):</strong> Stojí 1 tah, sníží cooldowny tvých destiček.</li>
-              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (pokud destička nemá vlastnost <em>Rychlovka</em> = 0 tahů). Vyjmutí destičky z fronty zpět do ruky je vždy zdarma.</li>
-              <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Odpálí všechny destičky ve frontě zleva doprava za <strong>JEDEN tah</strong>!</li>
+              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
+              <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Okamžitý odpal! Všechny destičky ve frontě se provedou zleva doprava bez nutnosti přípravného nápřahu za <strong>JEDEN tah</strong>!</li>
             </ul>
           </div>
 

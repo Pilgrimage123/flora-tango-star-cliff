@@ -26,7 +26,7 @@ export function processReinforcements(state, events = []) {
         });
         events.push({
           type: 'log',
-          text: `🚪 Brána na poli ${gateCell + 1} je ucpaná! Posila se opožďuje o 1 tah.`
+          text: `đźšŞ BrĂˇna na poli ${gateCell + 1} je ucpanĂˇ! Posila se opoĹľÄŹuje o 1 tah.`
         });
       } else {
         reinf.spawned = true;
@@ -42,7 +42,7 @@ export function processReinforcements(state, events = []) {
         });
         events.push({
           type: 'log',
-          text: `🚪 Z brány na poli ${gateCell + 1} vtrhla na bojiště posila: ${enemy.name}!`
+          text: `đźšŞ Z brĂˇny na poli ${gateCell + 1} vtrhla na bojiĹˇtÄ› posila: ${enemy.name}!`
         });
       }
     }

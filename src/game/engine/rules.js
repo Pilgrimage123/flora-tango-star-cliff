@@ -6,7 +6,10 @@ import {
   getEntityAt,
   applyDamage,
   triggerCellTerrainOnEnter,
-  assertBoardInvariant
+  assertBoardInvariant,
+  hasStatus,
+  getStatusAmount,
+  consumeStatus
 } from './board.js';
 import { executeHeroTile } from './tileEffects.js';
 import { applyMomentumIfLastEnemyKilled } from './combo.js';
@@ -77,16 +80,13 @@ export function endPlayerTurn(state, events = [], extraCdReduction = 0) {
   // 3. Process bleed on all living entities
   const allLiving = [state.hero, ...state.enemies.filter((e) => e.hp > 0)];
   for (const ent of allLiving) {
-    if (ent.hp > 0 && ent.statuses?.bleed > 0) {
+    if (ent.hp > 0 && hasStatus(ent, 'bleed')) {
       events.push({
         type: 'log',
         text: `🩸 ${ent.name} krvácí (1 DMG).`
       });
       applyDamage(state, ent, 1, { reason: 'bleed' }, events);
-      if (ent.statuses.bleed) {
-        ent.statuses.bleed -= 1;
-        if (ent.statuses.bleed <= 0) delete ent.statuses.bleed;
-      }
+      consumeStatus(ent, 'bleed', 1);
     }
   }
 
@@ -129,12 +129,11 @@ export function playerStepNoEnd(state, direction) {
   if (!dir) return { ok: false, events };
 
   const hero = state.hero;
-  const confused = (hero.statuses?.confusion || 0) > 0;
+  const confused = hasStatus(hero, 'confusion');
 
   if (confused) {
     dir = state.rng.nextFloat() < 0.5 ? -1 : 1;
-    hero.statuses.confusion -= 1;
-    if (hero.statuses.confusion <= 0) delete hero.statuses.confusion;
+    consumeStatus(hero, 'confusion', 1);
     events.push({
       type: 'log',
       text: `🌀 Venca má v hlavě motolici a vykročil náhodným směrem!`
@@ -148,7 +147,6 @@ export function playerStepNoEnd(state, direction) {
         type: 'log',
         text: `🧱 Zmatený Venca narazil do hradní zdi a ztratil tah.`
       });
-      state.isQueuePrepared = false;
       return { ok: true, events };
     }
     events.push({
@@ -179,7 +177,6 @@ export function playerStepNoEnd(state, direction) {
       type: 'log',
       text: '🧱 Zmatený Venca se zamotal do překážky a ztratil tah.'
     });
-    state.isQueuePrepared = false;
     return { ok: true, events };
   } else {
     events.push({
@@ -188,8 +185,6 @@ export function playerStepNoEnd(state, direction) {
     });
     return { ok: false, events };
   }
-
-  state.isQueuePrepared = false;
   assertBoardInvariant(state);
   return { ok: true, events };
 }
@@ -209,7 +204,6 @@ export function playerTurnAroundNoEnd(state) {
 
   const hero = state.hero;
   hero.facing = -hero.facing;
-  state.isQueuePrepared = false;
 
   const inGarlic = state.terrain[hero.cell]?.type === 'garlic_cloud';
   events.push({
@@ -269,8 +263,6 @@ export function playerWaitNoEnd(state) {
   if (state.status !== 'playing' || state.hero.hp <= 0) return { ok: false, events };
   const stunned = consumeHeroStun(state);
   if (stunned) return stunned;
-
-  state.isQueuePrepared = false;
   const extraCd = state.talismans?.includes('pocket_watch') ? 1 : 0;
   events.push({
     type: 'wait',
@@ -326,37 +318,40 @@ export function playerEnqueueTileNoEnd(state, tileInstanceId) {
     return { ok: false, events };
   }
 
+  const isQuick = Boolean(tile.quick);
   tile.inQueue = true;
   state.queue.push(tile.instanceId);
-  state.isQueuePrepared = false;
 
   events.push({
     type: 'queue_insert',
     instanceId: tile.instanceId,
     tileName: tile.name,
-    slotIndex: state.queue.length - 1
+    slotIndex: state.queue.length - 1,
+    isQuick
   });
 
   events.push({
     type: 'log',
-    text: `📥 Destička „${tile.name}“ vložena do fronty (slot #${state.queue.length}). Spotřebován 1 tah.`
+    text: isQuick
+      ? `📥 Destička „${tile.name}“ vložena do fronty jako RYCHLOVKA (slot #${state.queue.length}). Nestojí žádný tah!`
+      : `📥 Destička „${tile.name}“ vložena do fronty (slot #${state.queue.length}). Spotřebován 1 tah.`
   });
 
-  return { ok: true, freeTurn: false, events };
+  return { ok: true, freeTurn: isQuick, events };
 }
 
 export function playerEnqueueTile(state, tileInstanceId) {
   const res = playerEnqueueTileNoEnd(state, tileInstanceId);
   if (!res.ok) return res;
-  endPlayerTurn(state, res.events);
+  if (!res.freeTurn) {
+    endPlayerTurn(state, res.events);
+  }
   return res;
 }
 
 export function playerRemoveFromQueue(state, slotIndexOrInstanceId) {
   const events = [];
   if (state.status !== 'playing' || state.hero.hp <= 0) return { ok: false, events };
-
-  state.isQueuePrepared = false;
   let idx = -1;
   if (typeof slotIndexOrInstanceId === 'number') {
     idx = slotIndexOrInstanceId;
@@ -393,8 +388,6 @@ export function playerReorderQueue(state, fromIndex, toIndex) {
   if (fromIndex === toIndex) return { ok: true, events };
   if (fromIndex < 0 || fromIndex >= state.queue.length) return { ok: false, events };
   if (toIndex < 0 || toIndex >= state.queue.length) return { ok: false, events };
-
-  state.isQueuePrepared = false;
   const [movedId] = state.queue.splice(fromIndex, 1);
   state.queue.splice(toIndex, 0, movedId);
 
@@ -414,36 +407,6 @@ export function playerReorderQueue(state, fromIndex, toIndex) {
   return { ok: true, freeTurn: true, events };
 }
 
-export function playerPrepareQueue(state) {
-  const events = [];
-  if (state.status !== 'playing' || state.hero.hp <= 0) return { ok: false, events };
-  const stunned = consumeHeroStun(state);
-  if (stunned) {
-    endPlayerTurn(state, stunned.events);
-    return stunned;
-  }
-
-  if (!state.queue || state.queue.length === 0) {
-    events.push({
-      type: 'invalid_action',
-      reason: 'Fronta je prázdná – nejprve do ní vlož akční destičky!'
-    });
-    return { ok: false, events };
-  }
-
-  state.isQueuePrepared = true;
-  events.push({
-    type: 'queue_prepared',
-    queueLength: state.queue.length
-  });
-  events.push({
-    type: 'log',
-    text: `🎯 Venca se napřáhl k odpalu komba (${state.queue.length} destiček)! Příprava stála 1 tah.`
-  });
-
-  endPlayerTurn(state, events);
-  return { ok: true, events };
-}
 
 export function executeQueuedTileStep(state, tileInstanceId, slotIndex, comboLength, nextTileInstanceId = null) {
   const events = [];
@@ -503,7 +466,6 @@ export function executeQueuedTileStep(state, tileInstanceId, slotIndex, comboLen
 export function finalizeQueueExecution(state, comboLength) {
   const events = [];
   state.queue = [];
-  state.isQueuePrepared = false;
   if (comboLength >= 2) {
     state.stats.combosExecuted = (state.stats.combosExecuted || 0) + 1;
   }

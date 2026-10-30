@@ -28,9 +28,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     instanceId: tile.instanceId,
     tileName: tile.name,
     slotIndex,
-    isOpener: bonuses.isOpener,
-    isFinisher: bonuses.isFinisher,
-    heroId: hero.id,
+        heroId: hero.id,
     isStrike: tile.type === 'attack' || (tile.dmg || 0) > 0
   });
 
@@ -38,11 +36,8 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
   if (tile.selfEffect) {
     addStatus(hero, tile.selfEffect.type, tile.selfEffect.amount || 1, events);
   }
-  if (bonuses.selfEmpower > 0) {
-    addStatus(hero, 'empower', bonuses.selfEmpower, events);
-  }
 
-  // Movement / Leap tile (e.g. Hospodský přemet přes pupík)
+  // Movement / Leap tile (e.g. HospodskĂ˝ pĹ™emet pĹ™es pupĂ­k)
   if (tile.leapDistance) {
     const startCell = hero.cell;
     if (tile.leaveGarlicCloud) {
@@ -57,7 +52,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `🧄 Venca zanechal na poli ${startCell + 1} štiplavý Česnekový oblak!`
+        text: `đź§„ Venca zanechal na poli ${startCell + 1} ĹˇtiplavĂ˝ ÄŚesnekovĂ˝ oblak!`
       });
     }
 
@@ -74,7 +69,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `🤸 ${tile.name}: Venca přeskočil z pole ${startCell + 1} na pole ${landingCell + 1}!`
+        text: `đź¤¸ ${tile.name}: Venca pĹ™eskoÄŤil z pole ${startCell + 1} na pole ${landingCell + 1}!`
       });
       triggerCellTerrainOnEnter(state, hero, landingCell, events);
       if (state.talismans?.includes('beer_frog')) {
@@ -92,7 +87,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
           addStatus(hero, 'shield', 1, events);
           events.push({
             type: 'log',
-            text: '🐸 Pivní žába: Venca získal po přemetu Štít!'
+            text: 'đź¸ PivnĂ­ ĹľĂˇba: Venca zĂ­skal po pĹ™emetu Ĺ tĂ­t!'
           });
         }
       }
@@ -133,7 +128,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `💨 ${tile.name} prolétla prázdnou chodbou naprázdno.`
+        text: `đź’¨ ${tile.name} prolĂ©tla prĂˇzdnou chodbou naprĂˇzdno.`
       });
     }
   } else {
@@ -162,7 +157,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
           });
           events.push({
             type: 'log',
-            text: `🗡️ Z podlahy na poli ${targetCell + 1} vyrazily naostřené kůly!`
+            text: `đź—ˇď¸Ź Z podlahy na poli ${targetCell + 1} vyrazily naostĹ™enĂ© kĹŻly!`
           });
         } else if (eff.type === 'spawn_garlic_target') {
           state.terrain[targetCell] = {
@@ -193,7 +188,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       });
       events.push({
         type: 'log',
-        text: `💨 ${tile.name} promáchla do prázdného vzduchu.`
+        text: `đź’¨ ${tile.name} promĂˇchla do prĂˇzdnĂ©ho vzduchu.`
       });
     }
   }
@@ -213,7 +208,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     }
   }
 
-  // Self-flip after tile (e.g., Facka růžencem)
+  // Self-flip after tile (e.g., Facka rĹŻĹľencem)
   if (tile.selfFlipAfter && hero.hp > 0) {
     hero.facing = -hero.facing;
     events.push({
@@ -224,7 +219,7 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     });
     events.push({
       type: 'log',
-      text: `🔄 Venca se po ráně otočil čelem ${hero.facing === 1 ? 'vpravo ▶' : 'vlevo ◀'}.`
+      text: `đź”„ Venca se po rĂˇnÄ› otoÄŤil ÄŤelem ${hero.facing === 1 ? 'vpravo â–¶' : 'vlevo â—€'}.`
     });
   }
 
@@ -256,25 +251,6 @@ function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength,
     state.stats.damageDealt = (state.stats.damageDealt || 0) + dealt;
   }
 
-  // Apply opener flip bonus even if target survived (e.g., Hasičská stříkačka)
-  if (
-    bonuses.flipTarget &&
-    target.hp > 0 &&
-    target.entityType === 'enemy' &&
-    effectSurvivesBlock(block, 'flip_target')
-  ) {
-    target.facing = -target.facing;
-    events.push({
-      type: 'turn',
-      entityId: target.id,
-      facing: target.facing
-    });
-    events.push({
-      type: 'log',
-      text: `🔄 Proud svěcené vody otočil postavu ${target.name} čelem vzad!`
-    });
-  }
-
   // Execute pattern effects on surviving target
   for (const eff of pat.effects || []) {
     if (target.hp <= 0) break;
@@ -297,7 +273,7 @@ function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength,
           });
           events.push({
             type: 'log',
-            text: `🔄 ${target.name} byl otočen čelem vzad!`
+            text: `đź”„ ${target.name} byl otoÄŤen ÄŤelem vzad!`
           });
         }
         break;

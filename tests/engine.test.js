@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { createRng } from '../src/game/engine/rng.js';
 import {
+  hasStatus,
+  getStatusAmount,
+  consumeStatus,
   assertBoardInvariant,
   getEntityAt,
   pushEntity,
@@ -15,7 +18,6 @@ import {
   playerEnqueueTileNoEnd,
   playerRemoveFromQueue,
   playerReorderQueue,
-  playerPrepareQueue,
   playerExecuteFullQueueSync,
   endPlayerTurn
 } from '../src/game/engine/rules.js';
@@ -161,9 +163,8 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
 {
   const state = createCleanTestBattle();
   const enemy = createEnemyInstance('praktikant', 4, -1);
-  // Nastavíme aktivní destičku na úder (index 1: intern_bite, 1 pole vpřed)
-  enemy.queueIndex = 1;
-  enemy.countdown = 2;
+  enemy.queueState = 'ARMED_RED';
+  enemy.actionQueue = ['intern_bite'];
   state.enemies.push(enemy);
 
   let threats = computeBoardThreats(state);
@@ -183,11 +184,12 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   const state = createCleanTestBattle();
   state.hero.cell = 0;
   const attacker = createEnemyInstance('praktikant', 4, 1); // dívá se doprava na pole 5!
-  attacker.queueIndex = 1; // intern_bite (1 DMG na 1 pole vpřed)
-  attacker.countdown = 1;
+  attacker.queueState = 'ARMED_RED';
+  attacker.actionQueue = ['intern_bite'];
 
   const victim = createEnemyInstance('urednik', 5, -1);
-  victim.countdown = 3;
+  victim.queueState = 'EMPTY';
+  victim.actionQueue = [];
   const victimHpBefore = victim.hp;
 
   state.enemies.push(attacker, victim);
@@ -475,7 +477,6 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   assert.equal(res.freeTurn, false); // Stojí 1 tah!
   assert.equal(state.turn, turnBefore + 1); // Tah herního světa postoupil
   assert.equal(state.queue.length, 1);
-  assert.equal(state.isQueuePrepared, false);
   console.log('  ✔ 18. Umístění destičky do fronty stojí 1 tah (a posouvá tah nepřátel) ověřeno');
 }
 
@@ -600,6 +601,54 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   console.log('  ✔ 22. Barva krve podle druhu (červená / modrá / zelená) ověřena');
 }
 
-console.log('✅ VŠECH 22 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
+
+// 23. Rychlovka (quick: true) umožňuje vložení do fronty zdarma (0 tahů)
+{
+  const state = createCleanTestBattle();
+  const enemy = createEnemyInstance('praktikant', 5, -1);
+  state.enemies.push(enemy);
+
+  state.hand[0].quick = true;
+  const turnBefore = state.turn;
+  const res = playerEnqueueTile(state, state.hand[0].instanceId);
+  assert.equal(res.ok, true);
+  assert.equal(res.freeTurn, true);
+  assert.equal(state.turn, turnBefore); // Tah herního světa nepostoupil!
+  assert.equal(state.queue.length, 1);
+  assert.equal(state.hand[0].inQueue, true);
+  console.log('  ✔ 23. Rychlovka (quick: true) umožňuje vložení do fronty zdarma (0 tahů) ověřeno');
+}
+
+// 24. Datová struktura nepřátel (actionPool, actionQueue, bez legacy queue) a helpery statusů
+{
+  const enemy = createEnemyInstance('praktikant', 4, -1);
+  assert.equal(enemy.queue, undefined, 'Legacy queue nesmí existovat');
+  assert.equal(enemy.queueIndex, undefined, 'Legacy queueIndex nesmí existovat');
+  assert.ok(Array.isArray(enemy.actionPool), 'actionPool musí být pole');
+  assert.ok(Array.isArray(enemy.actionQueue), 'actionQueue musí být pole');
+  assert.equal(enemy.queueState, 'EMPTY', 'Počáteční stav fronty je EMPTY');
+  assert.equal(typeof enemy.comboCapacity, 'number', 'comboCapacity musí být číslo');
+
+  // Test status helpers
+  assert.equal(hasStatus(enemy, 'stun'), false);
+  assert.equal(getStatusAmount(enemy, 'stun'), 0);
+
+  enemy.statuses = { stun: 2, empower: 3 };
+  assert.equal(hasStatus(enemy, 'stun'), true);
+  assert.equal(getStatusAmount(enemy, 'stun'), 2);
+  assert.equal(getStatusAmount(enemy, 'empower'), 3);
+
+  const consumed = consumeStatus(enemy, 'stun', 1);
+  assert.equal(consumed, 1);
+  assert.equal(getStatusAmount(enemy, 'stun'), 1);
+
+  consumeStatus(enemy, 'stun', 1);
+  assert.equal(hasStatus(enemy, 'stun'), false);
+  assert.equal(enemy.statuses.stun, undefined, 'Stun status musí být smazán po spotřebování');
+
+  console.log('  ✔ 24. Datová struktura nepřátel a helpery statusů (has/get/consume) ověřeny');
+}
+
+console.log('✅ VŠECH 24 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
 
 

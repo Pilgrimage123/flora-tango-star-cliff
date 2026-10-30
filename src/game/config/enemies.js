@@ -671,7 +671,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['intern_bite'],
-    queue: ['step_toward', 'intern_bite'],
     flavor: '„Mám teprve třetí noční směnu a už mě pálí žáha z česneku!“'
   },
   urednik: {
@@ -687,7 +686,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['tax_stamp_shot', 'retreat_step'],
-    queue: ['retreat_step', 'tax_stamp_shot'],
     flavor: '„Kolkovné za vstup do hrobky jste uhradil?! Formulář K-13!“'
   },
   drab: {
@@ -703,7 +701,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'drab_lunge'],
-    queue: ['windup_roar', 'drab_lunge'],
     flavor: '„Karbanátky z lovců dělám zásadně na cibulce!“'
   },
   vratny_stit: {
@@ -719,7 +716,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: true,
     actionPool: ['porter_bash', 'porter_guard'],
-    queue: ['step_toward', 'porter_bash', 'porter_guard'],
     flavor: '„Přes vrátnici jenom s propustkou podepsanou hrabětem!“ (Blokuje přímé zásahy zepředu.)'
   },
   netopyr: {
@@ -735,7 +731,6 @@ export const ENEMIES = {
     flying: true,
     frontShield: false,
     actionPool: ['bat_swoop'],
-    queue: ['step_toward', 'bat_swoop'],
     flavor: '„Pííí! Doporučený dopis z finančáku!“ (Létá nad propastmi a prkny.)'
   },
   ucetni_buffer: {
@@ -751,7 +746,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['accountant_curse', 'accountant_buff'],
-    queue: ['accountant_buff', 'accountant_curse'],
     flavor: '„Krevní rozvaha musí sedět na kapku přesně!“ (Léčí a posiluje spolubojovníky.)'
   },
   srpak: {
@@ -767,7 +761,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'sickle_cut'],
-    queue: ['step_toward', 'sickle_cut'],
     flavor: '„Srpy mám na zelí. A na krky, když zelí dojde.“'
   },
   kyjovec: {
@@ -783,7 +776,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'club_smash'],
-    queue: ['windup_roar', 'club_smash'],
     flavor: '„Kyj je poctivější než vidle. Aspoň neřeže záděry.“'
   },
   morak: {
@@ -799,7 +791,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['plague_spit', 'step_toward'],
-    queue: ['plague_spit', 'step_toward'],
     flavor: '„Nekašlu. To je jenom domácí slivovice s mechem.“'
   },
   vlkodav: {
@@ -815,7 +806,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'hound_pounce'],
-    queue: ['step_toward', 'hound_pounce'],
     flavor: '„Hodný pejsek. Jenom žere lovce, a to až po večeři.“'
   },
   halapartnik: {
@@ -831,7 +821,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['halberd_thrust', 'step_toward'],
-    queue: ['halberd_thrust', 'step_toward'],
     flavor: '„Halapartna je na hosty, kteří nemají pozvánku na krev.“'
   },
   buldok: {
@@ -847,7 +836,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'bulldog_bite'],
-    queue: ['step_toward', 'bulldog_bite'],
     flavor: '„Obojek má proti upírům. Zuby má proti všem ostatním.“'
   },
   kluk_kamen: {
@@ -863,7 +851,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['stone_chuck'],
-    queue: ['stone_chuck'],
     flavor: '„Kámen je zadarmo. A do čela se trefím i poslepu!“'
   },
   divocak: {
@@ -879,7 +866,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'boar_charge'],
-    queue: ['step_toward', 'boar_charge'],
     flavor: '„Chro chro! Zelí došlo, tak žere lovce.“'
   },
   upirske_prase: {
@@ -895,7 +881,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'vampig_bite'],
-    queue: ['step_toward', 'vampig_bite'],
     flavor: '„Krev má lepší buket než patoky z koryta.“'
   },
   sliz: {
@@ -911,7 +896,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['slime_slap', 'slime_spit'],
-    queue: ['slime_spit', 'slime_slap'],
     flavor: '„Nesahej. To není mech, to jsem já.“'
   },
   carodejnice: {
@@ -927,7 +911,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['witch_claw', 'witch_hex'],
-    queue: ['witch_hex', 'witch_claw'],
     flavor: '„Perníková chaloupka je v rekonstrukci. Dnes večeřím lovce.“'
   },
   drevo: {
@@ -943,7 +926,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'axe_chop'],
-    queue: ['windup_roar', 'axe_chop'],
     flavor: '„Sekera je rezavá. To nevadí. Rez taky řeže.“'
   },
   sedlak_stit: {
@@ -959,7 +941,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: true,
     actionPool: ['plank_bash', 'plank_guard'],
-    queue: ['step_toward', 'plank_bash', 'plank_guard'],
     flavor: '„Přes tuhle fošnu jenom s povolením rychtáře!“ (Blokuje přímé zásahy zepředu.)'
   },
   hrabenka_amalie: {
@@ -975,7 +956,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['rococo_claw', 'rococo_laugh'],
-    queue: ['rococo_laugh', 'rococo_claw'],
     flavor: '„Krev se nosí letos k modré. A já ji nosím čerstvou.“'
   },
   upirka_cilka: {
@@ -991,7 +971,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['cylinder_bite'],
-    queue: ['step_toward', 'cylinder_bite'],
     flavor: '„Cylindr je vypůjčený. Tesáky jsou moje.“'
   },
   vrhac_nozu: {
@@ -1007,7 +986,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['knife_fling'],
-    queue: ['knife_fling'],
     flavor: '„Nůž je poctivější než vidle. A trefí i od plotu.“'
   },
   prase_mutant: {
@@ -1023,7 +1001,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['pustule_gore', 'hnis_spit'],
-    queue: ['hnis_spit', 'pustule_gore'],
     flavor: '„To není sádlo. To jsem já, a teče to.“'
   },
   bazinny_sliz: {
@@ -1039,7 +1016,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['leaf_hug', 'bog_shell'],
-    queue: ['bog_shell', 'leaf_hug'],
     flavor: '„Nesahej na listí. To nejsou vlasy, to jsem já.“'
   },
   upiri_trpaslik: {
@@ -1055,7 +1031,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['gnome_rake', 'night_bite'],
-    queue: ['step_toward', 'gnome_rake'],
     flavor: '„Noční čepice je rodinné stříbro. Drápy taky.“'
   },
   rytir_prizrak: {
@@ -1071,7 +1046,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: true,
     actionPool: ['flail_arc', 'ghost_breath'],
-    queue: ['ghost_breath', 'flail_arc'],
     flavor: '„V přilbě nikdo není. Jenom to zelené, co po mně zbylo.“ (Zepředu ho kryje plát.)'
   },
   zombie_hynek: {
@@ -1087,7 +1061,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['grave_clutch', 'dead_shove'],
-    queue: ['step_toward', 'grave_clutch'],
     flavor: '„Rakev jsem zaplatil. Vstávat se neplatí.“'
   },
   kostlivec_fabian: {
@@ -1103,7 +1076,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['bone_chuck', 'shovel_smack'],
-    queue: ['bone_chuck'],
     flavor: '„Hrob je vykopaný. Chybí jenom nájemník.“'
   },
   krysa_piskota: {
@@ -1119,7 +1091,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['rat_gnaw'],
-    queue: ['step_toward', 'rat_gnaw'],
     flavor: '„Klobása je moje. Česnek si nech.“'
   },
   morovy_felcar: {
@@ -1135,7 +1106,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['miasma_waft', 'cane_poke'],
-    queue: ['miasma_waft'],
     flavor: '„Otevřete ústa. Tohle není na kašel, to je na krev.“'
   },
 
@@ -1153,7 +1123,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'cleaver_chop', 'drab_lunge'],
-    queue: ['windup_roar', 'cleaver_chop', 'drab_lunge'],
     flavor: '„Dvojitá porce tlačenky! Pojď blíž, dědku!“'
   },
   elite_urednik: {
@@ -1170,7 +1139,6 @@ export const ENEMIES = {
     flying: false,
     frontShield: true,
     actionPool: ['tax_stamp_shot', 'porter_bash', 'turn_toward'],
-    queue: ['turn_toward', 'tax_stamp_shot', 'porter_bash'],
     flavor: '„Exekuce krve se odkládat nebude!“ (Zepředu chráněn deskami spisu.)'
   },
 
@@ -1191,7 +1159,6 @@ export const ENEMIES = {
     mirrorCloak: true,
     enrageTile: 'boss_sosak_summon',
     actionPool: ['boss_sosak_drain', 'boss_sosak_summon', 'turn_toward'],
-    queue: ['step_toward', 'boss_sosak_drain', 'turn_toward'],
     flavor: '„Zrcadlový plášť z Vídně! Při kombu ze stejného směru si prohodím místo se sudem nebo netopýrem!“'
   },
   boss_dagmar: {
@@ -1211,7 +1178,6 @@ export const ENEMIES = {
     bloodThorns: true,
     enrageTile: 'accountant_buff',
     actionPool: ['boss_dagmar_hex', 'boss_dagmar_thorns', 'accountant_buff'],
-    queue: ['step_toward', 'boss_dagmar_hex', 'boss_dagmar_thorns'],
     flavor: '„Moje krajky jsou tkané z půlnoční mlhy a neplacených směn!“'
   },
   boss_drakula: {
@@ -1232,7 +1198,6 @@ export const ENEMIES = {
     corporateSynergy: true,
     enrageTile: 'boss_sosak_summon',
     actionPool: ['boss_dracula_audit', 'boss_dracula_decree', 'boss_sosak_summon'],
-    queue: ['step_toward', 'boss_dracula_audit', 'boss_dracula_decree'],
     flavor: '„Vaše stížnost na kousnutí do krku byla postoupena oddělení věčného spánku!“'
   }
 };

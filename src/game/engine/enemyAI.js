@@ -11,18 +11,13 @@ import {
   triggerCellTerrainOnEnter,
   assertBoardInvariant,
   hitBlockFromEvents,
-  effectSurvivesBlock
+  effectSurvivesBlock,
+  hasStatus,
+  getStatusAmount,
+  consumeStatus
 } from './board.js';
 import { createEnemyInstance, getSortedEnemiesByInitiative } from './state.js';
 
-export function advanceEnemyTileQueue(enemy) {
-  if (enemy.queue && enemy.queue.length > 0) {
-    enemy.queueIndex = (enemy.queueIndex + 1) % enemy.queue.length;
-    const nextTileId = enemy.queue[enemy.queueIndex];
-    const nextTileDef = ENEMY_TILES[nextTileId];
-    enemy.countdown = nextTileDef ? nextTileDef.delay : 2;
-  }
-}
 
 export function resolveLungeLanding(state, enemy, fromCell, facing, steps) {
   let cell = fromCell;
@@ -231,9 +226,8 @@ export function processEnemiesPhase(state, events = []) {
     if (enemy.hp <= 0 || state.hero.hp <= 0) continue;
 
     // Check stun (Omráčení)
-    if (enemy.statuses?.stun > 0) {
-      enemy.statuses.stun -= 1;
-      if (enemy.statuses.stun <= 0) delete enemy.statuses.stun;
+    if (hasStatus(enemy, 'stun')) {
+      consumeStatus(enemy, 'stun', 1);
       events.push({
         type: 'enemy_stun_skipped',
         enemyId: enemy.id,
@@ -265,7 +259,6 @@ export function processEnemiesPhase(state, events = []) {
 
     // Check if enemy is firing their ARMED_RED queue or legacy test attack
     const isArmedQueue = (enemy.queueState === 'ARMED_RED' || enemy.countdown <= 1) && (enemy.actionQueue || []).length > 0;
-    const isLegacyArmedAttack = enemy.countdown <= 1 && enemy.queue && (enemy.queueIndex > 0 || enemy.queueState === 'ARMED_RED');
 
     if (isArmedQueue) {
       const targetedCells = getEnemyQueuedTargetCells(state, enemy);
@@ -279,7 +272,7 @@ export function processEnemiesPhase(state, events = []) {
       });
 
       // Odpal až po hráčově tahu. Žádná blesková reakce — lovec měl jednu normální akci.
-      if (enemy.hp > 0 && !(enemy.statuses?.stun > 0)) {
+      if (enemy.hp > 0 && !hasStatus(enemy, 'stun')) {
         events.push({
           type: 'enemy_queue_execution_start',
           enemyId: enemy.id,
@@ -314,14 +307,6 @@ export function processEnemiesPhase(state, events = []) {
 
       enemy.actionQueue = [];
       enemy.queueState = 'EMPTY';
-    } else if (isLegacyArmedAttack) {
-      // Legacy fallback for test setups that assign enemy.queue and set countdown = 1
-      const activeTileId = enemy.queue[enemy.queueIndex % enemy.queue.length];
-      const tileDef = ENEMY_TILES[activeTileId];
-      if (tileDef) {
-        executeSingleEnemyTile(state, enemy, tileDef, events);
-      }
-      advanceEnemyTileQueue(enemy);
     } else if (enemy.nextAction) {
       // Perform telegraphed turn / step / queue_tile / arm
       performEnemyAction(state, enemy, enemy.nextAction, events);
@@ -355,9 +340,8 @@ function performEnemyAction(state, enemy, action, events) {
     });
   } else if (action.type === 'step') {
     let dir = action.dir;
-    if (enemy.statuses?.confusion > 0) {
-      enemy.statuses.confusion -= 1;
-      if (enemy.statuses.confusion <= 0) delete enemy.statuses.confusion;
+    if (hasStatus(enemy, 'confusion')) {
+      consumeStatus(enemy, 'confusion', 1);
       dir = state.rng.nextFloat() < 0.5 ? -1 : 1;
       events.push({
         type: 'log',
@@ -468,9 +452,8 @@ export function executeSingleEnemyTile(state, enemy, tileDef, events = []) {
     }
 
     // Confusion randomizes step direction
-    if (enemy.statuses?.confusion > 0) {
-      enemy.statuses.confusion -= 1;
-      if (enemy.statuses.confusion <= 0) delete enemy.statuses.confusion;
+    if (hasStatus(enemy, 'confusion')) {
+      consumeStatus(enemy, 'confusion', 1);
       moveDir = state.rng.nextFloat() < 0.5 ? -1 : 1;
       events.push({
         type: 'log',
@@ -618,7 +601,7 @@ export function executeSingleEnemyTile(state, enemy, tileDef, events = []) {
   // 7. Attack / Shoot execution into SPECIFIC CELLS based on CURRENT position and facing
   const inGarlic = state.terrain[enemy.cell]?.type === 'garlic_cloud';
   const garlicPenalty = inGarlic ? 1 : 0;
-  const empowerBonus = enemy.statuses?.empower || 0;
+  const empowerBonus = getStatusAmount(enemy, 'empower');
 
   if (tileDef.projectileRange) {
     let hitTarget = null;

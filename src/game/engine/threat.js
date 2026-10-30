@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { BOARD_SIZE } from '../config/constants.js';
 import { ENEMY_TILES } from '../config/enemies.js';
-import { isValidCell, getEntityAt, findNearestEmptyCell } from './board.js';
+import { isValidCell, getEntityAt, findNearestEmptyCell, getStatusAmount } from './board.js';
 import { resolveLungeLanding } from './enemyAI.js';
 import { getSortedEnemiesByInitiative } from './state.js';
 
@@ -14,7 +14,7 @@ export function computeEnemyTileTargetCells(state, enemy, tileDef, bonusCtx = nu
 
   const inGarlic = state.terrain[originCell]?.type === 'garlic_cloud';
   const garlicPenalty = inGarlic ? 1 : 0;
-  const empowerBonus = enemy.statuses?.empower ? enemy.statuses.empower : 0;
+  const empowerBonus = getStatusAmount(enemy, 'empower');
   const synergy = bonusCtx && typeof bonusCtx.synergy === 'number'
     ? bonusCtx.synergy
     : (!enemy.corporateSynergy &&
@@ -88,12 +88,11 @@ export function computeBoardThreats(state, hoveredEnemyId = null) {
     const synergy = synergyIds.some((id) => id !== enemy.id) ? 1 : 0;
     const bonusCtx = { occupancy, synergy };
     const isArmed = enemy.queueState === 'ARMED_RED';
-    const usesPool = Array.isArray(enemy.actionPool) && enemy.actionPool.length > 0;
     const liveQueue = enemy.actionQueue || [];
 
     const paintQueue = (tileIds, { armed = false, imminent = false } = {}) => {
       let simCell = enemy.cell;
-      let simEmpower = enemy.statuses?.empower || 0;
+      let simEmpower = getStatusAmount(enemy, 'empower');
       for (const tileId of tileIds) {
         const tileDef = ENEMY_TILES[tileId];
         if (!tileDef) continue;
@@ -143,18 +142,13 @@ export function computeBoardThreats(state, hoveredEnemyId = null) {
 
     if (isArmed && liveQueue.length > 0) {
       paintQueue(liveQueue, { armed: true, imminent: true });
-    } else if (usesPool && liveQueue.length > 0) {
+    } else if (liveQueue.length > 0) {
       paintQueue(liveQueue, { armed: false, imminent: false });
-    } else if ((!usesPool || enemy.queueIndex > 0) && enemy.queue && enemy.queue.length > 0) {
-      const activeTileId = enemy.queue[enemy.queueIndex % enemy.queue.length];
-      if (activeTileId) paintQueue([activeTileId], { imminent: enemy.countdown <= 1 });
     }
 
     // 2. Hover / Inspect Mode: highlight reachable attack cells of hovered enemy
     if (hoveredEnemyId && enemy.id === hoveredEnemyId) {
-      const inspectTileIds = (enemy.actionPool && enemy.actionPool.length > 0)
-        ? enemy.actionPool.map((p) => p.tileId)
-        : enemy.queue || [];
+      const inspectTileIds = (enemy.actionPool || []).map((p) => p.tileId);
 
       for (const tId of inspectTileIds) {
         const tDef = ENEMY_TILES[tId];
@@ -194,7 +188,7 @@ export function computePlayerQueuePreview(state, hoveredTileInstanceId = null) {
   let simFacing = state.hero.facing;
   const sim = {
     firstAttackUsed: Boolean(state.firstAttackUsed),
-    empower: state.hero.statuses?.empower || 0
+    empower: getStatusAmount(state.hero, 'empower')
   };
   const targetedCells = [];
 

@@ -35,7 +35,7 @@ export function initKeyboardInput(callbacks = {}) {
       e.preventDefault();
       const idx = Number(e.key) - 1;
       callbacks.onHotkeyTile?.(idx);
-    } else if (e.key === 'F1') {
+    } else if (key === 'f1' || e.key === 'F1') {
       e.preventDefault();
       callbacks.onOpenRules?.();
     }

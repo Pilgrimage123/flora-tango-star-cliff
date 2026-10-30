@@ -79,6 +79,25 @@ export function findNearestEmptyCell(state, targetCell, preferredDir = 1, ignore
   return null;
 }
 
+export function hasStatus(entity, statusId) {
+  return Boolean(entity && entity.hp > 0 && entity.statuses && (entity.statuses[statusId] || 0) > 0);
+}
+
+export function getStatusAmount(entity, statusId) {
+  if (!entity || entity.hp <= 0 || !entity.statuses) return 0;
+  return Math.max(0, entity.statuses[statusId] || 0);
+}
+
+export function consumeStatus(entity, statusId, amount = 1) {
+  if (!entity || !entity.statuses || !entity.statuses[statusId]) return 0;
+  const consumed = Math.min(entity.statuses[statusId], amount);
+  entity.statuses[statusId] -= consumed;
+  if (entity.statuses[statusId] <= 0) {
+    delete entity.statuses[statusId];
+  }
+  return consumed;
+}
+
 export function addStatus(entity, statusId, amount = 1, events = []) {
   if (!entity || entity.hp <= 0 || !statusId || statusId === 'stagger') return;
   if (!entity.statuses) entity.statuses = {};
@@ -122,9 +141,7 @@ export function applyDamage(state, target, amount, sourceInfo = {}, events = [])
   }
 
   // Status shield check
-  if (target.statuses && target.statuses.shield > 0) {
-    target.statuses.shield -= 1;
-    if (target.statuses.shield <= 0) delete target.statuses.shield;
+  if (consumeStatus(target, 'shield', 1) > 0) {
     events.push({
       type: 'shield_blocked',
       targetId: target.id,
@@ -293,8 +310,6 @@ function grantEnrageTile(target) {
     existing.currentCooldown = 0;
     if (!existing.maxCooldown) existing.maxCooldown = cooldown;
   }
-  if (!target.queue) target.queue = [];
-  if (!target.queue.includes(tileId)) target.queue.push(tileId);
   if (target.queueState === 'ARMED_RED') return false;
   if (!target.actionQueue) target.actionQueue = [];
   if (target.actionQueue.includes(tileId)) return false;
