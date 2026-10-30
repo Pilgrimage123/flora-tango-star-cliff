@@ -115,11 +115,32 @@
   0% {
     transform: translateY(0) scale(1, 1);
   }
-  40% {
+  35% {
     transform: translateY(-12px) scale(0.96, 1.06);
   }
-  100% {
+  75% {
     transform: translateY(0) scale(1.04, 0.95);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+@keyframes walkStepBack {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  22% {
+    transform: translateX(-5px) translateY(-4px) rotate(-2deg);
+  }
+  50% {
+    transform: translateX(-10px) translateY(0) rotate(0deg);
+  }
+  76% {
+    transform: translateX(-4px) translateY(-2px) rotate(1.5deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
   }
 }
 
@@ -272,10 +293,18 @@
   animation: walkStep 380ms ease-in-out;
 }
 
+.sprite-flip-wrapper .entity-sprite-img.anim-walk-back {
+  animation: walkStepBack 380ms ease-in-out;
+}
+
 .sprite-flip-wrapper .gait-beast.anim-walk,
 .sprite-flip-wrapper .gait-critter.anim-walk,
 .sprite-flip-wrapper .gait-flyer.anim-walk,
-.sprite-flip-wrapper .sprite-flying.anim-walk {
+.sprite-flip-wrapper .sprite-flying.anim-walk,
+.sprite-flip-wrapper .gait-beast.anim-walk-back,
+.sprite-flip-wrapper .gait-critter.anim-walk-back,
+.sprite-flip-wrapper .gait-flyer.anim-walk-back,
+.sprite-flip-wrapper .sprite-flying.anim-walk-back {
   animation: boundStep 380ms ease-in-out;
 }
 
@@ -360,16 +389,42 @@
   font-size: 1rem;
 }
 
+.flying-projectile {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.95) 0%, rgba(220, 38, 38, 0.5) 60%, transparent 100%);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+.entity-sliding {
+  transition: transform var(--slide-duration, 260ms) cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+  z-index: 15;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entity-sprite-img,
   .sprite-flip-wrapper .entity-sprite-img,
   .entity-sprite-img.anim-walk,
+  .entity-sprite-img.anim-walk-back,
   .entity-sprite-img.anim-lunge,
   .entity-sprite-img.anim-shoot,
   .entity-sprite-img.anim-leap,
   .entity-sprite-img.anim-hurt,
   .entity-sprite-img.anim-death,
-  .floating-combat-text {
+  .floating-combat-text,
+  .flying-projectile,
+  .entity-sliding {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

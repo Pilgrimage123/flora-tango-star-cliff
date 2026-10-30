@@ -55,13 +55,27 @@ function heroSprite(container) {
 
 function isHeroEntity(container, entityId) {
   if (!entityId || !container) return false;
+  if (entityId === 'hero_venca') return true;
   const el = container.querySelector(`#entity-dom-${entityId}`);
   return Boolean(el && el.classList.contains('entity-hero'));
+}
+
+function clearHeroPoseTimer() {
+  if (heroPoseTimer) {
+    clearTimeout(heroPoseTimer);
+    heroPoseTimer = null;
+  }
+}
+
+function isHeroDead(container) {
+  const img = heroSprite(container);
+  return Boolean(img && (img.dataset.pose === 'dead' || img.getAttribute('src')?.includes('venca_dead')));
 }
 
 function setHeroPose(container, pose, frame = 0) {
   const img = heroSprite(container);
   if (!img) return;
+  if (isHeroDead(container) && pose !== 'dead') return;
   const frames = HERO_POSES[pose] || HERO_POSES.idle;
   const next = frames[frame % frames.length];
   img.dataset.pose = pose;
@@ -69,26 +83,40 @@ function setHeroPose(container, pose, frame = 0) {
 }
 
 function startHeroIdle(container) {
+  if (isHeroDead(container)) return;
   heroPoseEpoch += 1;
-  if (heroPoseTimer) {
-    clearInterval(heroPoseTimer);
-    heroPoseTimer = null;
-  }
+  clearHeroPoseTimer();
   heroPoseLocked = false;
   setHeroPose(container, 'idle', 0);
 }
 
+function scheduleHeroIdle(container, delayMs, animSpeed = 1) {
+  if (isHeroDead(container)) return;
+  clearHeroPoseTimer();
+  const effectiveDelay = animSpeed === 0 ? 0 : Math.round(delayMs / (animSpeed || 1));
+  heroPoseTimer = setTimeout(() => {
+    if (!isHeroDead(container)) {
+      heroPoseLocked = false;
+      setHeroPose(container, 'idle', 0);
+    }
+  }, effectiveDelay);
+}
+
 async function playHeroPose(container, pose, ms, animSpeed) {
   const frames = HERO_POSES[pose] || HERO_POSES.idle;
-  if (!heroSprite(container)) return;
+  if (!heroSprite(container) || isHeroDead(container)) return;
   const epoch = heroPoseEpoch;
   heroPoseLocked = true;
+  clearHeroPoseTimer();
   const steps = Math.max(1, frames.length);
   const slice = Math.max(90, Math.round(ms / steps));
   for (let i = 0; i < steps; i++) {
-    if (epoch !== heroPoseEpoch || !heroSprite(container)) return;
+    if (epoch !== heroPoseEpoch || !heroSprite(container) || isHeroDead(container)) return;
     setHeroPose(container, pose, i);
     await sleep(slice, animSpeed);
+  }
+  if (!isHeroDead(container)) {
+    scheduleHeroIdle(container, 80, animSpeed);
   }
 }
 
@@ -336,7 +364,11 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
     floorEl?.addEventListener('mouseleave', hideTooltip);
   });
 
-  startHeroIdle(container);
+  if (state.hero && state.hero.hp > 0) {
+    startHeroIdle(container);
+  } else {
+    setHeroPose(container, 'dead', 0);
+  }
 }
 
 function renderGateBannerHtml(cellIdx, leftReinf, rightReinf, boardSize = BOARD_SIZE) {
@@ -528,6 +560,111 @@ function getTerrainFloorLabel(terrainObj, terrainDef) {
   }
 }
 
+function getProjectileIcon(ev) {
+  if (ev.tileId === 'holy_syringe') return '💉';
+  if (ev.tileId === 'silver_crucifix_beam') return '✝️';
+  if (ev.tileId === 'rosary_slap') return '📿';
+  if (ev.tileId === 'tax_stamp_shot') return '💮';
+  if (ev.tileId === 'accountant_curse') return '📜';
+  if (ev.tileId === 'bone_chuck') return '🦴';
+  if (ev.tileId === 'rat_gnaw') return '🐀';
+  if (ev.tileId === 'miasma_waft') return '☣️';
+  if (ev.enemyId) {
+    const id = String(ev.enemyId);
+    if (id.includes('urednik')) return '💮';
+    if (id.includes('ucetni')) return '📜';
+    if (id.includes('fabian') || id.includes('kostlivec')) return '🦴';
+    if (id.includes('felcar')) return '☣️';
+    if (id.includes('netopyr')) return '🦇';
+  }
+  return '🎯';
+}
+
+async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = '🎯', animSpeed = 1) {
+  if (fromCellIdx === undefined || toCellIdx === undefined || fromCellIdx === toCellIdx || animSpeed === 0) {
+    return;
+  }
+  const fromCell = container.querySelector(`.board-cell[data-cell-index="${fromCellIdx}"]`);
+  const toCell = container.querySelector(`.board-cell[data-cell-index="${toCellIdx}"]`);
+  if (!fromCell || !toCell) return;
+
+  const rFrom = fromCell.getBoundingClientRect();
+  const rTo = toCell.getBoundingClientRect();
+
+  const startX = rFrom.left + rFrom.width / 2;
+  const startY = rFrom.top + rFrom.height * 0.42;
+  const targetX = rTo.left + rTo.width / 2;
+  const targetY = rTo.top + rTo.height * 0.42;
+
+  const flyEl = document.createElement('div');
+  flyEl.className = 'flying-projectile';
+  flyEl.textContent = icon;
+  flyEl.style.left = `${startX}px`;
+  flyEl.style.top = `${startY}px`;
+  flyEl.style.transform = 'translate(-50%, -50%) scale(0.6)';
+  flyEl.style.opacity = '0';
+  document.body.appendChild(flyEl);
+
+  const durationMs = Math.max(90, Math.round(180 / (animSpeed || 1)));
+
+  void flyEl.offsetWidth;
+  flyEl.style.transition = `transform ${durationMs}ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 80ms ease-out`;
+  flyEl.style.opacity = '1';
+  flyEl.style.transform = `translate(${targetX - startX - 22}px, ${targetY - startY - 22}px) scale(1.15)`;
+
+  await sleep(180, animSpeed);
+  flyEl.style.opacity = '0';
+  setTimeout(() => flyEl.remove(), 100);
+}
+
+async function playEntityMove(container, ev, animSpeed = 1) {
+  const entityEl = container.querySelector(`#entity-dom-${ev.entityId}`);
+  const moveDuration = ev.type === 'leap' ? 300 : ANIMATION_TIMINGS.MOVE_MS;
+  const effectiveMs = animSpeed === 0 ? 0 : Math.round(moveDuration / (animSpeed || 1));
+
+  const fromIdx = ev.from ?? ev.fromCell;
+  const toIdx = ev.to ?? ev.toCell;
+  let isBackwards = false;
+
+  if (fromIdx !== undefined && toIdx !== undefined && fromIdx !== toIdx) {
+    const moveDir = toIdx > fromIdx ? 1 : -1;
+    const facing = ev.facing ?? 1;
+    isBackwards = (moveDir === 1 && facing === -1) || (moveDir === -1 && facing === 1);
+  }
+
+  const animClass = ev.type === 'leap' ? 'anim-leap' : isBackwards ? 'anim-walk-back' : 'anim-walk';
+  triggerSpriteAnim(container, ev.entityId, animClass);
+
+  if (entityEl && fromIdx !== undefined && toIdx !== undefined && fromIdx !== toIdx) {
+    const fromCellEl = container.querySelector(`.board-cell[data-cell-index="${fromIdx}"]`);
+    const toCellEl = container.querySelector(`.board-cell[data-cell-index="${toIdx}"]`);
+
+    if (fromCellEl && toCellEl && effectiveMs > 0) {
+      const fromRect = fromCellEl.getBoundingClientRect();
+      const toRect = toCellEl.getBoundingClientRect();
+      const deltaX = toRect.left - fromRect.left;
+
+      entityEl.classList.add('entity-sliding');
+      entityEl.style.setProperty('--slide-duration', `${effectiveMs}ms`);
+      entityEl.style.transform = `translateX(${deltaX}px)`;
+
+      await sleep(moveDuration, animSpeed);
+
+      entityEl.classList.remove('entity-sliding');
+      entityEl.style.removeProperty('--slide-duration');
+      entityEl.style.transform = '';
+
+      const destStage = container.querySelector(`#cell-stage-${toIdx}`);
+      if (destStage && entityEl.parentElement !== destStage) {
+        destStage.appendChild(entityEl);
+      }
+      return;
+    }
+  }
+
+  await sleep(moveDuration, animSpeed);
+}
+
 export async function playEngineEvents(container, events, animSpeed = 1) {
   if (!container || !events || events.length === 0) return;
 
@@ -536,8 +673,7 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
       case 'move':
       case 'leap':
         SFX.step();
-        triggerSpriteAnim(container, ev.entityId, ev.type === 'leap' ? 'anim-leap' : 'anim-walk');
-        await sleep(ev.type === 'leap' ? 300 : ANIMATION_TIMINGS.MOVE_MS, animSpeed);
+        await playEntityMove(container, ev, animSpeed);
         break;
 
       case 'swap':
@@ -581,6 +717,10 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
       case 'strike_vfx':
         break;
 
+      case 'projectile_vfx':
+        await playProjectileFly(container, ev.from, ev.to, getProjectileIcon(ev), animSpeed);
+        break;
+
       case 'enemy_strike_vfx':
         triggerSpriteAnim(container, ev.enemyId, 'anim-lunge');
         await sleep(170, animSpeed);
@@ -588,15 +728,33 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
 
       case 'enemy_projectile_vfx':
         triggerSpriteAnim(container, ev.enemyId, 'anim-shoot');
-        await sleep(160, animSpeed);
+        await playProjectileFly(container, ev.from, ev.to, getProjectileIcon(ev), animSpeed);
         break;
 
       case 'damage':
         SFX.hit();
         triggerSpriteAnim(container, ev.targetId, 'anim-hurt');
+
+        // Dynamically update target HP bar in DOM immediately
+        const damagedEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+        if (damagedEl && ev.remainingHp !== undefined) {
+          const hpInnerEl = damagedEl.querySelector('.entity-hp-bar-inner');
+          const hpTextEl = damagedEl.querySelector('.entity-hp-text');
+          if (hpInnerEl && hpTextEl) {
+            const parts = (hpTextEl.textContent || '').split('/');
+            const maxHp = Number(parts[1]) || Math.max(1, ev.remainingHp);
+            const curHp = Math.max(0, ev.remainingHp);
+            hpTextEl.textContent = `${curHp}/${maxHp}`;
+            hpInnerEl.style.width = `${Math.max(0, Math.min(100, Math.round((curHp / maxHp) * 100)))}%`;
+          }
+        }
+
         if (isHeroEntity(container, ev.targetId)) {
-          heroPoseLocked = true;
-          setHeroPose(container, 'hurt', 0);
+          if ((ev.remainingHp ?? 1) > 0) {
+            heroPoseLocked = true;
+            setHeroPose(container, 'hurt', 0);
+            scheduleHeroIdle(container, 340, animSpeed);
+          }
         }
         spawnBloodBurst(container, {
           cell: ev.cell,
@@ -609,10 +767,14 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         });
         spawnFloatingBadgeOnCell(container, ev.cell, `−${ev.amount} HP`, 'float-dmg');
         if (ev.attackerId && isHeroEntity(container, ev.attackerId) && !isHeroEntity(container, ev.targetId)) {
-          triggerSpriteAnim(container, ev.attackerId, 'anim-lunge');
-          if (heroSprite(container)?.dataset.pose !== 'attack') {
+          const heroImg = heroSprite(container);
+          if (!heroImg?.classList.contains('anim-lunge')) {
+            triggerSpriteAnim(container, ev.attackerId, 'anim-lunge');
+          }
+          if (heroImg?.dataset.pose !== 'attack') {
             heroPoseLocked = true;
             setHeroPose(container, 'attack', 0);
+            scheduleHeroIdle(container, 260, animSpeed);
           }
         }
         await sleep(ANIMATION_TIMINGS.HIT_MS, animSpeed);
@@ -641,6 +803,18 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
         break;
 
       case 'heal':
+        const healedEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+        if (healedEl && ev.remainingHp !== undefined) {
+          const hpInnerEl = healedEl.querySelector('.entity-hp-bar-inner');
+          const hpTextEl = healedEl.querySelector('.entity-hp-text');
+          if (hpInnerEl && hpTextEl) {
+            const parts = (hpTextEl.textContent || '').split('/');
+            const maxHp = Number(parts[1]) || Math.max(1, ev.remainingHp);
+            const curHp = Math.min(maxHp, ev.remainingHp);
+            hpTextEl.textContent = `${curHp}/${maxHp}`;
+            hpInnerEl.style.width = `${Math.max(0, Math.min(100, Math.round((curHp / maxHp) * 100)))}%`;
+          }
+        }
         spawnFloatingBadgeOnCell(container, ev.cell, `+${ev.amount} HP`, 'float-heal');
         await sleep(140, animSpeed);
         break;
@@ -659,8 +833,19 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
       case 'death':
         SFX.death();
         triggerSpriteAnim(container, ev.targetId, 'anim-death');
+        const deadEl = container.querySelector(`#entity-dom-${ev.targetId}`);
+        if (deadEl) {
+          const hpInnerEl = deadEl.querySelector('.entity-hp-bar-inner');
+          const hpTextEl = deadEl.querySelector('.entity-hp-text');
+          if (hpInnerEl) hpInnerEl.style.width = '0%';
+          if (hpTextEl) {
+            const max = hpTextEl.textContent?.split('/')?.[1] || '0';
+            hpTextEl.textContent = `0/${max}`;
+          }
+        }
         if (isHeroEntity(container, ev.targetId)) {
           heroPoseLocked = true;
+          clearHeroPoseTimer();
           setHeroPose(container, 'dead', 0);
         }
         if (ev.ichor) {

@@ -71,3 +71,16 @@ _Avoid_: Stagger, Omráčení nárazem, Nárazový bonus
 **Omráčení (Stun)**:
 Negativní stav způsobující vynechání následující akce postavy.
 _Avoid_: Stagger, Vrávorání
+
+**Póza hrdiny (Hero Pose)**:
+Vizuální grafický stav Venci Česnekáče (výchozí idle, útočný nápřah, bolestivý zásah, padlý) reprezentovaný dedikovanou kresbou, který se po odeznění akce automaticky vrací do klidového stavu.
+_Avoid_: Skin, Spritesheet, Kostým
+
+**Dráha střely (Projektil)**:
+Vizuální reprezentace dálkového útoku (stříkačka, razítko, blesk krucifixu) přelétávajícího po jednorozměrné ose bojiště mezi střelcem a zasaženým polem před vyvoláním poškození.
+_Avoid_: Kouzlo, Projektilová zóna, Raycast
+
+**Plynulý posun (Slide)**:
+Plynulý horizontální vizuální přechod entity mezi kamennými deskami bojiště během akce Krok nebo nuceného pohybu.
+_Avoid_: Teleport, Dash, Kmit
+

@@ -4,6 +4,35 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.2.0] - 2026-10-30
+
+### Přidáno
+- **Vizuální efekty letících projektilů**:
+  - Implementována funkce `playProjectileFly` pro události `projectile_vfx` a `enemy_projectile_vfx`.
+  - Tematické letící ikony (💉 stříkačka, 💮 razítko, ✝️ krucifix, 📜 upomínka, 🦴 kost, ☣️ miasma) po ose bojiště mezi střelcem a cílem s plynulou trajektorií.
+- **Plynulý posun (Slide) a směrové animace kroku**:
+  - Funkce `playEntityMove` v `src/game/ui/renderer.js` a CSS animace `.anim-walk-back` (`walkStepBack`) v `src/game/styles/animations.css`.
+  - Posun rozlišuje směr kroku vůči otočení postavy (krok vpřed vs. ústup vzad) a plynule přejíždí přes kamenné desky bojiště (`.entity-sliding`).
+- **Nová doménová dokumentace a testy**:
+  - `docs/adr/0003-event-driven-visual-synchronization-and-animation-lifecycle.md` — architektonické rozhodnutí k synchronizaci událostí a životnímu cyklu animací na bojišti.
+  - Doplnění pojmů do `GLOSSARY.md`: *Póza hrdiny (Hero Pose)*, *Dráha střely (Projektil)*, *Plynulý posun (Slide)*.
+  - Rozšíření testovací sady v `tests/engine.test.js` na 26 sad (pokrytí parametrů pohybu pro slide a dálkových střel `projectile_vfx`).
+
+### Změněno
+- **Událostmi řízená synchronizace stavu bojiště**:
+  - Odstraněno předčasné volání `renderAll()` v `src/game/battle.js` před odehráním animací.
+  - Inkrementální aktualizace ukazatele HP a textu zdraví zasažených entit v reálném čase přímo v DOMu během událostí `damage` a `heal`.
+  - Kompletní strukturální překreslení bojiště (`renderAll()`) probíhá až po dokončení animací v daném kroku/tahu.
+- **Vyhlazení CSS klíčových snímků**:
+  - `boundStep` (krok bestií a potvor) nyní plynule dosedá zpět do `scale(1, 1)` bez skokového škubnutí.
+  - Doplněna plná podpora `prefers-reduced-motion` a škálování podle nastavení rychlosti `animSpeed` pro projektily a posuny.
+
+### Opraveno
+- **Životní cyklus póz Venci a zobrazení padlého hrdiny**:
+  - Opraveno zasekávání Venci v pózách `attack` a `hurt`; zaveden automatický návrat do `idle` přes `scheduleHeroIdle`.
+  - Zabráněno nežádoucímu vzkříšení Venci do živého stavu po jeho porážce (`startHeroIdle` padlého hrdinu nepřebíjí, Venca zůstává v póze `hero.dead`).
+  - Odstraněno duplicitní spouštění nápřahu `anim-lunge` při zásahu hrdinou.
+
 ## [1.1.0] - 2026-10-30
 
 ### Přidáno

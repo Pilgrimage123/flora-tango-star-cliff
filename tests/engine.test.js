@@ -649,6 +649,57 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   console.log('  ✔ 24. Datová struktura nepřátel a helpery statusů (has/get/consume) ověřeny');
 }
 
-console.log('✅ VŠECH 24 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
+// 25. Pohybové události (move eventy) obsahují správný počáteční i cílový bod pro plynulý posun (Slide)
+{
+  const state = createCleanTestBattle();
+  state.hero.cell = 2;
+  state.hero.facing = 1;
+
+  const res = playerStep(state, 1);
+  assert.equal(res.ok, true);
+  const moveEv = res.events.find((e) => e.type === 'move' && e.entityId === state.hero.id);
+  assert.ok(moveEv, 'Move event musí existovat');
+  assert.equal(moveEv.from, 2, 'Výchozí pole musí být 2');
+  assert.equal(moveEv.to, 3, 'Cílové pole musí být 3');
+  assert.equal(moveEv.facing, 1, 'Směr otočení musí být 1');
+  console.log('  ✔ 25. Pohybové události pro plynulý posun (Slide) ověřeny');
+}
+
+// 26. Dálkové střely emitují projectile_vfx pro animaci dráhy letu
+{
+  const state = createCleanTestBattle();
+  const enemy = createEnemyInstance('urednik', 5, -1);
+  state.enemies.push(enemy);
+
+  // Vybavíme hrdinovi stříkačku
+  state.hand.push({
+    instanceId: 'test_syringe',
+    id: 'holy_syringe',
+    name: 'Svěcená stříkačka',
+    type: 'attack',
+    dmg: 2,
+    projectileRange: 3,
+    pattern: [
+      { offset: 1, dmg: 2, projectile: true },
+      { offset: 2, dmg: 2, projectile: true },
+      { offset: 3, dmg: 2, projectile: true }
+    ],
+    cooldown: 2,
+    currentCooldown: 0,
+    inQueue: false
+  });
+
+  state.queue = ['test_syringe'];
+  const res = playerExecuteFullQueueSync(state);
+  const projEv = res.events.find((e) => e.type === 'projectile_vfx');
+  assert.ok(projEv, 'projectile_vfx událost musí být emitována při dálkové střele');
+  assert.equal(projEv.from, 2);
+  assert.equal(projEv.to, 5);
+  assert.equal(projEv.tileId, 'holy_syringe');
+  console.log('  ✔ 26. Dálkové střely a emise projectile_vfx pro animaci dráhy letu ověřeny');
+}
+
+console.log('✅ VŠECH 26 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
+
 
 
