@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-C8uA3RjX.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-BprkmWpd.js
+import "./router-BxIFjzu0.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-CvbsPlqa.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -3642,6 +3642,7 @@ var ENCOUNTERS = {
 		id: "tutorial_1",
 		act: 1,
 		name: "Předhradí: Náves za humny",
+		backgroundTheme: "village_night",
 		isTutorial: true,
 		boardSize: 9,
 		heroCell: 2,
@@ -3670,6 +3671,7 @@ var ENCOUNTERS = {
 		id: "act1_battle_1",
 		act: 1,
 		name: "Zatuchlá hradní chodba",
+		backgroundTheme: "castle_corridor",
 		props: [{
 			type: "holy_font",
 			cell: 3
@@ -3696,6 +3698,7 @@ var ENCOUNTERS = {
 		id: "act1_battle_2",
 		act: 1,
 		name: "Hradní spižírna u zelného sudu",
+		backgroundTheme: "village_night",
 		boardSize: 9,
 		heroCell: 1,
 		heroFacing: 1,
@@ -3720,6 +3723,7 @@ var ENCOUNTERS = {
 		id: "act1_elite",
 		act: 1,
 		name: "Černá kuchyně řeznice Boženy",
+		backgroundTheme: "castle_corridor",
 		isElite: true,
 		heroCell: 2,
 		heroFacing: 1,
@@ -3743,6 +3747,7 @@ var ENCOUNTERS = {
 		id: "act1_boss",
 		act: 1,
 		name: "Zrcadlový salón Arciknížete von Sosáka",
+		backgroundTheme: "noble_boudoir",
 		isBoss: true,
 		heroCell: 1,
 		heroFacing: 1,
@@ -3781,6 +3786,7 @@ var ENCOUNTERS = {
 		id: "act2_battle_1",
 		act: 2,
 		name: "Strážnice u padací mříže",
+		backgroundTheme: "torture_dungeon",
 		heroCell: 3,
 		heroFacing: 1,
 		initialEnemies: [{
@@ -3803,6 +3809,7 @@ var ENCOUNTERS = {
 		id: "act2_battle_2",
 		act: 2,
 		name: "Starobylý archiv rodové krve",
+		backgroundTheme: "torture_dungeon",
 		heroCell: 2,
 		heroFacing: 1,
 		initialEnemies: [{
@@ -3829,6 +3836,7 @@ var ENCOUNTERS = {
 		id: "act2_elite",
 		act: 2,
 		name: "Mučírna vrchního inkvizitora",
+		backgroundTheme: "torture_dungeon",
 		isElite: true,
 		heroCell: 2,
 		heroFacing: 1,
@@ -3852,6 +3860,7 @@ var ENCOUNTERS = {
 		id: "act2_boss",
 		act: 2,
 		name: "Krajkový budoár Hraběnky Dagmar",
+		backgroundTheme: "noble_boudoir",
 		isBoss: true,
 		heroCell: 2,
 		heroFacing: 1,
@@ -3893,6 +3902,7 @@ var ENCOUNTERS = {
 		id: "act3_battle_1",
 		act: 3,
 		name: "Krypta zapomenutých hrobů",
+		backgroundTheme: "vampire_throne_crypt",
 		heroCell: 3,
 		heroFacing: 1,
 		initialEnemies: [
@@ -3923,6 +3933,7 @@ var ENCOUNTERS = {
 		id: "act3_battle_2",
 		act: 3,
 		name: "Předkomoří upířího sněmu",
+		backgroundTheme: "vampire_throne_crypt",
 		props: [{
 			type: "mirror",
 			cell: 5
@@ -3961,6 +3972,7 @@ var ENCOUNTERS = {
 		id: "act3_elite",
 		act: 3,
 		name: "Sál nočního soudu",
+		backgroundTheme: "torture_dungeon",
 		isElite: true,
 		heroCell: 3,
 		heroFacing: 1,
@@ -3984,6 +3996,7 @@ var ENCOUNTERS = {
 		id: "act3_boss",
 		act: 3,
 		name: "Trůnní sál Hraběte Drákuly",
+		backgroundTheme: "vampire_throne_crypt",
 		isBoss: true,
 		heroCell: 2,
 		heroFacing: 1,
@@ -9261,6 +9274,57 @@ function spawnBloodBurst(container, opts = {}) {
 	}, 70);
 	kick();
 }
+var BACKGROUND_THEMES = {
+	village_night: {
+		id: "village_night",
+		name: "Noční náves a předhradí",
+		image: "/assets/terrain/village_night.svg",
+		rasterFallback: "/assets/terrain/naves-yard.jpg",
+		cssClass: "theme-village-night",
+		ambientColor: "rgba(125, 160, 230, 0.12)",
+		vignette: "radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(5, 8, 16, 0.85) 100%)"
+	},
+	castle_corridor: {
+		id: "castle_corridor",
+		name: "Zatuchlé kamenné chodby hradu",
+		image: "/assets/terrain/castle_corridor.svg",
+		rasterFallback: "/assets/terrain/naves-dvur.jpg",
+		cssClass: "theme-castle-corridor",
+		ambientColor: "rgba(234, 138, 50, 0.14)",
+		vignette: "radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(16, 10, 6, 0.9) 100%)"
+	},
+	noble_boudoir: {
+		id: "noble_boudoir",
+		name: "Zámecký budoár a zrcadlový salón",
+		image: "/assets/terrain/noble_boudoir.svg",
+		rasterFallback: null,
+		cssClass: "theme-noble-boudoir",
+		ambientColor: "rgba(180, 40, 90, 0.15)",
+		vignette: "radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(20, 6, 12, 0.88) 100%)"
+	},
+	torture_dungeon: {
+		id: "torture_dungeon",
+		name: "Hradní sklepení a mučírna",
+		image: "/assets/terrain/torture_dungeon.svg",
+		rasterFallback: null,
+		cssClass: "theme-torture-dungeon",
+		ambientColor: "rgba(50, 160, 120, 0.12)",
+		vignette: "radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(6, 14, 12, 0.92) 100%)"
+	},
+	vampire_throne_crypt: {
+		id: "vampire_throne_crypt",
+		name: "Starobylá krypta a trůnní sál",
+		image: "/assets/terrain/vampire_throne_crypt.svg",
+		rasterFallback: null,
+		cssClass: "theme-vampire-throne-crypt",
+		ambientColor: "rgba(160, 20, 40, 0.16)",
+		vignette: "radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(18, 4, 8, 0.94) 100%)"
+	}
+};
+function getEncounterTheme(encounter) {
+	if (!encounter) return BACKGROUND_THEMES.village_night;
+	return BACKGROUND_THEMES[encounter.backgroundTheme || "village_night"] || BACKGROUND_THEMES.village_night;
+}
 function sleep(ms, speedMultiplier = 1) {
 	if (speedMultiplier === 0) return Promise.resolve();
 	const effectiveMs = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? Math.min(80, ms) : Math.round(ms / (speedMultiplier || 1));
@@ -9271,42 +9335,6 @@ var HERO_POSES = {
 	attack: ["/assets/characters/venca_attack.png"],
 	hurt: ["/assets/characters/venca_hurt.png"],
 	dead: ["/assets/characters/venca_dead.png"]
-};
-var PAINTED_SCENES = {
-	tutorial_1: {
-		className: "scene-yard",
-		imgClass: "yard-bg",
-		image: "/assets/terrain/naves-yard.jpg",
-		edges: [
-			1.4,
-			8.6,
-			15.8,
-			26.6,
-			35.4,
-			44.2,
-			56.6,
-			68.2,
-			80.4,
-			93.4
-		]
-	},
-	act1_battle_2: {
-		className: "scene-farm",
-		imgClass: "farm-bg",
-		image: "/assets/terrain/naves-dvur.jpg",
-		edges: [
-			3,
-			15,
-			23.8,
-			34.4,
-			44.8,
-			55,
-			65.6,
-			76.1,
-			86,
-			96.2
-		]
-	}
 };
 var heroPoseTimer = null;
 var heroPoseLocked = false;
@@ -9384,9 +9412,7 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 	const initiativeMap = /* @__PURE__ */ new Map();
 	sortedEnemies.forEach((e, i) => initiativeMap.set(e.id, i + 1));
 	const boardSize = state.boardSize || 7;
-	const painted = PAINTED_SCENES[state.encounterId] || null;
-	const isPaintedValid = Boolean(painted && painted.edges && painted.edges.length === boardSize + 1);
-	const paintedEdges = isPaintedValid ? painted.edges : null;
+	const theme = getEncounterTheme(ENCOUNTERS && state.encounterId && ENCOUNTERS[state.encounterId] || ENCOUNTERS?.tutorial_1 || null);
 	const leftGateReinf = state.reinforcements.find((r) => !r.spawned && r.gateCell === 0);
 	const rightGateReinf = state.reinforcements.find((r) => !r.spawned && r.gateCell === boardSize - 1);
 	const queueSlotsHtml = Array.from({ length: state.maxQueueSlots }, (_, slotIdx) => {
@@ -9437,7 +9463,6 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 		const overlayHtml = renderCellThreatAndPreviewHtml(cellIdx, cellThreat, queuePreview, state, simPreview);
 		const impact = simPreview?.impactMap?.[entity?.id] || null;
 		const entityHtml = entity ? renderEntityOnCellHtml(entity, initiativeMap.get(entity.id), impact) : "";
-		const yardStyle = paintedEdges ? ` style="left:${paintedEdges[cellIdx]}%;width:${(paintedEdges[cellIdx + 1] - paintedEdges[cellIdx]).toFixed(3)}%;"` : "";
 		return `
       <div class="board-cell
                   terrain-${terrainObj.type}
@@ -9448,7 +9473,7 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
                   ${isNextThreat ? "cell-threatened-next" : ""}
                   ${isPlayerTargeted ? "cell-player-targeted" : ""}"
            data-cell-index="${cellIdx}"
-           data-terrain-type="${terrainObj.type}"${yardStyle}>
+           data-terrain-type="${terrainObj.type}">
         <div class="cell-index-label"><span class="cell-index-word">Pole </span>${cellIdx + 1}</div>
         ${gateHtml}
         <div class="cell-overlay-zone">
@@ -9457,11 +9482,8 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
         <div class="cell-entity-stage" id="cell-stage-${cellIdx}">
           ${entityHtml}
         </div>
-        <div class="cell-floor-stone">
-          <span class="terrain-badge terrain-badge-${terrainObj.type}">
-            ${getTerrainFloorLabel(terrainObj, terrainDef)}
-          </span>
-        </div>
+        ${renderTerrainDecalHtml(terrainObj, terrainDef)}
+        <div class="cell-slab-bevel"></div>
       </div>
     `;
 	}).join("");
@@ -9483,9 +9505,25 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
       </div>
     </div>
 
-    <div class="battlefield-1d-stage ${isPaintedValid ? painted.className : ""}" id="battlefield-stage"${isPaintedValid ? "" : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
-      ${isPaintedValid ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ""}
-      ${cellsHtml}
+    <div class="battlefield-1d-stage ${theme.cssClass}" id="battlefield-stage" style="--board-size: ${boardSize};">
+      <div class="battlefield-backdrop-layer" id="battlefield-backdrop">
+        <img src="${theme.image}" alt="${theme.name}" class="battlefield-backdrop-img" onerror="this.style.display='none'" />
+        <div class="battlefield-backdrop-vignette" style="background: ${theme.vignette};"></div>
+      </div>
+      <div class="battlefield-stone-track" id="battlefield-stone-track" style="grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));">
+        ${cellsHtml}
+      </div>
+      <div class="battlefield-foreground-layer" id="battlefield-foreground">
+        <div class="foreground-vignette"></div>
+        <div class="foreground-atmosphere-particles">
+          <span class="mote mote-1"></span>
+          <span class="mote mote-2"></span>
+          <span class="mote mote-3"></span>
+          <span class="mote mote-4"></span>
+          <span class="mote mote-5"></span>
+          <span class="mote mote-6"></span>
+        </div>
+      </div>
     </div>
   `;
 	let draggedSlotIdx = null;
@@ -9560,34 +9598,71 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 			hideTooltip();
 		});
 	});
-	container.querySelectorAll("[data-terrain-type]").forEach((cellEl) => {
-		const tType = cellEl.getAttribute("data-terrain-type");
+	container.querySelectorAll(".terrain-decal-wrapper").forEach((floorEl) => {
+		const cellEl = floorEl.closest("[data-terrain-type]");
+		const tType = cellEl?.getAttribute("data-terrain-type");
 		if (!tType || tType === "none") return;
 		const def = TERRAIN_TYPES[tType];
 		if (!def) return;
-		const floorEl = cellEl.querySelector(".cell-floor-stone");
-		floorEl?.addEventListener("mouseenter", (ev) => {
-			showTooltip(`<div class="tt-title">${def.name}</div><div class="tt-desc">${def.description}</div>`, ev.clientX, ev.clientY);
+		const cellIdx = Number(cellEl.getAttribute("data-cell-index"));
+		const terrainObj = state.terrain[cellIdx];
+		const durationInfo = terrainObj?.duration ? `<div class="tt-meta" style="color:#fef08a;font-weight:700;margin:2px 0;">⏳ Zbývá: <strong>${terrainObj.duration} ${czechTurns(terrainObj.duration)}</strong></div>` : "";
+		floorEl.addEventListener("mouseenter", (ev) => {
+			showTooltip(`<div class="tt-title"><strong>${def.name}</strong></div>${durationInfo}<div class="tt-desc">${def.description}</div>`, ev.clientX, ev.clientY);
 		});
-		floorEl?.addEventListener("mouseleave", hideTooltip);
+		floorEl.addEventListener("mouseleave", hideTooltip);
+	});
+	container.querySelectorAll(".diegetic-gate-portal").forEach((gateEl) => {
+		const isLeft = gateEl.getAttribute("data-gate-side") === "left";
+		const reinf = isLeft ? leftGateReinf : rightGateReinf;
+		let tooltipHtml = `<div class="tt-title">🚪 <strong>${isLeft ? "Levá hradní brána" : "Pravá hradní brána"}</strong></div>`;
+		if (reinf) {
+			const enemyDef = ENEMIES?.[reinf.enemyId] || null;
+			const enemyName = enemyDef?.name || "Upíří posila";
+			tooltipHtml += `<div class="tt-meta" style="color:#f87171;font-weight:800;margin:3px 0;">⚠️ Příchod posily za <strong>${reinf.turnsRemaining} ${czechTurns(reinf.turnsRemaining)}</strong></div><div class="tt-desc">Zpoza brány se blíží: <strong>${enemyName}</strong> (Max HP: ${enemyDef?.maxHp || "?"}).</div>`;
+		} else tooltipHtml += `<div class="tt-desc" style="color:#94a3b8;">V této bráně je momentálně klid. Žádná posila se neblíží.</div>`;
+		gateEl.addEventListener("mouseenter", (ev) => {
+			showTooltip(tooltipHtml, ev.clientX, ev.clientY);
+		});
+		gateEl.addEventListener("mouseleave", hideTooltip);
 	});
 	if (state.hero && state.hero.hp > 0) startHeroIdle(container);
 	else setHeroPose(container, "dead", 0);
 }
 function renderGateBannerHtml(cellIdx, leftReinf, rightReinf, boardSize = 7) {
-	if (cellIdx === 0) return `
-      <div class="gate-pillar gate-left">
-        <span class="gate-title">🚪 Levá brána</span>
-        ${leftReinf ? `<span class="gate-reinf-warning">Posila za ${leftReinf.turnsRemaining} ${czechTurns(leftReinf.turnsRemaining)}!</span>` : ""}
+	if (cellIdx !== 0 && cellIdx !== boardSize - 1) return "";
+	const isLeft = cellIdx === 0;
+	const reinf = isLeft ? leftReinf : rightReinf;
+	const sideClass = isLeft ? "gate-portal-left" : "gate-portal-right";
+	const label = isLeft ? "Levá brána" : "Pravá brána";
+	let reinfContent = "";
+	let warningClass = "";
+	if (reinf) {
+		const isImminent = reinf.turnsRemaining <= 1;
+		warningClass = isImminent ? "gate-status-imminent" : "gate-status-pending";
+		const enemyName = (ENEMIES?.[reinf.enemyId] || null)?.name || "Upír";
+		const tagText = isImminent ? "POZOR: Vstupuje!" : `${reinf.turnsRemaining} ${czechTurns(reinf.turnsRemaining)}`;
+		reinfContent = `
+      <div class="gate-reinf-indicator ${isImminent ? "is-imminent" : ""}"
+           title="Posila: ${enemyName} (za ${reinf.turnsRemaining} ${czechTurns(reinf.turnsRemaining)})">
+        ${isImminent ? "<span class=\"gate-vampire-eyes\">👀</span>" : ""}
+        <span class="gate-reinf-pill">⚠️ ${tagText}</span>
       </div>
     `;
-	if (cellIdx === boardSize - 1) return `
-      <div class="gate-pillar gate-right">
-        <span class="gate-title">🚪 Pravá brána</span>
-        ${rightReinf ? `<span class="gate-reinf-warning">Posila za ${rightReinf.turnsRemaining} ${czechTurns(rightReinf.turnsRemaining)}!</span>` : ""}
+	}
+	return `
+    <div class="diegetic-gate-portal ${sideClass} ${warningClass}" data-gate-side="${isLeft ? "left" : "right"}">
+      <div class="gate-arch-frame">
+        <div class="gate-iron-grate"></div>
+        ${reinf ? "<div class=\"gate-ominous-glow\"></div>" : ""}
       </div>
-    `;
-	return "";
+      <div class="gate-label-strip">
+        <span class="gate-icon">🚪</span>
+        <span class="gate-name">${label}</span>
+      </div>
+      ${reinfContent}
+    </div>
+  `;
 }
 function renderEntityOnCellHtml(entity, initiativeRank = 1, impact = null) {
 	const givenName = entity.givenName || entity.name;
@@ -9706,16 +9781,102 @@ function idleDelaySec(id) {
 	for (let i = 0; i < text.length; i++) hash = hash * 33 + text.charCodeAt(i) >>> 0;
 	return (hash % 24 / 10).toFixed(1);
 }
-function getTerrainFloorLabel(terrainObj, terrainDef) {
+function renderTerrainDecalHtml(terrainObj, terrainDef) {
+	if (!terrainObj || terrainObj.type === "none") return `
+      <div class="cell-floor-stone">
+        <div class="floor-stone-cap"></div>
+      </div>
+    `;
+	const durationBadge = typeof terrainObj.duration === "number" ? `<span class="terrain-duration-tag" title="Zbývá ${terrainObj.duration} ${czechTurns(terrainObj.duration)}">${terrainObj.duration}t</span>` : "";
+	let decalGfx = "";
 	switch (terrainObj.type) {
-		case "plank_intact": return "🪵 Prkno (1/2)";
-		case "plank_cracked": return "⚠️ Prasklé prkno!";
-		case "pit": return "🕳️ PROPAST";
-		case "spikes": return "🗡️ KŮLY (2 DMG)";
-		case "holy_water_puddle": return `💦 Svěcená louže (${terrainObj.duration || 1}t)`;
-		case "garlic_cloud": return `🧄 Česnek (${terrainObj.duration || 1}t)`;
-		default: return terrainDef.name;
+		case "holy_water_puddle":
+			decalGfx = `
+        <div class="decal-holy-puddle">
+          <svg class="puddle-svg" viewBox="0 0 100 36">
+            <ellipse cx="50" cy="18" rx="46" ry="15" fill="rgba(56, 189, 248, 0.45)" stroke="#38bdf8" stroke-width="1.5" />
+            <ellipse cx="44" cy="15" rx="30" ry="9" fill="rgba(254, 240, 138, 0.35)" />
+            <path d="M25 15 Q35 12 55 14" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.8" fill="none" />
+          </svg>
+          <span class="decal-icon">💧</span>
+          ${durationBadge}
+        </div>
+      `;
+			break;
+		case "garlic_cloud":
+			decalGfx = `
+        <div class="decal-garlic-cloud">
+          <div class="garlic-cloud-puff"></div>
+          <span class="decal-icon">🧄</span>
+          ${durationBadge}
+        </div>
+      `;
+			break;
+		case "spikes":
+			decalGfx = `
+        <div class="decal-spikes">
+          <svg class="spikes-svg" viewBox="0 0 100 40">
+            <polygon points="12,38 20,4 28,38" fill="#52525b" stroke="#18181b" stroke-width="1.5"/>
+            <polygon points="18,12 20,4 24,12" fill="#dc2626"/>
+            <polygon points="36,38 46,2 56,38" fill="#71717a" stroke="#18181b" stroke-width="1.5"/>
+            <polygon points="44,10 46,2 50,10" fill="#dc2626"/>
+            <polygon points="64,38 74,6 84,38" fill="#52525b" stroke="#18181b" stroke-width="1.5"/>
+            <polygon points="72,14 74,6 78,14" fill="#dc2626"/>
+          </svg>
+          <span class="decal-icon-mini">🗡️</span>
+        </div>
+      `;
+			break;
+		case "pit":
+			decalGfx = `
+        <div class="decal-pit">
+          <svg class="pit-svg" viewBox="0 0 100 40">
+            <ellipse cx="50" cy="20" rx="46" ry="16" fill="#050305" stroke="#450a0a" stroke-width="2"/>
+            <ellipse cx="50" cy="20" rx="36" ry="10" fill="#000000"/>
+            <path d="M15 20 Q50 28 85 20" stroke="#7f1d1d" stroke-width="1" fill="none" opacity="0.6"/>
+          </svg>
+          <span class="decal-icon-mini">🕳️</span>
+        </div>
+      `;
+			break;
+		case "plank_intact":
+			decalGfx = `
+        <div class="decal-plank decal-plank-intact">
+          <svg class="plank-svg" viewBox="0 0 100 34">
+            <rect x="4" y="6" width="92" height="22" rx="3" fill="#854d0e" stroke="#451a03" stroke-width="2"/>
+            <line x1="8" y1="12" x2="92" y2="12" stroke="#a16207" stroke-width="1.5"/>
+            <line x1="8" y1="20" x2="92" y2="20" stroke="#713f12" stroke-width="1.5"/>
+            <circle cx="12" cy="17" r="2" fill="#1c1917"/>
+            <circle cx="88" cy="17" r="2" fill="#1c1917"/>
+          </svg>
+          <span class="decal-icon-mini">🪵</span>
+        </div>
+      `;
+			break;
+		case "plank_cracked":
+			decalGfx = `
+        <div class="decal-plank decal-plank-cracked">
+          <svg class="plank-svg" viewBox="0 0 100 34">
+            <rect x="4" y="6" width="92" height="22" rx="3" fill="#713f12" stroke="#451a03" stroke-width="2"/>
+            <path d="M38 6 L44 18 L40 28" stroke="#000000" stroke-width="3" fill="none"/>
+            <path d="M60 6 L56 16 L62 28" stroke="#000000" stroke-width="3" fill="none"/>
+            <circle cx="12" cy="17" r="2" fill="#1c1917"/>
+            <circle cx="88" cy="17" r="2" fill="#1c1917"/>
+          </svg>
+          <span class="decal-icon-mini">⚠️</span>
+        </div>
+      `;
+			break;
+		default: decalGfx = `<span class="terrain-decal-simple">${terrainDef?.name || ""}</span>`;
 	}
+	return `
+    <div class="cell-floor-stone terrain-decal-wrapper terrain-type-${terrainObj.type}"
+         tabindex="0"
+         role="note"
+         aria-label="${terrainDef?.name || ""}">
+      ${decalGfx}
+    </div>
+  `;
 }
 function getProjectileIcon(ev) {
 	if (ev.tileId === "holy_syringe") return "💉";

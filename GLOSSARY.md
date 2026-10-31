@@ -84,3 +84,20 @@ _Avoid_: Kouzlo, Projektilová zóna, Raycast
 Plynulý horizontální vizuální přechod entity mezi kamennými deskami bojiště během akce Krok nebo nuceného pohybu.
 _Avoid_: Teleport, Dash, Kmit
 
+**Scénické pozadí (Backdrop)**:
+Vizuální atmosférická kulisa lokace (hradní síň, noční náves, krypta) zobrazená za bojištěm, nezávislá na rozměrech a počtu polí.
+_Avoid_: Mapa, Pozadí arény, Wallpaper
+
+**Kamenná deska (Dlaždice bojiště)**:
+Jednotlivý modulární prostorový blok tvořící jedno pole Bojiště, na kterém stojí entity, stíny a terénní prvky.
+_Avoid_: Buňka gridu, Čtverec, Slab
+
+**Atmosférické popředí (Atmosféra)**:
+Přední vrstva vizuálních efektů (světelné odlesky, vinětace, mlha, klenby bran), která částečně překrývá bojiště a dodává scéně hloubku.
+_Avoid_: Overlay, UI filtr, Popředí
+
+**Terénní dekál**:
+Vizuální grafické ztvárnění vlastnosti pole (svěcená louže, bodáky, prolomené prkno, oblak česneku) integrované přímo do kamenné desky bojiště namísto textového štítku.
+_Avoid_: Terénní odznáček, Badge, Ikona pole
+
+

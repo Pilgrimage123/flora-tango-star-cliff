@@ -4,6 +4,40 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.6.0] - 2026-10-31
+
+### Přidáno
+- **Modulární třívrstvá architektura bojiště (Z-0 Scénické pozadí, Z-1 Kamenná dráha, Z-2 Atmosféra)**:
+  - Kompletní oddělení podlahových dlaždic od scénického pozadí na základě ADR `0004-decoupled-battlefield-layers-and-modular-terrain.md`.
+  - Odstranění starého křehkého přepočtu pixelových procent (`edges`) a statických malovaných arén, které trpěly posunem postav při změně poměru stran.
+  - Všechny souboje (včetně tutoriálů, běžných potyček i bossů) mají nyní garantovanou geometrii a zarovnání postav na dlaždicích bez ohledu na velikost bojiště (7 až 9 polí) a rozlišení obrazovky (od mobilů 390px až po širokoúhlé monitory).
+- **5 atmosférických gotických scénických pozadí (SVG)**:
+  - Vytvořena nová autorská vektorová pozadí pro všech 13 herních střetnutí:
+    - *Noční vesnice a hřbitov* (`village_night.svg`): rozpadlé doškové střechy, ponurý měsíc, zkroucené stromy a mlžný opar.
+    - *Hradní kamenná chodba* (`castle_corridor.svg`): lomené gotické oblouky, zdivo s loučemi a rudá tapiserie.
+    - *Šlechtický budoár a salón* (`noble_boudoir.svg`): těžké burgundské sametové závěsy, barokní zlacené zrcadlo a svícny.
+    - *Mučírna a hladomorna* (`torture_dungeon.svg`): železná mříž, okovy, řetězy a chladná tyrkysová lucerna.
+    - *Trůnní krypta Prastarých* (`vampire_throne_crypt.svg`): monumentální vitrážové rozetové okno, netopýří kamenný trůn a prastaré sloupy.
+  - Nový konfigurační registr `src/game/config/themes.js` a přiřazení témat ke každému střetnutí v `src/game/config/encounters.js`.
+- **Diegetické terénní dekály (SVG) a statusové čítače**:
+  - Původní textové štítky nahrazeny diegetickými vizuálními vrstvami přímo na kamenných deskách bojiště:
+    - *Posvěcená louže* (`holy_puddle`): zvlněná zlatavá záře a kapky svěcené vody.
+    - *Česnekový mrak* (`garlic_cloud`): toxický zelenkavý aerosol a vznášející se částice.
+    - *Krvavé bodáky* (`spikes`): ostré ocelové hroty potřísněné upíří krví.
+    - *Propast a zřícená podlaha* (`pit`): bezedná temná prasklina s padajícím kamením.
+    - *Dřevěné lávky* (`plank_intact` / `plank_cracked`): svázaná dřevěná prkna a popraskaná fošna.
+  - Integrované počítadlo zbývajících tahů `[Xt]` v rohu dekálu a plné vysvětlující bubliny (tooltips) při najetí myší.
+- **Diegetické kamenné portály posil a bran**:
+  - Vizuální znázornění bran na krajích bojiště formou kamenných oblouků s kovanými mřížemi.
+  - Zářící fialová varovná runa a animace nebezpečí při bezprostředním příchodu nepřátelských posil (`imminent`).
+- **Atmosférické popředí a částice**:
+  - Jemná vinetace okrajů scény a vznášející se prachové světlušky (`motes`) s plnou podporou přístupnosti (`prefers-reduced-motion`).
+
+### Změněno
+- **Kompletní refaktoring vykreslování arény v `renderer.js` a stylů v `board.css`**:
+  - Odstraněn zastaralý objekt `PAINTED_SCENES` a pravidla `.scene-yard`, `.scene-farm`.
+  - Zavedeny 2.5D kamenné desky se zkosenými hranami, hloubkovým stínem a reliéfním povrchem, které dynamicky reagují na velikost dráhy.
+
 ## [1.5.0] - 2026-10-31
 
 ### Přidáno

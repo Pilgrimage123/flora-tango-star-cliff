@@ -221,49 +221,32 @@
   padding: 0 2px;
 }
 
-/* 1D Battlefield 7 Stone Cells */
+/* 1D Battlefield Container (Host for Backdrop, Stone Track, Atmosphere) */
 .battlefield-1d-stage {
-  display: grid;
-  grid-template-columns: repeat(var(--board-size, 7), minmax(0, 1fr));
-  grid-template-rows: minmax(0, 1fr);
-  gap: 8px;
-  background: linear-gradient(180deg, #2b1d28 0%, #3d281d 68%, #261911 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 220px;
   border: 4px solid var(--ink-dark);
   border-radius: 14px;
-  padding: 8px 10px 6px;
-  min-height: 220px;
-  overflow: visible;
-  box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.55), 4px 4px 0px #000;
-  position: relative;
-}
-
-/* Painted arenas: feet on the slabs, nameplates above the heads. */
-.battlefield-1d-stage.scene-yard,
-.battlefield-1d-stage.scene-farm {
-  display: block;
-  container-type: size;
-  padding: 0;
-  border: none;
-  border-radius: 12px;
-  box-shadow: none;
+  padding: 8px 10px 8px;
   background: #140e0a;
-  background-image: none;
-  gap: 0;
-  min-height: 220px;
+  box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.75), 4px 4px 0px #000;
   overflow: visible;
-  position: relative;
 }
 
-.yard-scene {
+/* Layer Z-0: Scenic Backdrop */
+.battlefield-backdrop-layer {
   position: absolute;
   inset: 0;
+  border-radius: 10px;
   overflow: hidden;
-  border-radius: 12px;
   pointer-events: none;
   z-index: 0;
 }
 
-.yard-bg {
+.battlefield-backdrop-img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -271,296 +254,301 @@
   object-fit: cover;
   object-position: center bottom;
   pointer-events: none;
+  opacity: 0.88;
+  filter: contrast(1.06) brightness(0.92);
+  transition: opacity 300ms ease;
 }
 
-/* Wider than the phone stage: pin to the bottom at full width so slab % stay true. */
-.farm-bg {
+.battlefield-backdrop-vignette {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: auto;
+  inset: 0;
   pointer-events: none;
 }
 
-.battlefield-1d-stage.scene-yard .board-cell,
-.battlefield-1d-stage.scene-farm .board-cell {
+/* Theme-specific stage tints */
+.battlefield-1d-stage.theme-village-night {
+  background: #060912;
+}
+
+.battlefield-1d-stage.theme-castle-corridor {
+  background: #140d09;
+}
+
+.battlefield-1d-stage.theme-noble-boudoir {
+  background: #12040c;
+}
+
+.battlefield-1d-stage.theme-torture-dungeon {
+  background: #050b09;
+}
+
+.battlefield-1d-stage.theme-vampire-throne-crypt {
+  background: #0a0206;
+}
+
+/* Layer Z-2: Atmospheric Foreground */
+.battlefield-foreground-layer {
   position: absolute;
-  top: auto;
-  z-index: 1;
-  background: transparent;
-  border-color: transparent;
-  border-radius: 0;
-  padding: 0 1px;
-  box-shadow: none;
-  overflow: visible;
-}
-
-.battlefield-1d-stage.scene-yard .board-cell {
-  bottom: calc(0.07 * 100cqw * 1536 / 2752);
-  height: clamp(
-    140px,
-    calc(100cqh - 0.07 * 100cqw * 1536 / 2752 - 6px),
-    calc(0.68 * 100cqw * 1536 / 2752)
-  );
-}
-
-.battlefield-1d-stage.scene-farm .board-cell {
-  bottom: calc(0.17 * 100cqw * 642 / 1500);
-  height: clamp(
-    140px,
-    calc(100cqh - 0.17 * 100cqw * 642 / 1500 - 6px),
-    calc(0.68 * 100cqw * 642 / 1500)
-  );
-}
-
-.battlefield-1d-stage.scene-yard .cell-index-label,
-.battlefield-1d-stage.scene-farm .cell-index-label {
-  display: block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transform: translateY(calc(100% + 1px));
-  z-index: 4;
-  color: rgba(255, 244, 220, 0.92);
-  text-shadow: 0 1px 2px #000, 0 0 4px #000;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
   pointer-events: none;
-  font-size: 0.62rem;
-  line-height: 1.05;
-  white-space: nowrap;
+  z-index: 6;
 }
 
-.battlefield-1d-stage.scene-yard .terrain-none .cell-floor-stone,
-.battlefield-1d-stage.scene-farm .terrain-none .cell-floor-stone {
-  display: none;
-}
-
-.battlefield-1d-stage.scene-yard .board-cell:not(.terrain-none) .cell-floor-stone,
-.battlefield-1d-stage.scene-farm .board-cell:not(.terrain-none) .cell-floor-stone {
-  display: block;
+.foreground-vignette {
   position: absolute;
-  left: 1px;
-  right: 1px;
-  bottom: 12px;
-  z-index: 5;
-  margin: 0;
-  padding: 1px 2px;
-  background: rgba(28, 10, 8, 0.88);
-  color: #fff4dc;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(5, 3, 2, 0.45) 100%);
+  pointer-events: none;
 }
 
-.battlefield-1d-stage.scene-yard .cell-entity-stage,
-.battlefield-1d-stage.scene-farm .cell-entity-stage,
-.battlefield-1d-stage.scene-yard .entity-container,
-.battlefield-1d-stage.scene-farm .entity-container,
-.battlefield-1d-stage.scene-yard .sprite-flip-wrapper,
-.battlefield-1d-stage.scene-farm .sprite-flip-wrapper {
-  overflow: visible;
-}
-
-.battlefield-1d-stage.scene-yard .cell-entity-stage,
-.battlefield-1d-stage.scene-farm .cell-entity-stage {
-  position: static;
-  height: auto;
-}
-
-.battlefield-1d-stage.scene-yard .entity-container,
-.battlefield-1d-stage.scene-farm .entity-container {
+.foreground-atmosphere-particles {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
-  justify-content: flex-end;
-  gap: 1px;
+  inset: 0;
+  pointer-events: none;
 }
 
-.battlefield-1d-stage.scene-yard .sprite-flip-wrapper,
-.battlefield-1d-stage.scene-farm .sprite-flip-wrapper {
-  --sprite-h: 58%;
+.mote {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: rgba(254, 240, 138, 0.4);
+  box-shadow: 0 0 6px rgba(254, 240, 138, 0.6);
+  opacity: 0;
+}
+
+.mote-1 { width: 3px; height: 3px; left: 15%; top: 40%; animation: driftMote 7s ease-in-out infinite; }
+.mote-2 { width: 4px; height: 4px; left: 35%; top: 60%; animation: driftMote 9s ease-in-out infinite 1.5s; background: rgba(248, 113, 113, 0.35); box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+.mote-3 { width: 3px; height: 3px; left: 55%; top: 30%; animation: driftMote 8s ease-in-out infinite 3s; }
+.mote-4 { width: 5px; height: 5px; left: 75%; top: 50%; animation: driftMote 10s ease-in-out infinite 0.8s; }
+.mote-5 { width: 3px; height: 3px; left: 88%; top: 35%; animation: driftMote 8.5s ease-in-out infinite 4.2s; }
+.mote-6 { width: 4px; height: 4px; left: 25%; top: 75%; animation: driftMote 11s ease-in-out infinite 2.2s; }
+
+@keyframes driftMote {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate(24px, -18px) scale(1.1);
+    opacity: 0.85;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(48px, -36px) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mote {
+    display: none !important;
+  }
+}
+
+/* Layer Z-1: Modular 2.5D Stone Track */
+.battlefield-stone-track {
   position: relative;
-  left: auto;
-  right: auto;
-  bottom: auto;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--board-size, 7), minmax(0, 1fr));
+  gap: 6px;
   width: 100%;
-  max-width: none;
-  flex: 0 0 var(--sprite-h);
-  height: var(--sprite-h);
-  min-height: 0;
-  max-height: none;
+  height: 100%;
+  min-height: 200px;
+  align-items: stretch;
+}
+
+/* Modular 2.5D Stone Slab Cell */
+.board-cell {
+  position: relative;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  height: 100%;
+  min-height: 200px;
+  padding: 4px 3px 6px;
+  border-radius: 8px 8px 5px 5px;
+  background: linear-gradient(180deg, rgba(62, 46, 36, 0.92) 0%, rgba(40, 29, 23, 0.96) 75%, rgba(24, 17, 13, 0.98) 100%);
+  border: 2px solid rgba(220, 195, 160, 0.35);
+  border-top: 2.5px solid rgba(255, 235, 195, 0.55);
+  border-bottom: 7px solid #100b08;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 0 -2px 6px rgba(0, 0, 0, 0.6);
+  transition: transform 120ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  overflow: visible;
+}
+
+.board-cell:hover {
+  border-color: rgba(254, 240, 138, 0.65);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.85), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.cell-slab-bevel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 5px;
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.95), #090604);
+  border-radius: 0 0 5px 5px;
+  pointer-events: none;
+}
+
+/* Diegetic Terrain Decals on Stone Slabs */
+.cell-floor-stone {
+  position: relative;
+  z-index: 4;
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.floor-stone-cap {
+  width: 80%;
+  height: 4px;
+  background: rgba(255, 235, 195, 0.15);
+  border-radius: 2px;
+}
+
+.terrain-decal-wrapper {
+  position: relative;
+  width: 96%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.terrain-decal-wrapper:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+.decal-holy-puddle,
+.decal-garlic-cloud,
+.decal-spikes,
+.decal-pit,
+.decal-plank {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-.battlefield-1d-stage.scene-yard .scale-hero,
-.battlefield-1d-stage.scene-farm .scale-hero { --sprite-h: 74%; }
-.battlefield-1d-stage.scene-yard .scale-human,
-.battlefield-1d-stage.scene-farm .scale-human { --sprite-h: 66%; }
-.battlefield-1d-stage.scene-yard .scale-small,
-.battlefield-1d-stage.scene-farm .scale-small { --sprite-h: 50%; }
-.battlefield-1d-stage.scene-yard .scale-boss,
-.battlefield-1d-stage.scene-farm .scale-boss { --sprite-h: 84%; }
-.battlefield-1d-stage.scene-yard .scale-beast,
-.battlefield-1d-stage.scene-farm .scale-beast { --sprite-h: 48%; }
-.battlefield-1d-stage.scene-yard .scale-flyer,
-.battlefield-1d-stage.scene-farm .scale-flyer { --sprite-h: 34%; }
-.battlefield-1d-stage.scene-yard .scale-critter,
-.battlefield-1d-stage.scene-farm .scale-critter { --sprite-h: 28%; }
-.battlefield-1d-stage.scene-yard .scale-prop,
-.battlefield-1d-stage.scene-farm .scale-prop { --sprite-h: 40%; }
-
-.battlefield-1d-stage.scene-yard .entity-sprite-img,
-.battlefield-1d-stage.scene-farm .entity-sprite-img {
-  max-width: none;
-  width: auto;
-  height: 100%;
-}
-
-.battlefield-1d-stage.scene-yard .entity-hud-top,
-.battlefield-1d-stage.scene-farm .entity-hud-top {
-  position: relative;
-  flex: 0 0 auto;
-  width: max-content;
-  min-width: 68px;
-  max-width: 136px;
-  z-index: 6;
-  padding: 2px 4px;
-}
-
-.battlefield-1d-stage.scene-yard .entity-given,
-.battlefield-1d-stage.scene-farm .entity-given {
-  white-space: nowrap;
-}
-
-.battlefield-1d-stage.scene-yard .entity-epithet,
-.battlefield-1d-stage.scene-farm .entity-epithet {
-  display: none;
-}
-
-.battlefield-1d-stage.scene-yard .enemy-intent-column,
-.battlefield-1d-stage.scene-farm .enemy-intent-column {
-  flex: 0 0 auto;
-  width: 100%;
-  max-width: 100%;
-  max-height: none;
-  overflow: visible;
-  min-height: 0;
-  z-index: 6;
-}
-
-.battlefield-1d-stage.scene-yard .gate-pillar,
-.battlefield-1d-stage.scene-farm .gate-pillar {
+.puddle-svg,
+.spikes-svg,
+.pit-svg,
+.plank-svg {
   position: absolute;
-  top: 4px;
-  z-index: 8;
-  margin: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
-.battlefield-1d-stage.scene-yard .gate-left,
-.battlefield-1d-stage.scene-farm .gate-left {
-  left: 4px;
-  align-items: flex-start;
+.decal-holy-puddle {
+  animation: puddleShimmer 3s ease-in-out infinite;
 }
 
-.battlefield-1d-stage.scene-yard .gate-right,
-.battlefield-1d-stage.scene-farm .gate-right {
-  right: 4px;
-  left: auto;
-  align-items: flex-end;
+@keyframes puddleShimmer {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.4)); }
+  50% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8)); }
 }
 
-.battlefield-1d-stage.scene-yard .gate-title,
-.battlefield-1d-stage.scene-farm .gate-title {
-  white-space: nowrap;
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #fef08a;
-  background: rgba(20, 14, 10, 0.78);
-  border: 1px solid rgba(254, 240, 138, 0.35);
-  border-radius: 4px;
-  padding: 1px 5px;
+.decal-garlic-cloud {
+  position: relative;
 }
 
-.battlefield-1d-stage.scene-yard .gate-reinf-warning,
-.battlefield-1d-stage.scene-farm .gate-reinf-warning {
-  white-space: nowrap;
-  font-size: 0.68rem;
+.garlic-cloud-puff {
+  position: absolute;
+  inset: -4px;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(254, 240, 138, 0.45) 0%, rgba(132, 204, 22, 0.25) 50%, transparent 80%);
+  animation: garlicSwirl 2.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes garlicSwirl {
+  0% { transform: scale(0.92) rotate(-2deg); opacity: 0.6; }
+  100% { transform: scale(1.08) rotate(3deg); opacity: 0.95; }
+}
+
+.decal-icon {
+  font-size: 1.15rem;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px #000);
+}
+
+.decal-icon-mini {
+  font-size: 0.92rem;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px #000);
+}
+
+.terrain-duration-tag {
+  position: absolute;
+  right: 2px;
+  bottom: 1px;
+  font-size: 0.62rem;
   font-weight: 900;
-  background: #991b1b;
-  color: #fef2f2;
-  border: 1.5px solid #f87171;
-  border-radius: 5px;
-  padding: 1px 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(254, 240, 138, 0.6);
+  border-radius: 4px;
+  padding: 0 4px;
+  line-height: 1.2;
+  z-index: 3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 720px) {
-  .cell-floor-stone {
-    margin-top: 2px;
-    padding: 1px 2px;
+  .battlefield-1d-stage {
+    min-height: 200px;
+    padding: 6px 6px 6px;
   }
 
-  .terrain-badge {
-    font-size: 0.58rem;
-    line-height: 1.1;
+  .battlefield-stone-track {
+    gap: 3px;
+    min-height: 190px;
   }
 
-  .battlefield-1d-stage.scene-yard .cell-index-word,
-  .battlefield-1d-stage.scene-farm .cell-index-word {
+  .board-cell {
+    min-height: 190px;
+    padding: 3px 2px 4px;
+    border-bottom-width: 5px;
+  }
+
+  .cell-index-word {
     display: none;
   }
 
-  .battlefield-1d-stage.scene-yard .gate-title,
-  .battlefield-1d-stage.scene-farm .gate-title {
-    display: none;
-  }
-
-  .battlefield-1d-stage.scene-yard .gate-reinf-warning,
-  .battlefield-1d-stage.scene-farm .gate-reinf-warning {
-    font-size: 0.6rem;
-    padding: 1px 4px;
-  }
-
-  .battlefield-1d-stage.scene-yard .entity-hud-top,
-  .battlefield-1d-stage.scene-farm .entity-hud-top {
+  .entity-hud-top {
     min-width: 0;
     max-width: 84px;
     padding: 1px 3px;
   }
 
-  .battlefield-1d-stage.scene-yard .entity-given,
-  .battlefield-1d-stage.scene-farm .entity-given {
-    font-size: 0.62rem;
+  .entity-given {
+    font-size: 0.68rem;
   }
 
-  .battlefield-1d-stage.scene-yard .entity-hp-bar-outer,
-  .battlefield-1d-stage.scene-farm .entity-hp-bar-outer {
+  .entity-hp-bar-outer {
     height: 11px;
   }
-}
-
-.board-cell {
-  background: rgba(244, 231, 197, 0.1);
-  border: 2.5px solid rgba(244, 231, 197, 0.28);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  padding: 4px;
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-  overflow: hidden;
-  transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .cell-index-label {
@@ -879,28 +867,135 @@
   color: #ffffff;
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
-.gate-pillar {
+/* Diegetic Gate Portals on End Cells */
+.diegetic-gate-portal {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 22px;
+  pointer-events: auto;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 180ms ease;
+  cursor: pointer;
+}
+
+.gate-portal-left {
+  left: 1px;
+}
+
+.gate-portal-right {
+  right: 1px;
+}
+
+.gate-arch-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  border: 1.5px solid rgba(0, 0, 0, 0.75);
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.95), rgba(8, 5, 3, 0.98));
+  box-shadow: inset 0 0 10px #000, 2px 0 6px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.gate-iron-grate {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 4px,
+    rgba(0, 0, 0, 0.85) 4px,
+    rgba(0, 0, 0, 0.85) 6px
+  );
+  opacity: 0.8;
+}
+
+.gate-label-strip {
+  position: relative;
+  z-index: 3;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(15, 10, 6, 0.88);
+  border: 1px solid rgba(254, 240, 138, 0.4);
+  border-radius: 4px;
+  padding: 1px 3px;
+  white-space: nowrap;
+}
+
+.gate-icon {
+  font-size: 0.62rem;
+}
+
+.gate-name {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #fef08a;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* Reinforcement Pending / Imminent */
+.gate-reinf-indicator {
+  position: relative;
+  z-index: 4;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  margin-bottom: 2px;
+  white-space: nowrap;
 }
 
-.gate-title {
-  font-size: 0.68rem;
-  color: #fde68a;
-  font-weight: 700;
+.gate-reinf-pill {
+  font-size: 0.58rem;
+  font-weight: 900;
+  color: #fef2f2;
+  background: #991b1b;
+  border: 1px solid #f87171;
+  border-radius: 4px;
+  padding: 1px 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
-.gate-reinf-warning {
-  background: #7c2d12;
-  color: #ffedd5;
-  border: 1.5px solid #fdba74;
-  border-radius: 5px;
-  padding: 1px 5px;
-  font-size: 0.68rem;
-  font-weight: 800;
+.gate-status-imminent .gate-arch-frame {
+  border-color: #ef4444;
+  box-shadow: inset 0 0 18px rgba(239, 68, 68, 0.85), 0 0 12px rgba(220, 38, 38, 0.7);
+  animation: pulseGateWarning 1s ease-in-out infinite alternate;
+}
+
+.gate-status-imminent .gate-reinf-pill {
+  background: #dc2626;
+  border-color: #fca5a5;
+  animation: pulseArmedTag 1s infinite;
+}
+
+.gate-vampire-eyes {
+  font-size: 0.82rem;
+  animation: flickerEyes 1.2s ease-in-out infinite;
+}
+
+@keyframes pulseGateWarning {
+  0% { box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.6), 0 0 6px rgba(220, 38, 38, 0.4); }
+  100% { box-shadow: inset 0 0 24px rgba(239, 68, 68, 0.95), 0 0 16px rgba(220, 38, 38, 0.8); }
+}
+
+@keyframes flickerEyes {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.9); }
+}
+
+@media (max-width: 720px) {
+  .diegetic-gate-portal {
+    width: 18px;
+  }
+  .gate-label-strip .gate-name {
+    display: none;
+  }
 }
 
 /* Entity Stage & Sprite Flip Wrapper */
