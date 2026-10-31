@@ -202,6 +202,10 @@ export function getAvailableNodes(runState) {
   if (!runState.currentNodeId) {
     return runState.map.nodes.filter((n) => n.tier === 0);
   }
+  // If the current node hasn't been completed yet, no forward nodes are available
+  if (!runState.completedNodeIds?.includes(runState.currentNodeId)) {
+    return [];
+  }
   const current = runState.map.nodes.find((n) => n.id === runState.currentNodeId);
   if (!current) return [];
   return runState.map.nodes.filter((n) => current.next.includes(n.id));

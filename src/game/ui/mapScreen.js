@@ -7,7 +7,7 @@ import { getAssetUrl } from './assets.js';
 export function renderMapScreen(container, runState, callbacks = {}) {
   if (!container || !runState || !runState.map) return;
 
-  const availableNodes = getAvailableNodes(runState);
+  const availableNodes = callbacks.canReturnToBattle ? [] : getAvailableNodes(runState);
   const availableIds = new Set(availableNodes.map((n) => n.id));
   const completedIds = new Set(runState.completedNodeIds || []);
 
@@ -25,21 +25,25 @@ export function renderMapScreen(container, runState, callbacks = {}) {
 
           let statusClass = 'map-node-locked';
           if (isCompleted) statusClass = 'map-node-completed';
-          if (isCurrent) statusClass = 'map-node-current';
+          if (isCurrent) {
+            statusClass = callbacks.canReturnToBattle ? 'map-node-current map-node-active' : 'map-node-current';
+          }
           if (isAvailable) statusClass = 'map-node-available';
+
+          const isDisabled = !isAvailable && (!isCurrent || !callbacks.canReturnToBattle);
 
           return `
             <button type="button"
                     class="map-node-card ${statusClass}"
                     data-node-id="${node.id}"
-                    ${!isAvailable ? 'disabled' : ''}>
+                    ${isDisabled ? 'disabled' : ''}>
               <div class="map-node-icon-wrap">
                 <img src="${iconUrl}" alt="${node.title}" class="map-node-icon" referrerpolicy="no-referrer" />
                 ${isCompleted ? '<span class="map-node-check">✔</span>' : ''}
               </div>
               <div class="map-node-info">
                 <div class="map-node-title">${node.title}</div>
-                <div class="map-node-sub">${getNodeTypeDescription(node.type)}</div>
+                <div class="map-node-sub">${callbacks.canReturnToBattle && isCurrent ? '⚔️ Právě bojuješ!' : getNodeTypeDescription(node.type)}</div>
               </div>
             </button>
           `;
@@ -60,7 +64,11 @@ export function renderMapScreen(container, runState, callbacks = {}) {
       <div class="map-header-banner">
         <div>
           <h2 class="map-act-heading">${STRINGS.acts[runState.act] || `Akt ${runState.act}`}</h2>
-          <p class="map-act-subtitle">Vyber další zastávku Vencovy výpravy hradním labyrintem. Zvýrazněné uzly jsou dostupné.</p>
+          <p class="map-act-subtitle">${
+            callbacks.canReturnToBattle
+              ? 'Venca má rozdělanou bitvu! K dokončení střetnutí se vrať tlačítkem zpět do probíhající bitvy.'
+              : 'Vyber další zastávku Vencovy výpravy hradním labyrintem. Zvýrazněné uzly jsou dostupné.'
+          }</p>
         </div>
         ${
           callbacks.canReturnToBattle
@@ -83,9 +91,14 @@ export function renderMapScreen(container, runState, callbacks = {}) {
     btn.addEventListener('click', () => {
       const nodeId = btn.getAttribute('data-node-id');
       const node = runState.map.nodes.find((n) => n.id === nodeId);
-      if (node) {
-        callbacks.onSelectNode?.(node);
+      if (!node) return;
+      if (callbacks.canReturnToBattle) {
+        if (node.id === runState.currentNodeId) {
+          callbacks.onReturnToBattle?.();
+        }
+        return;
       }
+      callbacks.onSelectNode?.(node);
     });
   });
 }

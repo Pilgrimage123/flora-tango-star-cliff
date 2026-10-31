@@ -4,6 +4,21 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.3.4] - 2026-10-31
+
+### Opraveno
+- **Mapa výpravy a integrita průchodu (Exploit zamezen)**:
+  - **Zamezení přeskočení probíhající bitvy přes mapu**:
+    - V `src/game/engine/run.js` v `getAvailableNodes` opravena nekonzistence, kdy funkce vracela navazující uzly i v případě, že stávající uzel ještě nebyl dokončen (`!completedNodeIds.includes(currentNodeId)`).
+    - V `src/game/ui/mapScreen.js` a `src/game/main.js` jsou při otevření mapy během aktivní bitvy (`canReturnToBattle`) všechny navazující uzly uzamčeny a nelze na ně kliknout.
+    - Uzel aktivní bitvy je na mapě zřetelně označen červenou září (`.map-node-active`) a štítkem `⚔️ Právě bojuješ!`.
+    - Kliknutím na probíhající uzel na mapě (či na tlačítko v záhlaví nebo klávesu Escape) se hráč okamžitě vrátí zpět do probíhajícího střetnutí.
+- **Perzistence uživatelských nastavení**:
+  - V `src/game/main.js` sjednoceno ukládání rychlosti animací (`animSpeed`) a zapnutí zvuku (`soundEnabled`) do `localStorage` (`lovec_upiru_meta_v1`).
+  - Nastavení hráče se již neresetuje při obnovení stránky (F5), ale zůstává trvale zachováno a aplikováno od samotného startu hry.
+- **Dotykové ovládání nápověd (Tooltips)**:
+  - V `src/game/ui/tooltips.js` přidán globální listener `pointerdown`, který na dotykových zařízeních spolehlivě zavře plovoucí nápovědu při klepnutí mimo interaktivní prvek (karty, talismany, políčka), čímž se předchází uvíznutí nápovědy na displeji mobilu.
+
 ## [1.3.3] - 2026-10-31
 
 ### Opraveno

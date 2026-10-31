@@ -21,7 +21,7 @@ import {
   endPlayerTurn
 } from '../src/game/engine/rules.js';
 import { computeBoardThreats } from '../src/game/engine/threat.js';
-import { createNewRun } from '../src/game/engine/run.js';
+import { createNewRun, getAvailableNodes } from '../src/game/engine/run.js';
 import { ichorForKind } from '../src/game/config/ichor.js';
 import { applyDamage } from '../src/game/engine/board.js';
 
@@ -719,7 +719,32 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   console.log('  ✔ 27. Okované půllitry dávají +1 DMG nepřátelům, ale neubližují Vencovi');
 }
 
-console.log('✅ VŠECH 27 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
+// 28. getAvailableNodes zamezuje přeskočení nedokončené bitvy
+{
+  const run = createNewRun('MAP-TEST-SEED');
+  run.currentNodeId = null;
+  run.completedNodeIds = [];
+
+  // 1. Zpočátku je dostupný jen vstupní uzel (tier 0)
+  const initialNodes = getAvailableNodes(run);
+  assert.equal(initialNodes.length, 1);
+  assert.equal(initialNodes[0].tier, 0);
+
+  // 2. Po vstupu do uzlu 0, ale před jeho vyhráním (stále probíhá bitva), nesmí být dostupné žádné další uzly
+  run.currentNodeId = initialNodes[0].id;
+  const duringBattleNodes = getAvailableNodes(run);
+  assert.equal(duringBattleNodes.length, 0, 'Během neukončené bitvy nesmí být povolen výběr dalších uzlů na mapě');
+
+  // 3. Teprve po dokončení uzlu (přidání do completedNodeIds) se odemknou navazující uzly patra 1
+  run.completedNodeIds.push(run.currentNodeId);
+  const unlockedNodes = getAvailableNodes(run);
+  assert.equal(unlockedNodes.length, 2);
+  assert.ok(unlockedNodes.every((n) => n.tier === 1));
+
+  console.log('  ✔ 28. getAvailableNodes chrání před přeskočením nedokončené bitvy');
+}
+
+console.log('✅ VŠECH 28 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
 
 
 

@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-BdYaJ_UJ.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-Cl5OzrmE.js
+import "./router-eEv5k570.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-Bm7wC7Gj.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -4829,6 +4829,7 @@ function getBossTitle(actNumber) {
 function getAvailableNodes(runState) {
 	if (!runState.map) return [];
 	if (!runState.currentNodeId) return runState.map.nodes.filter((n) => n.tier === 0);
+	if (!runState.completedNodeIds?.includes(runState.currentNodeId)) return [];
 	const current = runState.map.nodes.find((n) => n.id === runState.currentNodeId);
 	if (!current) return [];
 	return runState.map.nodes.filter((n) => current.next.includes(n.id));
@@ -7595,7 +7596,7 @@ function renderChronicleLog(container, state, onOpenFullLog) {
 }
 function renderMapScreen(container, runState, callbacks = {}) {
 	if (!container || !runState || !runState.map) return;
-	const availableNodes = getAvailableNodes(runState);
+	const availableNodes = callbacks.canReturnToBattle ? [] : getAvailableNodes(runState);
 	const availableIds = new Set(availableNodes.map((n) => n.id));
 	const completedIds = new Set(runState.completedNodeIds || []);
 	const tiersHtml = [
@@ -7613,20 +7614,21 @@ function renderMapScreen(container, runState, callbacks = {}) {
 			const iconUrl = getAssetUrl(getMapIconKey(node.type), node.title);
 			let statusClass = "map-node-locked";
 			if (isCompleted) statusClass = "map-node-completed";
-			if (isCurrent) statusClass = "map-node-current";
+			if (isCurrent) statusClass = callbacks.canReturnToBattle ? "map-node-current map-node-active" : "map-node-current";
 			if (isAvailable) statusClass = "map-node-available";
+			const isDisabled = !isAvailable && (!isCurrent || !callbacks.canReturnToBattle);
 			return `
             <button type="button"
                     class="map-node-card ${statusClass}"
                     data-node-id="${node.id}"
-                    ${!isAvailable ? "disabled" : ""}>
+                    ${isDisabled ? "disabled" : ""}>
               <div class="map-node-icon-wrap">
                 <img src="${iconUrl}" alt="${node.title}" class="map-node-icon" referrerpolicy="no-referrer" />
                 ${isCompleted ? "<span class=\"map-node-check\">✔</span>" : ""}
               </div>
               <div class="map-node-info">
                 <div class="map-node-title">${node.title}</div>
-                <div class="map-node-sub">${getNodeTypeDescription(node.type)}</div>
+                <div class="map-node-sub">${callbacks.canReturnToBattle && isCurrent ? "⚔️ Právě bojuješ!" : getNodeTypeDescription(node.type)}</div>
               </div>
             </button>
           `;
@@ -7643,7 +7645,7 @@ function renderMapScreen(container, runState, callbacks = {}) {
       <div class="map-header-banner">
         <div>
           <h2 class="map-act-heading">${STRINGS.acts[runState.act] || `Akt ${runState.act}`}</h2>
-          <p class="map-act-subtitle">Vyber další zastávku Vencovy výpravy hradním labyrintem. Zvýrazněné uzly jsou dostupné.</p>
+          <p class="map-act-subtitle">${callbacks.canReturnToBattle ? "Venca má rozdělanou bitvu! K dokončení střetnutí se vrať tlačítkem zpět do probíhající bitvy." : "Vyber další zastávku Vencovy výpravy hradním labyrintem. Zvýrazněné uzly jsou dostupné."}</p>
         </div>
         ${callbacks.canReturnToBattle ? `<button type="button" class="btn-parchment" id="btn-return-battle">⚔️ Zpět do probíhající bitvy</button>` : ""}
       </div>
@@ -7660,7 +7662,12 @@ function renderMapScreen(container, runState, callbacks = {}) {
 		btn.addEventListener("click", () => {
 			const nodeId = btn.getAttribute("data-node-id");
 			const node = runState.map.nodes.find((n) => n.id === nodeId);
-			if (node) callbacks.onSelectNode?.(node);
+			if (!node) return;
+			if (callbacks.canReturnToBattle) {
+				if (node.id === runState.currentNodeId) callbacks.onReturnToBattle?.();
+				return;
+			}
+			callbacks.onSelectNode?.(node);
 		});
 	});
 }
@@ -9148,6 +9155,7 @@ function createBattleActions(deps) {
 	};
 }
 var META_STORAGE_KEY = "lovec_upiru_meta_v1";
+var loadedMeta = loadMetaStats();
 var appState = {
 	screen: "battle",
 	runState: null,
@@ -9155,12 +9163,12 @@ var appState = {
 	isAnimating: false,
 	hoveredEnemyId: null,
 	hoveredTileId: null,
+	metaStats: loadedMeta,
 	settings: {
-		animSpeed: 1,
-		soundEnabled: true,
-		currentSeed: "VENCA-1899"
-	},
-	metaStats: loadMetaStats()
+		animSpeed: loadedMeta.animSpeed ?? 1,
+		soundEnabled: loadedMeta.soundEnabled ?? true,
+		currentSeed: loadedMeta.lastSeed || "VENCA-1899"
+	}
 };
 var actions = null;
 var bootToken = 0;
@@ -9186,6 +9194,7 @@ function saveMetaStats() {
 }
 async function bootstrap(token) {
 	initTooltips();
+	setSoundEnabled(appState.settings.soundEnabled);
 	const loadingBar = document.getElementById("loading-progress-fill");
 	const loadingText = document.getElementById("loading-progress-text");
 	const loadingScreen = document.getElementById("loading-overlay");
@@ -9323,9 +9332,13 @@ function renderAll() {
 		onOpenSettings: () => openSettingsModal(modalRoot, appState.settings, appState.metaStats, {
 			onChangeAnimSpeed: (val) => {
 				appState.settings.animSpeed = val;
+				appState.metaStats.animSpeed = val;
+				saveMetaStats();
 			},
 			onToggleSound: (enabled) => {
 				appState.settings.soundEnabled = enabled;
+				appState.metaStats.soundEnabled = enabled;
+				saveMetaStats();
 				setSoundEnabled(enabled);
 			},
 			onStartNewRun: (seed) => startNewRun(seed)
@@ -9338,7 +9351,10 @@ function renderAll() {
 				appState.screen = "battle";
 				renderAll();
 			},
-			onSelectNode: (node) => enterMapNode(node)
+			onSelectNode: (node) => {
+				if (appState.battleState && appState.battleState.status === "playing") return;
+				enterMapNode(node);
+			}
 		});
 		if (bottomRoot) bottomRoot.innerHTML = "";
 		if (logRoot) logRoot.innerHTML = "";

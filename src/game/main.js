@@ -26,6 +26,8 @@ import { createBattleActions } from './battle.js';
 
 const META_STORAGE_KEY = 'lovec_upiru_meta_v1';
 
+const loadedMeta = loadMetaStats();
+
 const appState = {
   screen: 'battle',
   runState: null,
@@ -33,12 +35,12 @@ const appState = {
   isAnimating: false,
   hoveredEnemyId: null,
   hoveredTileId: null,
+  metaStats: loadedMeta,
   settings: {
-    animSpeed: 1,
-    soundEnabled: true,
-    currentSeed: 'VENCA-1899'
-  },
-  metaStats: loadMetaStats()
+    animSpeed: loadedMeta.animSpeed ?? 1,
+    soundEnabled: loadedMeta.soundEnabled ?? true,
+    currentSeed: loadedMeta.lastSeed || 'VENCA-1899'
+  }
 };
 
 let actions = null;
@@ -74,6 +76,7 @@ function saveMetaStats() {
 
 async function bootstrap(token) {
   initTooltips();
+  setSoundEnabled(appState.settings.soundEnabled);
 
   const loadingBar = document.getElementById('loading-progress-fill');
   const loadingText = document.getElementById('loading-progress-text');
@@ -255,9 +258,13 @@ function renderAll() {
       openSettingsModal(modalRoot, appState.settings, appState.metaStats, {
         onChangeAnimSpeed: (val) => {
           appState.settings.animSpeed = val;
+          appState.metaStats.animSpeed = val;
+          saveMetaStats();
         },
         onToggleSound: (enabled) => {
           appState.settings.soundEnabled = enabled;
+          appState.metaStats.soundEnabled = enabled;
+          saveMetaStats();
           setSoundEnabled(enabled);
         },
         onStartNewRun: (seed) => startNewRun(seed)
@@ -271,7 +278,10 @@ function renderAll() {
         appState.screen = 'battle';
         renderAll();
       },
-      onSelectNode: (node) => enterMapNode(node)
+      onSelectNode: (node) => {
+        if (appState.battleState && appState.battleState.status === 'playing') return;
+        enterMapNode(node);
+      }
     });
     if (bottomRoot) bottomRoot.innerHTML = '';
     if (logRoot) logRoot.innerHTML = '';
