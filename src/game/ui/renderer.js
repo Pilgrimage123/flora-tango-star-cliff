@@ -3,6 +3,8 @@ import { BOARD_SIZE, ANIMATION_TIMINGS } from '../config/constants.js';
 import { STATUSES } from '../config/statuses.js';
 import { TERRAIN_TYPES } from '../config/terrain.js';
 import { STRINGS, czechTurns } from '../config/strings.cs.js';
+import { detectResonances } from '../engine/combo.js';
+import { simulateComboImpact } from '../engine/simulation.js';
 import { getSortedEnemiesByInitiative } from '../engine/state.js';
 import { computeBoardThreats, computePlayerQueuePreview } from '../engine/threat.js';
 import { getAssetUrl } from './assets.js';
@@ -127,6 +129,15 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
   const hoveredEnemyId = uiState.hoveredEnemyId || null;
   const hoveredTileId = uiState.hoveredTileId || null;
 
+  const isPreviewMode = Boolean(
+    uiState.comboPreviewActive ||
+    uiState.hoveredExecute ||
+    (typeof uiState.hoveredQueueSlot === 'number' && uiState.hoveredQueueSlot >= 0)
+  );
+  const simPreview = isPreviewMode && (state.queue || []).length > 0
+    ? simulateComboImpact(state)
+    : null;
+
   const threats = computeBoardThreats(state, hoveredEnemyId);
   const queuePreview = computePlayerQueuePreview(state, hoveredTileId);
   const sortedEnemies = getSortedEnemiesByInitiative(state);
@@ -198,9 +209,10 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
     const entity = livingEntityAt(state, cellIdx) || corpseAt(state, cellIdx);
 
     const gateHtml = renderGateBannerHtml(cellIdx, leftGateReinf, rightGateReinf, boardSize);
-    const overlayHtml = renderCellThreatAndPreviewHtml(cellIdx, cellThreat, queuePreview, state);
+    const overlayHtml = renderCellThreatAndPreviewHtml(cellIdx, cellThreat, queuePreview, state, simPreview);
+    const impact = simPreview?.impactMap?.[entity?.id] || null;
     const entityHtml = entity
-      ? renderEntityOnCellHtml(entity, initiativeMap.get(entity.id))
+      ? renderEntityOnCellHtml(entity, initiativeMap.get(entity.id), impact)
       : '';
 
     const yardStyle = paintedEdges
@@ -242,6 +254,10 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
        </div>`
     : '';
 
+  const queueTiles = (state.queue || []).map((id) => (state.hand || []).find((t) => t.instanceId === id)).filter(Boolean);
+  const activeResonances = detectResonances(queueTiles);
+  const resonancesHtml = activeResonances.length > 0 ? `<div class="hero-queue-resonances">${activeResonances.map((r) => `<span class="queue-resonance-pill" title="${r.description}">✨ ${r.icon} <strong>${r.name}</strong></span>`).join('')}</div>` : '';
+
   container.innerHTML = `
     ${tutorialHintHtml}
     <div class="hero-queue-panel">
@@ -249,6 +265,7 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
         <strong>⚡ Fronta komba Venci Česnekáče</strong>
         <span class="hero-queue-hint">(Fronta akcí · 1 tah vložení · Odpálení okamžité!)</span>
       </div>
+      ${resonancesHtml}
       <div class="hero-queue-slots">
         ${queueSlotsHtml}
       </div>
@@ -265,6 +282,13 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
 
   container.querySelectorAll('.queue-slot').forEach((slotEl) => {
     const slotIdx = Number(slotEl.getAttribute('data-slot-index'));
+
+    slotEl.addEventListener('mouseenter', () => {
+      callbacks.onHoverQueueSlot?.(slotIdx);
+    });
+    slotEl.addEventListener('mouseleave', () => {
+      callbacks.onHoverQueueSlot?.(null);
+    });
 
     slotEl.addEventListener('dragstart', (e) => {
       if (e.target instanceof Element && e.target.closest('button')) {
@@ -402,7 +426,7 @@ function renderGateBannerHtml(cellIdx, leftReinf, rightReinf, boardSize = BOARD_
   return '';
 }
 
-function renderEntityOnCellHtml(entity, initiativeRank = 1) {
+function renderEntityOnCellHtml(entity, initiativeRank = 1, impact = null) {
   const givenName = entity.givenName || entity.name;
   const epithet = entity.epithet || '';
   const bodyScale =
@@ -413,6 +437,25 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1) {
   const spriteKey = entity.hp <= 0 && entity.entityType === 'hero' ? 'hero.dead' : entity.sprite;
   const spriteUrl = getAssetUrl(spriteKey, entity.name);
   const hpPercent = Math.max(0, Math.min(100, Math.round((entity.hp / entity.maxHp) * 100)));
+
+  let previewHpBarHtml = '';
+  let previewSkullHtml = '';
+  let postComboThreatHtml = '';
+
+  if (impact) {
+    if (impact.dmgTaken > 0) {
+      const remainingHp = Math.max(0, entity.hp - impact.dmgTaken);
+      const remainingPercent = Math.max(0, Math.min(100, Math.round((remainingHp / entity.maxHp) * 100)));
+      const dmgWidthPercent = hpPercent - remainingPercent;
+      previewHpBarHtml = `<div class="entity-hp-bar-preview" style="left: ${remainingPercent}%; width: ${dmgWidthPercent}%;" title="Předpokládané zranění: -${impact.dmgTaken} DMG"></div>`;
+    }
+    if (impact.isLethal) {
+      previewSkullHtml = `<span class="preview-skull-badge" title="Tento cíl bude v průběhu komba zlikvidován! (0 HP)">💀</span>`;
+    }
+    if (impact.threatensHeroPostCombo) {
+      postComboThreatHtml = `<div class="enemy-threat-warning-post-combo">⚠️ OHROŽUJE VENCU!</div>`;
+    }
+  }
 
   const statusesHtml = Object.entries(entity.statuses || {})
     .filter(([, val]) => val > 0)
@@ -454,8 +497,10 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1) {
         </div>
         <div class="entity-hp-bar-outer" title="Zdraví: ${entity.hp}/${entity.maxHp} HP">
           <div class="entity-hp-bar-inner hp-${entity.entityType}" style="width: ${hpPercent}%"></div>
-          <span class="entity-hp-text">${entity.hp}/${entity.maxHp}</span>
+          ${previewHpBarHtml}
+          <span class="entity-hp-text">${impact && impact.dmgTaken > 0 ? `${Math.max(0, entity.hp - impact.dmgTaken)}/${entity.maxHp}` : `${entity.hp}/${entity.maxHp}`}${previewSkullHtml}</span>
         </div>
+        ${postComboThreatHtml}
         ${statusesHtml ? `<div class="entity-status-row">${statusesHtml}</div>` : ''}
       </div>
 
@@ -496,6 +541,15 @@ export function refreshBoardOverlays(container, state, uiState = {}) {
 
   const hoveredEnemyId = uiState.hoveredEnemyId || null;
   const hoveredTileId = uiState.hoveredTileId || null;
+  const isPreviewMode = Boolean(
+    uiState.comboPreviewActive ||
+    uiState.hoveredExecute ||
+    (typeof uiState.hoveredQueueSlot === 'number' && uiState.hoveredQueueSlot >= 0)
+  );
+  const simPreview = isPreviewMode && (state.queue || []).length > 0
+    ? simulateComboImpact(state)
+    : null;
+
   const threats = computeBoardThreats(state, hoveredEnemyId);
   const queuePreview = computePlayerQueuePreview(state, hoveredTileId);
 
@@ -557,6 +611,8 @@ function getTerrainFloorLabel(terrainObj, terrainDef) {
       return '🕳️ PROPAST';
     case 'spikes':
       return '🗡️ KŮLY (2 DMG)';
+    case 'holy_water_puddle':
+      return `💦 Svěcená louže (${terrainObj.duration || 1}t)`;
     case 'garlic_cloud':
       return `🧄 Česnek (${terrainObj.duration || 1}t)`;
     default:
@@ -813,6 +869,18 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
       case 'collision_barrel':
         SFX.collision();
         spawnFloatingBadgeOnCell(container, ev.cell, '💥 KOLIZE!', 'float-dmg');
+        await sleep(180, animSpeed);
+        break;
+
+      case 'holy_font_shatter':
+        SFX.collision();
+        spawnFloatingBadgeOnCell(container, ev.cell, '💦 KROPENKA ROZTŘÍŠTĚNA!', 'float-heal');
+        await sleep(220, animSpeed);
+        break;
+
+      case 'projectile_reflect':
+        SFX.shield();
+        spawnFloatingBadgeOnCell(container, ev.cell, '🪞 ODRAZ STŘELY!', 'float-status');
         await sleep(180, animSpeed);
         break;
 

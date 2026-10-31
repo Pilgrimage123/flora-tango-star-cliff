@@ -4,6 +4,98 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.5.0] - 2026-10-31
+
+### Přidáno
+- **4 jedineční hratelní lovci upírů (Venca Česnekáč, Hloupý Honza, Rittmeister Jaromír, Káča Pavučina)**:
+  - Každý lovec má vlastní startovní počet životů (HP), 3 unikátní startovní akční destičky ladící s jeho identitou, manévr nárazu při kroku do nepřítele s cooldownem a pasivní/aktivní schopnost při složení 3-kombu:
+    - **Venca Česnekáč** (Klasik, 20 HP):
+      - 3 startovní destičky: *Dubový kolík* (4 DMG), *Česnekový krk* (2 DMG + oblak česneku), *Hasičská stříkačka* (2 DMG + Odtlačení 2).
+      - Manévr nárazu: *Česnekové žduchnutí* (CD 3) – odhodí nepřítele o 1 pole a zamoří jeho pole česnekovým oblakem.
+      - 3-kombo: *Česnekový dech* – 4 plošné DMG do sousedních polí a vytvoření česnekového oblaku na poli hrdiny.
+    - **Hloupý Honza** (Sedlák / Benchmark, 20 HP):
+      - 3 startovní destičky: *Cejpový švih* (4 DMG + Odtlačení 2), *Povidlový koláč* (Léčení 4 HP / přebytek do Štítu + vyléčení Krvácení), *Těžký nápřah* (+4 Posílení pro příští útok).
+      - Manévr nárazu: *Selský beran* (CD 3) – 2 drtivé DMG, odhození nepřítele o 1 pole a Honza vstoupí na jeho původní pole.
+      - 3-kombo: *Selský furiant* – +6 Štít a tlaková rázová vlna za 4 plošné DMG okolním nepřátelům.
+    - **Rittmeister Jaromír** (Vysloužilý dragoun, 24 HP):
+      - 3 startovní destičky: *Dragounská šavle* (6 DMG), *Křesadlová pistole* (4 DMG + Omráčení na 1 tah), *Jezdecká garda* (+6 Štít).
+      - Manévr nárazu: *Úder těžkým jílcem* (CD 3) – 2 DMG, odhození o 1 pole a omráčení nepřítele (vynechá tah).
+      - 3-kombo: *Kavalerijní salva* – průrazná salva karabinou za 4 DMG celou linií před sebou a udělení Krvácení (2).
+    - **Káča Pavučina** (Úskočná zlodějka, 14 HP):
+      - 3 startovní destičky: *Bodnutí stiletem* (2 DMG zpředu / 8 DMG + 4 Krvácení do zad), *Střepy z lucerny* (2 DMG + 4 Krvácení + Push 1), *Stínový prokluz* (Skok o 2 pole vpřed s otočkou o 180°).
+      - Manévr nárazu: *Kapsářská záměna* (CD 2) – prohození pozice s nepřítelem a jeho otočení zády ke zlodějce.
+      - 3-kombo: *Krvavý tanec* – +4 Štít a okamžité vykrvácení všech krvácejících nepřátel na bojišti (4 DMG).
+- **Nová mechanika manévrů nárazu (Bump)**:
+  - Pokus o krok do políčka obsazeného nepřítelem aktivuje jedinečný taktický manévr lovce s vlastním cooldownem.
+- **Nový testovací modul v engine testech (Test 35)**:
+  - Komplexní verifikace bodového krytí a vyprchání štítu, manévrů nárazu všech 4 lovců a aktivace 3-komb. Všech 35 testovacích sad enginu prochází na 100 %.
+
+### Změněno
+- **Kompletní přepracování mechaniky Štítu (Shield)**:
+  - Štít funguje jako bodový absorpční fond: 1 hodnota štítu vykryje přesně 1 bod příchozího zranění.
+  - Dočasný štít vyprchá na konci následujícího kola (`shieldTurnsLeft`).
+- **Globální zdvojnásobení HP a Zranění (Rebalance)**:
+  - Životy všech hrdinů zdvojnásobeny (Venca a Honza 20 HP, Dragoun 24 HP, Zlodějka 14 HP).
+  - Životy všech nepřátel zdvojnásobeny (Praktikant 8 HP, Dráb 14 HP, Úředník 10 HP, Kancléř 14 HP, Hrabě Drákula 48 HP atd.).
+  - Poškození všech útoků hráčových destiček i nepřátelských akcí zdvojnásobeno.
+  - Zdvojnásobeno environmentální poškození: kolize do zdi 2 DMG, bodáky 4 DMG, propadlé prkno 4 DMG, roztříštěná kropenka 4 DMG.
+- **Rozšíření Hradního archivu a výběru hrdiny**:
+  - Karty lovců v Hradním archivu nyní přehledně zobrazují odznaky HP, popisy manévru nárazu a 3-kombo schopnosti.
+
+## [1.4.0] - 2026-10-31
+
+### Přidáno
+- **01: Taktické destičky typu Rychlovka (`quick: true`)**:
+  - Zavedena nová třída taktických destiček, jejichž vložení do Kombo fronty stojí **0 tahů** (neposouvá tah nepřátel ani odpočty útoků).
+  - 4 nové specializované destičky v herním arzenálu:
+    - *Pohotový úkrok* (`nimble_step`): rychlý krok o 1 pole vpřed nebo vzad bez ztráty tahu.
+    - *Stroužek v záloze* (`garlic_pinch`): bleskové položení česnekového oblaku na pole pod Vencou.
+    - *Facka růžencem* (`rosary_slap`): pohotová facka za 1 DMG s okamžitým zmatením nepřítele.
+    - *Loket ze šenku* (`pub_elbow`): hospodské vražení loktem s odhozením o 1 pole.
+  - Vizuální odlišení: zlatý odznak `⚡ Rychlovka`, dynamické cenové značky `(0 tahů)` na kartách v ruce.
+- **02: Živlová a tematická Rezonance komba**:
+  - Nový synergický systém odměňující promyšlené sestavování komba podle příbuzných škol:
+    - *Živelný česnek* (česnekové destičky): uvolňuje omračující a zraňující česnekové výpary.
+    - *Svěcená liturgie* (svěcené destičky): posvátná vlna udělující plošné poškození a očištění.
+    - *Hospodská rvačka* (fyzické / brawler destičky): bonusová síla odhození (+1 Push) a kolizní poškození.
+    - *Mistr dřeva* (dřevěné kolíky): zkrácení cooldownu navazujících útoků a krvácení.
+  - Fialový vizuální odznak rezonance na kartách a plovoucí text `✨ REZONANCE!` při odpalu.
+- **03: Taktická předpověď a simulace dopadu komba**:
+  - Pure-engine modul `src/game/engine/simulation.js` (`simulateComboImpact`) umožňující detailní náhled na výsledek komba ještě před jeho odpálením.
+  - Stínové siluety budoucích pozic postav po odhození a přeskocích (`.ghost-silhouette`).
+  - Dvoubarevný náhledový proužek zdraví (`.entity-hp-bar-preview`) a ikona lebky (`💀`) u předpovězených smrtících úderů.
+  - Varování před neodvrácenými nepřátelskými údery po skončení komba (`.enemy-threat-warning-post-combo`).
+  - Dedikované tlačítko `👁️ Náhled komba` na liště pro pohodlné ovládání na dotykových obrazovkách i klávesnici (klávesa P / Q).
+- **04: Interaktivní překážky na bojišti (Kropenka a Zrcadlo)**:
+  - *Posvěcená kamenná kropenka* (`holy_font`): 1 HP, při zničení úderem, střelou nebo kolizí uštědří 2 DMG svěcenou vodou všem sousedním nemrtvým a vytvoří louži posvěcené vody na 3 tahy (1 DMG při vstupu).
+  - *Hradní zrcadlo* (`mirror`): odráží veškeré lineární dálkové projektily (hráčovy i nepřátelské) o 180° zpět po dráze letu.
+- **05: Trvalá metagrese a Hradní archiv**:
+  - Nová meta-měna *Upíří tesáky* (`fangs`) ukládaná v profilu hráče (`localStorage`), získávaná za eliminaci upírů (+1), elitních drábů (+3) a bossů (+10).
+  - Obrazovka *Hradní archiv a zbrojnice* přístupná z HUD i konce výpravy.
+  - Odemykání a volba alternativních startovních Výstrojí:
+    - *Klasický lovec* (Dubový kolík, Česnekový pšouk, Svěcená stříkačka, Přemet přes pupík).
+    - *Hospodský rváč* (Loket ze šenku, Přemet přes pupík, Facka růžencem, Dubový kolík) – odemčení za 15 tesáků.
+    - *Svěcený kropič* (Svěcená stříkačka, Pohotový úkrok, Paprsek stříbrného krucifixu, Stroužek v záloze) – odemčení za 25 tesáků.
+- **06: Kletby noci a Síň slávy (Ascension I–V)**:
+  - 5 stupňů obtížnosti Kleteb noci odemykaných postupně po každém vítězství nad Hrabětem Drákulou:
+    - *Kletba I (Neklidná hrobka)*: posily z hradních bran nastupují o 1 tah dříve.
+    - *Kletba II (Drahota v podzámčí)*: ceny v hospodě a kovářské dílně jsou vyšší o 25 %.
+    - *Kletba III (Obrnění drábové)*: elitní nepřátelé vstupují do boje s 1 Štítem navíc.
+    - *Kletba IV (Zemdlený lovec)*: Venca začíná výpravu s −2 maximálními HP (8 HP).
+    - *Kletba V (Pán temnoty)*: Hrabě Drákula má o 25 % více HP a začíná boj posílen.
+  - Progresivní násobič zisku Upířích tesáků (1.25× až 2.5×) podle aktivního stupně kletby.
+  - Fialový odznak platné Kletby noci v záhlaví HUD i na mapě výpravy.
+  - Perzistentní *Síň slávy* v Hradním archivu evidující slavná vítězství, datum, použitou výstroj, uštědřené poškození a stupeň kletby.
+
+### Změněno
+- **Kompletní očista od byrokracie a daňových motivů (Návrat k ryzí gotické upíří atmosféře)**:
+  - Odstraněny veškeré odkazy na berňák, daně, finanční úřad, formuláře, daňová přiznání, razítka a firemní byrokracii napříč celým herním kódem a konfiguracemi.
+  - Hrabě Drákula sjednocen jako *Hrabě Drákula, Pán temnot* namísto generálního ředitele.
+  - Zasedačky a účtárny přejmenovány na trůnní sály, rodové archivy krve a hrobky předků.
+  - Nepřátelé převedeni na autentické gotické role: *Kryptový písař Hubert*, *Hradní klíčnice Květuše*.
+  - Schopnosti a talismany adaptovány na upíří mystiku: *Krvavá pečeť rodu*, *Temný ortel noci*, *Kletba prastarého rodu*, *Krvavý svitek*, *Temné povzbuzení krve*.
+  - Specifikace a tikety v `.scratch/` převedeny z úředních kolků a byrokratických vyhlášek na *Upíří tesáky* a *Kletby noci (Ascension I–V)*.
+
 ## [1.3.4] - 2026-10-31
 
 ### Opraveno

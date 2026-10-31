@@ -58,11 +58,11 @@ export const TALISMANS = {
   },
   notary_stamp: {
     id: 'notary_stamp',
-    name: 'Falešné obecní razítko',
+    name: 'Krvavá pečeť rodu',
     icon: 'talisman.notary_stamp',
-    badge: '💮',
+    badge: '🩸',
     price: 24,
-    description: 'Při odpálení plné fronty (3+ destičky) udělí všem nepřátelům na bojišti 1 DMG z úředního výnosu.'
+    description: 'Při odpálení plné fronty (3+ destičky) udělí všem nepřátelům na bojišti 1 DMG kletbou prastaré pečeti.'
   },
   oak_splinter: {
     id: 'oak_splinter',

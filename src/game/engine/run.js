@@ -2,13 +2,20 @@
 import { HERO_START_HP, HERO_START_GOLD, NODE_TYPES } from '../config/constants.js';
 import { HERO_TILES, getHeroTileDefinition } from '../config/tiles.js';
 import { TALISMANS } from '../config/talismans.js';
+import { STARTING_LOADOUTS } from '../config/loadouts.js';
+import { getCurseDefinition } from '../config/curses.js';
 import { createRng } from './rng.js';
 
-export function createNewRun(seedInput = 'VENCA-1899') {
+export function createNewRun(seedInput = 'VENCA-1899', loadoutId = 'classic', curseLevel = 0) {
   const seed = String(seedInput || 'VENCA-1899').trim() || 'VENCA-1899';
   const rng = createRng(seed);
 
-  const deck = [
+  const selectedLoadout = STARTING_LOADOUTS[loadoutId] || STARTING_LOADOUTS.classic;
+  const deck = JSON.parse(JSON.stringify(selectedLoadout.deck));
+  const curse = Math.max(0, Math.min(5, Number(curseLevel) || 0));
+  const baseHp = selectedLoadout.maxHp || HERO_START_HP;
+  const startHp = curse >= 4 ? Math.max(1, baseHp - 2) : baseHp;
+  const unusedOldDeck = [
     { id: 'oak_stake', upgradeLevel: 0, permanentCdReduction: 0 },
     { id: 'garlic_belch', upgradeLevel: 0, permanentCdReduction: 0 },
     { id: 'holy_syringe', upgradeLevel: 0, permanentCdReduction: 0 },
@@ -17,10 +24,13 @@ export function createNewRun(seedInput = 'VENCA-1899') {
 
   const runState = {
     seed,
+    loadoutId: selectedLoadout.id,
+    hunterId: selectedLoadout.hunterId || selectedLoadout.id,
+    curseLevel: curse,
     rng,
     act: 1,
-    heroMaxHp: HERO_START_HP,
-    heroHp: HERO_START_HP,
+    heroMaxHp: startHp,
+    heroHp: startHp,
     gold: HERO_START_GOLD,
     deck,
     talismans: [],
@@ -194,7 +204,7 @@ function getNodeTitle(type) {
 function getBossTitle(actNumber) {
   if (actNumber === 1) return 'Arcikníže von Sosák';
   if (actNumber === 2) return 'Hraběnka Dagmar';
-  return 'Drákula, generální ředitel';
+  return 'Hrabě Drákula, Pán temnot';
 }
 
 export function getAvailableNodes(runState) {
@@ -252,7 +262,7 @@ export function generateBattleRewardChoices(runState, isEliteOrBoss = false) {
   choices.push({
     type: 'gold',
     amount: goldAmount,
-    title: `💰 Měšec berního úřadu (+${goldAmount} dukátů)`,
+    title: `💰 Měšec hradního pokladu (+${goldAmount} dukátů)`,
     subtitle: 'Hotovost do hospody a dílny',
     description: `Přidá ${goldAmount} poctivých dukátů do Vencova měšce.`
   });

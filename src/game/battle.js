@@ -14,6 +14,7 @@ import {
   consumeHeroStun
 } from './engine/rules.js';
 import { generateBattleRewardChoices, advanceActIfBossDefeated } from './engine/run.js';
+import { getCurseDefinition } from './config/curses.js';
 import { clearTransientCorpses } from './engine/board.js';
 import { playEngineEvents, sleep } from './ui/renderer.js';
 import { openBattleRewardModal, openRunEndModal } from './ui/modal.js';
@@ -202,6 +203,19 @@ export function createBattleActions(deps) {
     runState.stats.totalTurns += battleState.stats.turnsTaken || 0;
     runState.stats.enemiesKilled = (runState.stats.enemiesKilled || 0) + (battleState.stats.enemiesKilled || 0);
 
+    const kills = battleState.stats.enemiesKilled || 0;
+    let battleFangs = kills * 1;
+    if (won) {
+      if (battleState.isElite) battleFangs += 3;
+      if (battleState.isBoss) battleFangs += 10;
+    }
+    const curseDef = getCurseDefinition(runState.curseLevel || 0);
+    if (curseDef.fangMultiplier > 1) {
+      battleFangs = Math.round(battleFangs * curseDef.fangMultiplier);
+    }
+    appState.metaStats.fangs = (appState.metaStats.fangs || 0) + battleFangs;
+    battleState.fangsEarned = battleFangs;
+
     appState.metaStats.totalKills =
       (appState.metaStats.totalKills || 0) + (battleState.stats.enemiesKilled || 0);
     appState.metaStats.bestAct = Math.max(appState.metaStats.bestAct || 1, runState.act);
@@ -252,6 +266,23 @@ export function createBattleActions(deps) {
         const adv = advanceActIfBossDefeated(run);
         if (adv.victory) {
           appState.metaStats.victories = (appState.metaStats.victories || 0) + 1;
+          const currentCurse = run.curseLevel || 0;
+          const nextCurse = Math.min(5, currentCurse + 1);
+          if (nextCurse > (appState.metaStats.maxCurseUnlocked || 0)) {
+            appState.metaStats.maxCurseUnlocked = nextCurse;
+          }
+          if (!appState.metaStats.hallOfFame) appState.metaStats.hallOfFame = [];
+          appState.metaStats.hallOfFame.unshift({
+            date: new Date().toLocaleDateString('cs-CZ'),
+            curseLevel: currentCurse,
+            loadoutId: run.loadoutId || 'classic',
+            battlesWon: run.stats.battlesWon,
+            damageDealt: run.stats.totalDamageDealt,
+            gold: run.gold
+          });
+          if (appState.metaStats.hallOfFame.length > 20) {
+            appState.metaStats.hallOfFame.pop();
+          }
           try {
             localStorage.setItem('lovec_upiru_meta_v1', JSON.stringify(appState.metaStats));
           } catch {

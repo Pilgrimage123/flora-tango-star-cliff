@@ -628,7 +628,52 @@ export function executeSingleEnemyTile(state, enemy, tileDef, events = []) {
       facing: enemy.facing
     });
 
-    if (hitTarget && hitPat) {
+    if (hitTarget && (hitTarget.kind === 'mirror' || hitTarget.reflectsProjectiles)) {
+      events.push({
+        type: 'projectile_reflect',
+        mirrorId: hitTarget.id,
+        cell: endCell,
+        fromFacing: enemy.facing,
+        toFacing: -enemy.facing,
+        tileId: tileDef.id
+      });
+      events.push({
+        type: 'log',
+        text: `🪞 Hradní zrcadlo pravdy odrazilo nepřátelskou střelu „${tileDef.name}“ o 180° zpět!`
+      });
+
+      const reflectDir = -enemy.facing;
+      let reflectedTarget = null;
+      let reflectedEndCell = endCell;
+      for (let offset = 1; offset <= (tileDef.projectileRange || 4); offset++) {
+        const rc = endCell + reflectDir * offset;
+        if (!isValidCell(rc, state)) break;
+        reflectedEndCell = rc;
+        const occ = getEntityAt(state, rc);
+        if (occ && occ.id !== hitTarget.id) {
+          reflectedTarget = occ;
+          break;
+        }
+      }
+
+      events.push({
+        type: 'enemy_projectile_vfx',
+        enemyId: enemy.id,
+        from: endCell,
+        to: reflectedEndCell,
+        facing: reflectDir,
+        reflected: true
+      });
+
+      if (reflectedTarget && hitPat) {
+        resolveEnemyHitOnTarget(state, enemy, tileDef, hitPat, reflectedTarget, empowerBonus, garlicPenalty, events);
+      } else {
+        events.push({
+          type: 'log',
+          text: `💨 Odražená střela nikoho nezasáhla.`
+        });
+      }
+    } else if (hitTarget && hitPat) {
       resolveEnemyHitOnTarget(state, enemy, tileDef, hitPat, hitTarget, empowerBonus, garlicPenalty, events);
     } else {
       events.push({
@@ -676,8 +721,8 @@ function resolveEnemyHitOnTarget(state, attacker, tileDef, pat, target, empowerB
   const sextonBonus = isFriendlyFire && state.talismans?.includes('sexton_keyring') ? 1 : 0;
   const synergy =
     attacker.entityType === 'enemy' &&
-    !attacker.corporateSynergy &&
-    state.enemies.some((e) => e.hp > 0 && e.corporateSynergy && e.id !== attacker.id)
+    !attacker.lordSynergy &&
+    state.enemies.some((e) => e.hp > 0 && e.lordSynergy && e.id !== attacker.id)
       ? 1
       : 0;
   const dmg = Math.max(0, (pat.dmg || 0) + empowerBonus - garlicPenalty + sextonBonus + synergy);

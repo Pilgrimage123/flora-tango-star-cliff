@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "1D tahová taktická roguelite. Venca Česnekáč proti hradní upíří byrokracii.",
+          "1D tahová taktická roguelite. Venca Česnekáč v boji proti hradním upírům a nočním stvůrám.",
       },
       { name: "theme-color", content: "#1c140d" },
     ],

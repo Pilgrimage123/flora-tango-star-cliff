@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { HERO_TILES, getHeroTileDefinition } from '../config/tiles.js';
 import { TALISMANS } from '../config/talismans.js';
+import { STARTING_LOADOUTS } from '../config/loadouts.js';
+import { getCurseShopPrice, getCurseDefinition, NIGHT_CURSES } from '../config/curses.js';
 import {
   grantTileToRun,
   grantTalismanToRun,
@@ -274,14 +276,17 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
   let boughtTalisman = false;
 
   function renderContent() {
+    const cdCost = getCurseShopPrice(14, runState.curseLevel);
+    const tileCost = getCurseShopPrice(18, runState.curseLevel);
+    const talPrice = shopTalisman ? getCurseShopPrice(shopTalisman.price, runState.curseLevel) : 0;
     const deckButtonsHtml = runState.deck
       .map((entry, idx) => {
         const def = getHeroTileDefinition(entry.id, entry.upgradeLevel || 0);
         const effCd = Math.max(1, def.cooldown - (entry.permanentCdReduction || 0));
-        const canReduce = !cdReducedInThisVisit && runState.gold >= 14 && effCd > 1;
+        const canReduce = !cdReducedInThisVisit && runState.gold >= cdCost && effCd > 1;
         return `
           <button type="button" class="btn-parchment btn-sm" data-reduce-cd-idx="${idx}" ${!canReduce ? 'disabled' : ''}>
-            ⏳ Zkrátit CD: ${def.name} (nyní CD ${effCd}) — 14 dukátů
+            ⏳ Zkrátit CD: ${def.name} (nyní CD ${effCd}) — ${cdCost} dukátů
           </button>
         `;
       })
@@ -315,8 +320,8 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
                 <div class="reward-choice-card">
                   <div class="reward-card-title">Destička: ${shopTileDef.name}</div>
                   <p class="reward-card-desc">${shopTileDef.description}</p>
-                  <button type="button" class="btn-parchment" id="btn-pub-buy-tile" ${boughtTile || runState.gold < 18 ? 'disabled' : ''}>
-                    💰 Koupit destičku (18 dukátů)
+                  <button type="button" class="btn-parchment" id="btn-pub-buy-tile" ${boughtTile || runState.gold < tileCost ? 'disabled' : ''}>
+                    💰 Koupit destičku (${tileCost} dukátů)
                   </button>
                 </div>
 
@@ -325,8 +330,8 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
                     ? `<div class="reward-choice-card">
                          <div class="reward-card-title">${shopTalisman.badge} ${shopTalisman.name}</div>
                          <p class="reward-card-desc">${shopTalisman.description}</p>
-                         <button type="button" class="btn-parchment" id="btn-pub-buy-tal" ${boughtTalisman || runState.gold < shopTalisman.price ? 'disabled' : ''}>
-                           💰 Koupit talisman (${shopTalisman.price} dukátů)
+                         <button type="button" class="btn-parchment" id="btn-pub-buy-tal" ${boughtTalisman || runState.gold < talPrice ? 'disabled' : ''}>
+                           💰 Koupit talisman (${talPrice} dukátů)
                          </button>
                        </div>`
                     : ''
@@ -347,8 +352,8 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
     modalRoot.querySelectorAll('[data-reduce-cd-idx]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = Number(btn.getAttribute('data-reduce-cd-idx'));
-        if (runState.gold >= 14 && reduceTileCooldownInRun(runState, idx)) {
-          runState.gold -= 14;
+        if (runState.gold >= cdCost && reduceTileCooldownInRun(runState, idx)) {
+          runState.gold -= cdCost;
           cdReducedInThisVisit = true;
           renderContent();
         }
@@ -356,8 +361,8 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
     });
 
     modalRoot.querySelector('#btn-pub-buy-tile')?.addEventListener('click', () => {
-      if (!boughtTile && runState.gold >= 18) {
-        runState.gold -= 18;
+      if (!boughtTile && runState.gold >= tileCost) {
+        runState.gold -= tileCost;
         boughtTile = true;
         grantTileToRun(runState, shopTileId);
         renderContent();
@@ -365,8 +370,8 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
     });
 
     modalRoot.querySelector('#btn-pub-buy-tal')?.addEventListener('click', () => {
-      if (shopTalisman && !boughtTalisman && runState.gold >= shopTalisman.price) {
-        runState.gold -= shopTalisman.price;
+      if (shopTalisman && !boughtTalisman && runState.gold >= talPrice) {
+        runState.gold -= talPrice;
         boughtTalisman = true;
         grantTalismanToRun(runState, shopTalisman.id);
         renderContent();
@@ -387,12 +392,13 @@ export function openWorkshopModal(modalRoot, runState, onLeaveWorkshop) {
   let freeUpgradeUsed = false;
 
   function renderWorkshop() {
+    const upgradeCost = getCurseShopPrice(16, runState.curseLevel);
     const cardsHtml = runState.deck
       .map((entry, idx) => {
         const curDef = getHeroTileDefinition(entry.id, entry.upgradeLevel || 0);
         const maxReached = (entry.upgradeLevel || 0) >= 2;
         const nextDef = !maxReached ? getHeroTileDefinition(entry.id, (entry.upgradeLevel || 0) + 1) : null;
-        const cost = freeUpgradeUsed ? 16 : 0;
+        const cost = freeUpgradeUsed ? upgradeCost : 0;
         const canAfford = !maxReached && (cost === 0 || runState.gold >= cost);
 
         return `
@@ -420,7 +426,7 @@ export function openWorkshopModal(modalRoot, runState, onLeaveWorkshop) {
             <button type="button" class="btn-parchment btn-sm" id="btn-leave-workshop">Pokračovat na mapu ➡</button>
           </div>
           <div class="modal-body">
-            <p class="modal-lead">Mistr kolář ti první destičku přiostří zadarmo, další pak za 16 dukátů:</p>
+            <p class="modal-lead">Mistr kolář ti první destičku přiostří zadarmo, další pak za ${upgradeCost} dukátů:</p>
             <div class="reward-choices-grid">${cardsHtml}</div>
           </div>
         </div>
@@ -430,7 +436,7 @@ export function openWorkshopModal(modalRoot, runState, onLeaveWorkshop) {
     modalRoot.querySelectorAll('[data-upg-idx]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = Number(btn.getAttribute('data-upg-idx'));
-        const cost = freeUpgradeUsed ? 16 : 0;
+        const cost = freeUpgradeUsed ? upgradeCost : 0;
         if (runState.gold >= cost && upgradeTileInRun(runState, idx)) {
           runState.gold -= cost;
           freeUpgradeUsed = true;
@@ -557,8 +563,8 @@ export function openRunEndModal(modalRoot, runState, isVictory, callbacks = {}) 
           <p class="modal-lead">
             ${
               isVictory
-                ? 'Generální ředitel Drákula dostal dubovým kolíkem přímo přes daňové přiznání! Hrad je vyčištěn a Venca míří na zaslouženou dvanáctku!'
-                : 'Upíří byrokracie tentokrát Vencu udolala. Ale moravský česnek ještě neřekl poslední slovo!'
+                ? 'Pán temnot hrabě Drákula dostal dubovým kolíkem přímo do svého černého srdce! Hrad je vyčištěn a Venca míří na zaslouženou dvanáctku!'
+                : 'Temné upíří hordy tentokrát Vencu udolaly. Ale moravský česnek ještě neřekl poslední slovo!'
             }
           </p>
           <div class="summary-stats-grid">
@@ -593,5 +599,207 @@ export function openRunEndModal(modalRoot, runState, isVictory, callbacks = {}) 
     closeModal(modalRoot);
     const nextSeed = `VENCA-${Math.floor(1000 + Math.random() * 9000)}`;
     callbacks.onNewRun?.(nextSeed);
+  });
+}
+
+
+export function openCastleArchiveModal(modalRoot, appState, onUpdate = null, onSelect = null) {
+  modalRoot.classList.remove('hidden');
+  const meta = appState.metaStats || { fangs: 0, unlockedLoadouts: ['classic'], selectedLoadout: 'classic' };
+  const fangs = meta.fangs || 0;
+  const unlocked = meta.unlockedLoadouts || ['classic'];
+  const selected = meta.selectedLoadout || 'classic';
+  const maxCurse = meta.maxCurseUnlocked || ((meta.victories || 0) > 0 ? 1 : 0);
+  const selectedCurse = meta.selectedCurse || 0;
+
+  const loadoutCardsHtml = Object.values(STARTING_LOADOUTS).map((loadout) => {
+    const isUnlocked = unlocked.includes(loadout.id);
+    const isSelected = selected === loadout.id;
+    const canAfford = fangs >= loadout.cost;
+
+    const tilesBadgesHtml = loadout.deck.map((d) => {
+      const def = getHeroTileDefinition(d.id, 0);
+      return `<span class="loadout-tile-pill" title="${def.description}"><strong>${def.name}</strong> (${def.dmg} DMG)</span>`;
+    }).join(' ');
+
+    let actionBtnHtml = '';
+    if (isSelected) {
+      actionBtnHtml = `<span class="badge-active-loadout">✅ Aktivní arzenál</span>`;
+    } else if (isUnlocked) {
+      actionBtnHtml = `<button type="button" class="btn-parchment btn-sm btn-select-loadout" data-select-loadout="${loadout.id}">Zvolit pro další běh</button>`;
+    } else {
+      actionBtnHtml = `<button type="button" class="btn-parchment btn-sm btn-unlock-loadout" data-unlock-loadout="${loadout.id}" ${canAfford ? '' : 'disabled'} title="${canAfford ? 'Odemknout za tesáky' : 'Nedostatek tesáků'}">Odemknout za 🦷 ${loadout.cost}</button>`;
+    }
+
+    return `
+      <div class="archive-loadout-card ${isSelected ? 'loadout-card-selected' : ''} ${!isUnlocked ? 'loadout-card-locked' : ''}">
+        <div class="loadout-card-header">
+          <span class="loadout-card-icon">${loadout.icon}</span>
+          <div>
+            <h4 class="loadout-card-title">${loadout.name} <span class="badge-hp">❤️ ${loadout.maxHp || 20} HP</span></h4>
+            <div class="loadout-card-epithet">${loadout.epithet}</div>
+          </div>
+        </div>
+        <p class="loadout-card-desc">${loadout.description}</p>
+        <div class="loadout-card-abilities" style="margin: 0.35rem 0; font-size: 0.85rem; line-height: 1.35; color: #e2e8f0;">
+          ${loadout.bumpName ? `<div style="margin-bottom: 0.2rem;"><strong style="color: #f59e0b;">💥 ${loadout.bumpName}:</strong> ${loadout.bumpDesc}</div>` : ''}
+          ${loadout.comboName ? `<div><strong style="color: #38bdf8;">✨ 3-Kombo:</strong> ${loadout.comboDesc}</div>` : ''}
+        </div>
+        <div class="loadout-card-deck">
+          <strong>Startovní destičky:</strong>
+          <div class="loadout-deck-pills">${tilesBadgesHtml}</div>
+        </div>
+        <div class="loadout-card-action">
+          ${actionBtnHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const cursesCardsHtml = (maxCurse === 0)
+    ? `<div class="curse-locked-hint">🔒 Kletby noci se odemknou po tvém prvním vítězství nad Hrabětem Drákulou v aktu 3!</div>`
+    : `<div class="archive-curses-grid">` +
+      NIGHT_CURSES.map((curse) => {
+        const isUnlocked = curse.level <= maxCurse;
+        const isSelected = selectedCurse === curse.level;
+        let actionBtn = '';
+        if (isSelected) {
+          actionBtn = `<span class="badge-active-curse">✅ Aktivní kletba</span>`;
+        } else if (isUnlocked) {
+          actionBtn = `<button type="button" class="btn-parchment btn-sm btn-select-curse" data-select-curse="${curse.level}">Aktivovat pro další běh</button>`;
+        } else {
+          actionBtn = `<span class="curse-card-locked-text">🔒 Vyžaduje pokoření Kletby ${curse.level - 1}</span>`;
+        }
+        return `
+          <div class="archive-curse-card ${isSelected ? 'curse-card-selected' : ''} ${!isUnlocked ? 'curse-card-locked' : ''}">
+            <div class="curse-card-header">
+              <span class="curse-card-icon">${curse.icon}</span>
+              <div>
+                <h5 class="curse-card-title">${curse.name}</h5>
+                <div class="curse-multiplier">🦷 Násobič tesáků: <strong>${curse.fangMultiplier}×</strong></div>
+              </div>
+            </div>
+            <p class="curse-card-desc">${curse.description}</p>
+            <div class="curse-card-action">${actionBtn}</div>
+          </div>
+        `;
+      }).join('') +
+      `</div>`;
+
+  const hallOfFame = meta.hallOfFame || [];
+  const hallOfFameHtml = hallOfFame.length === 0
+    ? `<div class="curse-locked-hint">Zatím žádný zápis v Síni slávy. Pokoř Hraběte Drákulu v aktu 3 a zapiš svůj triumf!</div>`
+    : `<div class="hall-of-fame-table-wrap">
+        <table class="hall-of-fame-table">
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Kletba noci</th>
+              <th>Výstroj</th>
+              <th>Bitev</th>
+              <th>DMG</th>
+              <th>Zlato</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${hallOfFame.map((entry) => {
+              const cDef = getCurseDefinition(entry.curseLevel);
+              const lDef = STARTING_LOADOUTS[entry.loadoutId] || STARTING_LOADOUTS.classic;
+              return `
+                <tr>
+                  <td>${entry.date}</td>
+                  <td>${cDef.icon} ${cDef.shortName}</td>
+                  <td>${lDef.icon} ${lDef.name}</td>
+                  <td>${entry.battlesWon}</td>
+                  <td>${entry.damageDealt}</td>
+                  <td>💰 ${entry.gold}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+       </div>`;
+
+  modalRoot.innerHTML = `
+    <div class="modal-backdrop">
+      <div class="modal-card modal-lg">
+        <div class="modal-header">
+          <h3>🏛️ Hradní archiv a zbrojnice</h3>
+          <button type="button" class="btn-parchment btn-xs" id="btn-modal-close">✖ Zavřít</button>
+        </div>
+        <div class="modal-body archive-body">
+          <div class="archive-treasury-banner">
+            <span class="treasury-icon">🦷</span>
+            <div class="treasury-info">
+              <strong>Tvoje nasbírané Upíří tesáky: <span class="fangs-count">${fangs}</span></strong>
+              <div class="treasury-hint">Získávej tesáky za likvidaci upírů, elitních drábů a bossů a odemykej nové startovní arzenály!</div>
+            </div>
+          </div>
+
+          <h4 class="archive-section-title">Startovní arzenály Venci Česnekáče</h4>
+          <div class="archive-loadouts-grid">
+            ${loadoutCardsHtml}
+          </div>
+
+          <h4 class="archive-section-title">🌙 Kletby noci (Stupně obtížnosti I–V)</h4>
+          ${cursesCardsHtml}
+
+          <h4 class="archive-section-title">🏆 Síň slávy Vencových vítězství</h4>
+          ${hallOfFameHtml}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-parchment" id="btn-archive-done">Zpět k výpravě</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modalRoot.querySelector('#btn-modal-close')?.addEventListener('click', () => {
+    closeModal(modalRoot);
+  });
+  modalRoot.querySelector('#btn-archive-done')?.addEventListener('click', () => {
+    closeModal(modalRoot);
+  });
+
+  modalRoot.querySelectorAll('[data-unlock-loadout]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lId = btn.getAttribute('data-unlock-loadout');
+      const loadout = STARTING_LOADOUTS[lId];
+      if (loadout && meta.fangs >= loadout.cost && !meta.unlockedLoadouts.includes(lId)) {
+        meta.fangs -= loadout.cost;
+        meta.unlockedLoadouts.push(lId);
+        meta.selectedLoadout = lId;
+        try {
+          localStorage.setItem('lovec_upiru_meta_v1', JSON.stringify(meta));
+        } catch {}
+        onUpdate?.();
+        openCastleArchiveModal(modalRoot, appState, onUpdate, onSelect);
+      }
+    });
+  });
+
+  modalRoot.querySelectorAll('[data-select-loadout]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lId = btn.getAttribute('data-select-loadout');
+      meta.selectedLoadout = lId;
+      try {
+        localStorage.setItem('lovec_upiru_meta_v1', JSON.stringify(meta));
+      } catch {}
+      onSelect?.(lId);
+      onUpdate?.();
+      openCastleArchiveModal(modalRoot, appState, onUpdate, onSelect);
+    });
+  });
+
+  modalRoot.querySelectorAll('[data-select-curse]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cLvl = Number(btn.getAttribute('data-select-curse'));
+      meta.selectedCurse = cLvl;
+      try {
+        localStorage.setItem('lovec_upiru_meta_v1', JSON.stringify(meta));
+      } catch {}
+      onUpdate?.();
+      openCastleArchiveModal(modalRoot, appState, onUpdate, onSelect);
+    });
   });
 }

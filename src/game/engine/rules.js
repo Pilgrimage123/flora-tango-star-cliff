@@ -4,13 +4,15 @@ import {
   isValidCell,
   getEntityAt,
   applyDamage,
+  addStatus,
+  pushEntity,
   triggerCellTerrainOnEnter,
   assertBoardInvariant,
   hasStatus,
   consumeStatus
 } from './board.js';
 import { executeHeroTile } from './tileEffects.js';
-import { applyMomentumIfLastEnemyKilled } from './combo.js';
+import { applyMomentumIfLastEnemyKilled, triggerComboResonances } from './combo.js';
 import { processEnemiesPhase } from './enemyAI.js';
 import { processReinforcements } from './spawner.js';
 
@@ -63,6 +65,10 @@ export function endPlayerTurn(state, events = [], extraCdReduction = 0) {
     }
   }
 
+  if (state.hero && (state.hero.bumpCooldown || 0) > 0) {
+    state.hero.bumpCooldown = Math.max(0, state.hero.bumpCooldown - 1);
+  }
+
   // Check if battle already won before enemies act
   if (checkBattleOutcome(state, events) !== 'playing') {
     return events;
@@ -92,6 +98,29 @@ export function endPlayerTurn(state, events = [], extraCdReduction = 0) {
     return events;
   }
 
+  // 3b. Tick temporary shields (expires at the end of the next round)
+  for (const ent of allLiving) {
+    if (ent.hp > 0 && ent.statuses?.shield > 0 && typeof ent.statuses.shieldTurnsLeft === 'number') {
+      if (ent.statuses.shieldTurnsLeft > 0) {
+        ent.statuses.shieldTurnsLeft -= 1;
+      } else {
+        const expiredAmount = ent.statuses.shield;
+        delete ent.statuses.shield;
+        delete ent.statuses.shieldTurnsLeft;
+        events.push({
+          type: 'shield_expired',
+          targetId: ent.id,
+          cell: ent.cell,
+          amount: expiredAmount
+        });
+        events.push({
+          type: 'log',
+          text: `🛡️ Štít postavy ${ent.name} (${expiredAmount} bodů) vyprchal na konci kola.`
+        });
+      }
+    }
+  }
+
   // 4. Tick terrain durations (e.g., garlic_cloud)
   for (let c = 0; c < state.terrain.length; c++) {
     const t = state.terrain[c];
@@ -115,6 +144,81 @@ export function endPlayerTurn(state, events = [], extraCdReduction = 0) {
   checkBattleOutcome(state, events);
   assertBoardInvariant(state);
   return events;
+}
+
+export function executeHunterBump(state, hero, occupant, dir, nextCell, hunterId, events) {
+  events.push({
+    type: 'hero_bump',
+    hunterId,
+    targetId: occupant.id,
+    cell: nextCell,
+    dir
+  });
+
+  if (hunterId === 'honza') {
+    hero.bumpCooldown = 3;
+    pushEntity(state, occupant, dir, 1, events);
+    const fromCell = hero.cell;
+    hero.cell = nextCell;
+    events.push({
+      type: 'move',
+      entityId: hero.id,
+      from: fromCell,
+      to: nextCell,
+      facing: hero.facing
+    });
+    triggerCellTerrainOnEnter(state, hero, nextCell, events);
+    applyDamage(state, occupant, 2, { reason: 'honza_bump', attackerId: hero.id }, events);
+    events.push({
+      type: 'log',
+      text: `🔨 Selský beran! Honza vrazil do ${occupant.name} plnou vahou (2 DMG), odhodil ho a obsadil jeho pole!`
+    });
+  } else if (hunterId === 'dragoun') {
+    hero.bumpCooldown = 3;
+    applyDamage(state, occupant, 2, { reason: 'dragoon_bump', attackerId: hero.id }, events);
+    pushEntity(state, occupant, dir, 1, events);
+    addStatus(occupant, 'stun', 1, events);
+    events.push({
+      type: 'log',
+      text: `⚔️ Úder těžkým jílcem! Rittmeister Jaromír udeřil ${occupant.name} mosazným jílcem (2 DMG), odhodil ho a omráčil!`
+    });
+  } else if (hunterId === 'zlodejka') {
+    hero.bumpCooldown = 2;
+    const fromCell = hero.cell;
+    hero.cell = nextCell;
+    occupant.cell = fromCell;
+    occupant.facing = dir;
+    events.push({
+      type: 'swap',
+      heroFrom: fromCell,
+      heroTo: nextCell,
+      enemyId: occupant.id,
+      enemyFrom: nextCell,
+      enemyTo: fromCell
+    });
+    triggerCellTerrainOnEnter(state, hero, nextCell, events);
+    triggerCellTerrainOnEnter(state, occupant, fromCell, events);
+    events.push({
+      type: 'log',
+      text: `🧤 Kapsářská záměna! Káča Pavučina podklouzla ${occupant.name} pod nohama, prohodila si s ním místo a otočila ho zády k sobě!`
+    });
+  } else {
+    hero.bumpCooldown = 3;
+    pushEntity(state, occupant, dir, 1, events);
+    state.terrain[occupant.cell] = {
+      type: 'garlic_cloud',
+      duration: 2
+    };
+    events.push({
+      type: 'terrain_spawn',
+      terrainType: 'garlic_cloud',
+      cell: occupant.cell
+    });
+    events.push({
+      type: 'log',
+      text: `🧄 Česnekové žduchnutí! Venca vrazil do ${occupant.name} česnekovým pupkem, odhodil ho a zamořil jeho pole česnekem!`
+    });
+  }
 }
 
 export function playerStepNoEnd(state, direction) {
@@ -170,6 +274,16 @@ export function playerStepNoEnd(state, direction) {
       text: `👣 Venca popošel na pole ${nextCell + 1}.`
     });
     triggerCellTerrainOnEnter(state, hero, nextCell, events);
+  } else if (occupant.entityType === 'enemy') {
+    if ((hero.bumpCooldown || 0) > 0) {
+      events.push({
+        type: 'invalid_action',
+        reason: `Manévr nárazu ještě chladne (zbývá ${hero.bumpCooldown} tahů)!`
+      });
+      return { ok: false, events };
+    }
+    const hunterId = hero.hunterId || hero.kind || 'venca';
+    executeHunterBump(state, hero, occupant, dir, nextCell, hunterId, events);
   } else if (confused) {
     events.push({
       type: 'log',
@@ -416,6 +530,10 @@ export function executeQueuedTileStep(state, tileInstanceId, slotIndex, comboLen
     for (const enemy of state.enemies) {
       enemy.lastComboHitDir = null;
     }
+    const queueTiles = (state.queue || [])
+      .map((id) => state.hand.find((t) => t.instanceId === id))
+      .filter(Boolean);
+    triggerComboResonances(state, queueTiles, events);
     if (comboLength >= 3 && state.talismans?.includes('notary_stamp')) {
       for (const enemy of state.enemies) {
         if (enemy.hp > 0) {
@@ -461,6 +579,61 @@ export function executeQueuedTileStep(state, tileInstanceId, slotIndex, comboLen
   return events;
 }
 
+export function triggerHunterCombo3(state, hero, events) {
+  const hunterId = hero.hunterId || hero.kind || 'venca';
+  events.push({
+    type: 'hunter_combo3',
+    hunterId,
+    heroId: hero.id
+  });
+
+  if (hunterId === 'honza') {
+    addStatus(hero, 'shield', 6, events);
+    events.push({
+      type: 'log',
+      text: '💪 Selský hněv! Honza získal +6 Štít a mocnou rázovou vlnou zasáhl okolí za 4 DMG!'
+    });
+    for (const e of state.enemies) {
+      if (e.hp > 0 && Math.abs(e.cell - hero.cell) <= 1) {
+        applyDamage(state, e, 4, { reason: 'honza_combo3', attackerId: hero.id }, events);
+      }
+    }
+  } else if (hunterId === 'dragoun') {
+    events.push({
+      type: 'log',
+      text: '💥 Kavaleristická salva! Rittmeister Jaromír vypálil kartáčovou salvu a zkrátil chladnutí destiček!'
+    });
+    for (const e of state.enemies) {
+      if (e.hp > 0 && Math.sign(e.cell - hero.cell) === hero.facing) {
+        applyDamage(state, e, 4, { reason: 'dragoon_combo3', attackerId: hero.id }, events);
+      }
+    }
+    for (const tile of state.hand) {
+      if (tile.currentCooldown > 0) {
+        tile.currentCooldown = Math.max(0, tile.currentCooldown - 1);
+      }
+    }
+  } else if (hunterId === 'zlodejka') {
+    addStatus(hero, 'shield', 4, events);
+    hero.bumpCooldown = 0;
+    events.push({
+      type: 'log',
+      text: '💨 Pavučinový únik! Káča získala +4 Štít a okamžitě obnovila manévr záměny!'
+    });
+  } else {
+    addStatus(hero, 'shield', 4, events);
+    events.push({
+      type: 'log',
+      text: '🧄 Česneková aura! Venca získal +4 Štít a omámil okolní upíry česnekovým odérem!'
+    });
+    for (const e of state.enemies) {
+      if (e.hp > 0 && Math.abs(e.cell - hero.cell) === 1) {
+        addStatus(e, 'confusion', 1, events);
+      }
+    }
+  }
+}
+
 export function finalizeQueueExecution(state, comboLength) {
   const events = [];
   state.queue = [];
@@ -468,6 +641,11 @@ export function finalizeQueueExecution(state, comboLength) {
     state.stats.combosExecuted = (state.stats.combosExecuted || 0) + 1;
   }
 
+  if (comboLength >= 3 && state.hero && state.hero.hp > 0) {
+    triggerHunterCombo3(state, state.hero, events);
+  }
+
+  delete state.comboResonanceBonusPush;
   applyMomentumIfLastEnemyKilled(state, comboLength, events);
   endPlayerTurn(state, events);
   return events;
@@ -487,6 +665,8 @@ export function playerExecuteFullQueueSync(state) {
 
   const queueSnapshot = [...state.queue];
   const comboLength = queueSnapshot.length;
+
+  
 
   for (let i = 0; i < queueSnapshot.length; i++) {
     if (state.hero.hp <= 0) break;

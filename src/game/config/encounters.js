@@ -5,7 +5,10 @@ export const TERRAIN_PRESETS = [
   { id: 'pit_edge', props: [{ type: 'barrel', cell: 2 }], terrain: [{ type: 'pit', cell: 5 }] },
   { id: 'garlic_corridor', props: [{ type: 'barrel', cell: 3 }], terrain: [{ type: 'garlic_cloud', cell: 2, duration: 2 }, { type: 'spikes', cell: 5 }] },
   { id: 'twin_planks', props: [], terrain: [{ type: 'plank_intact', cell: 2 }, { type: 'plank_intact', cell: 4 }] },
-  { id: 'pit_and_spikes', props: [{ type: 'barrel', cell: 4 }], terrain: [{ type: 'pit', cell: 1 }, { type: 'spikes', cell: 3 }] }
+  { id: 'pit_and_spikes', props: [{ type: 'barrel', cell: 4 }], terrain: [{ type: 'pit', cell: 1 }, { type: 'spikes', cell: 3 }] },
+  { id: 'holy_chapel', props: [{ type: 'holy_font', cell: 3 }], terrain: [{ type: 'plank_intact', cell: 5 }] },
+  { id: 'mirror_hall', props: [{ type: 'mirror', cell: 5 }], terrain: [{ type: 'spikes', cell: 2 }] },
+  { id: 'sacred_font_and_mirror', props: [{ type: 'holy_font', cell: 2 }, { type: 'mirror', cell: 6 }], terrain: [] }
 ];
 
 export const ENCOUNTERS = {
@@ -31,7 +34,8 @@ export const ENCOUNTERS = {
   act1_battle_1: {
     id: 'act1_battle_1',
     act: 1,
-    name: 'Zatuchlá chodba berního úřadu',
+    name: 'Zatuchlá hradní chodba',
+    props: [{ type: 'holy_font', cell: 3 }],
     heroCell: 2,
     heroFacing: 1,
     initialEnemies: [
@@ -90,7 +94,7 @@ export const ENCOUNTERS = {
       { enemyId: 'boss_sosak', cell: 5, facing: -1 },
       { enemyId: 'netopyr', cell: 6, facing: -1 }
     ],
-    props: [{ type: 'barrel', cell: 3 }],
+    props: [{ type: 'barrel', cell: 3 }, { type: 'mirror', cell: 7 }],
     terrain: [{ type: 'spikes', cell: 4 }],
     reinforcements: [
       { turnDelay: 4, gateCell: 0, enemyId: 'netopyr' },
@@ -118,7 +122,7 @@ export const ENCOUNTERS = {
   act2_battle_2: {
     id: 'act2_battle_2',
     act: 2,
-    name: 'Účetní archiv Krvavé a.s.',
+    name: 'Starobylý archiv rodové krve',
     heroCell: 2,
     heroFacing: 1,
     initialEnemies: [
@@ -135,7 +139,7 @@ export const ENCOUNTERS = {
   act2_elite: {
     id: 'act2_elite',
     act: 2,
-    name: 'Kancelář vrchního inkvizitora berňáku',
+    name: 'Mučírna vrchního inkvizitora',
     isElite: true,
     heroCell: 2,
     heroFacing: 1,
@@ -160,7 +164,7 @@ export const ENCOUNTERS = {
       { enemyId: 'boss_dagmar', cell: 5, facing: -1 },
       { enemyId: 'sedlak_stit', cell: 4, facing: -1 }
     ],
-    props: [{ type: 'barrel', cell: 3 }],
+    props: [{ type: 'barrel', cell: 3 }, { type: 'mirror', cell: 7 }],
     terrain: [{ type: 'plank_intact', cell: 4 }, { type: 'spikes', cell: 1 }],
     reinforcements: [
       { turnDelay: 4, gateCell: 6, enemyId: 'ucetni_buffer' },
@@ -172,7 +176,7 @@ export const ENCOUNTERS = {
   act3_battle_1: {
     id: 'act3_battle_1',
     act: 3,
-    name: 'Krypta daňových nedoplatků',
+    name: 'Krypta zapomenutých hrobů',
     heroCell: 3,
     heroFacing: 1,
     initialEnemies: [
@@ -189,7 +193,8 @@ export const ENCOUNTERS = {
   act3_battle_2: {
     id: 'act3_battle_2',
     act: 3,
-    name: 'Předsálí správní rady',
+    name: 'Předkomoří upířího sněmu',
+    props: [{ type: 'mirror', cell: 5 }],
     heroCell: 2,
     heroFacing: 1,
     initialEnemies: [
@@ -207,7 +212,7 @@ export const ENCOUNTERS = {
   act3_elite: {
     id: 'act3_elite',
     act: 3,
-    name: 'Sál noční revize',
+    name: 'Sál nočního soudu',
     isElite: true,
     heroCell: 3,
     heroFacing: 1,
@@ -224,7 +229,7 @@ export const ENCOUNTERS = {
   act3_boss: {
     id: 'act3_boss',
     act: 3,
-    name: 'Zasedačka generálního ředitele Drákuly',
+    name: 'Trůnní sál Hraběte Drákuly',
     isBoss: true,
     heroCell: 2,
     heroFacing: 1,

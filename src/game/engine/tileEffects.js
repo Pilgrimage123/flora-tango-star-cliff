@@ -37,6 +37,54 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
     addStatus(hero, tile.selfEffect.type, tile.selfEffect.amount || 1, events);
   }
 
+  // Heal / Shield tile (e.g. Honzova povidlová buchta)
+  if (tile.healAmount) {
+    const missingHp = (hero.maxHp || 20) - hero.hp;
+    const heal = Math.min(tile.healAmount, missingHp);
+    if (heal > 0) {
+      hero.hp += heal;
+      events.push({
+        type: 'heal',
+        targetId: hero.id,
+        amount: heal,
+        hp: hero.hp
+      });
+      events.push({
+        type: 'log',
+        text: `🥟 ${hero.name} si zakousl do buchty a vyléčil se o ${heal} HP!`
+      });
+    }
+    const overflow = tile.healAmount - heal;
+    if (overflow > 0) {
+      addStatus(hero, 'shield', overflow, events);
+      events.push({
+        type: 'log',
+        text: `🛡️ Zbytek buchty dodal postavě ${hero.name} +${overflow} Štítu!`
+      });
+    }
+  }
+
+  if (tile.shieldAmount) {
+    addStatus(hero, 'shield', tile.shieldAmount, events);
+    events.push({
+      type: 'log',
+      text: `🛡️ ${hero.name} získal +${tile.shieldAmount} Štítu!`
+    });
+  }
+
+  if (tile.cureStatus && hero.statuses?.[tile.cureStatus]) {
+    delete hero.statuses[tile.cureStatus];
+    events.push({
+      type: 'status_cleared',
+      targetId: hero.id,
+      status: tile.cureStatus
+    });
+    events.push({
+      type: 'log',
+      text: `✨ ${hero.name} se zbavil stavu ${tile.cureStatus}!`
+    });
+  }
+
   // Movement / Leap tile (e.g. Hospodský přemet přes pupík)
   if (tile.leapDistance) {
     const startCell = hero.cell;
@@ -92,6 +140,29 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
         }
       }
     }
+  } else if (tile.stepBackward && hero.hp > 0) {
+    const targetCell = hero.cell - hero.facing * tile.stepBackward;
+    if (isValidCell(targetCell, state) && !getEntityAt(state, targetCell)) {
+      const fromCell = hero.cell;
+      hero.cell = targetCell;
+      events.push({
+        type: 'step',
+        entityId: hero.id,
+        from: fromCell,
+        to: targetCell,
+        facing: hero.facing
+      });
+      events.push({
+        type: 'log',
+        text: `🏃 ${tile.name}: Venca uskočil z pole ${fromCell + 1} vzad na pole ${targetCell + 1}!`
+      });
+      triggerCellTerrainOnEnter(state, hero, targetCell, events);
+    } else {
+      events.push({
+        type: 'log',
+        text: `🚫 ${tile.name}: Pole za Vencou je zablokováno!`
+      });
+    }
   } else if (tile.projectileRange) {
     // Projectile raycast: hits first non-hero entity in range
     let hitTarget = null;
@@ -117,7 +188,52 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
       tileId: tile.id
     });
 
-    if (hitTarget && hitPat) {
+    if (hitTarget && (hitTarget.kind === 'mirror' || hitTarget.reflectsProjectiles)) {
+      events.push({
+        type: 'projectile_reflect',
+        mirrorId: hitTarget.id,
+        cell: hitCell,
+        fromFacing: hero.facing,
+        toFacing: -hero.facing,
+        tileId: tile.id
+      });
+      events.push({
+        type: 'log',
+        text: `🪞 Hradní zrcadlo pravdy odrazilo střelu „${tile.name}“ o 180° zpět!`
+      });
+
+      const reflectDir = -hero.facing;
+      let reflectedTarget = null;
+      let reflectedEndCell = hitCell;
+      for (let offset = 1; offset <= (tile.projectileRange || 4); offset++) {
+        const rc = hitCell + reflectDir * offset;
+        if (!isValidCell(rc, state)) break;
+        reflectedEndCell = rc;
+        const occ = getEntityAt(state, rc);
+        if (occ && occ.id !== hitTarget.id) {
+          reflectedTarget = occ;
+          break;
+        }
+      }
+
+      events.push({
+        type: 'projectile_vfx',
+        from: hitCell,
+        to: reflectedEndCell,
+        facing: reflectDir,
+        tileId: tile.id,
+        reflected: true
+      });
+
+      if (reflectedTarget && hitPat) {
+        resolveSinglePatternHit(state, tile, hitPat, reflectedTarget, bonuses, comboLength, events);
+      } else {
+        events.push({
+          type: 'log',
+          text: `💨 Odražená střela prolétla chodbou a nikoho nezasáhla.`
+        });
+      }
+    } else if (hitTarget && hitPat) {
       resolveSinglePatternHit(state, tile, hitPat, hitTarget, bonuses, comboLength, events);
     } else {
       events.push({
@@ -228,7 +344,15 @@ export function executeHeroTile(state, tile, slotIndex, comboLength, events = []
 function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength, events) {
   const hero = state.hero;
   const hitDir = Math.sign(target.cell - hero.cell) || hero.facing;
-  const totalDmg = Math.max(0, (pat.dmg || 0) + bonuses.dmgBonus);
+  const isBackstab = Boolean(pat.backstabDmg && target.entityType === 'enemy' && target.facing === hero.facing);
+  const baseDmg = isBackstab ? pat.backstabDmg : (pat.dmg || 0);
+  if (isBackstab) {
+    events.push({
+      type: 'log',
+      text: `🗡️ Zákeřný bod ze zálohy do zad postavy ${target.name} (${pat.backstabDmg} DMG)!`
+    });
+  }
+  const totalDmg = Math.max(0, baseDmg + bonuses.dmgBonus);
 
   let block = null;
   if (totalDmg > 0) {
@@ -251,13 +375,30 @@ function resolveSinglePatternHit(state, tile, pat, target, bonuses, comboLength,
   }
 
   // Execute pattern effects on surviving target
-  for (const eff of pat.effects || []) {
+  const combinedEffects = [...(pat.effects || []), ...(isBackstab && pat.backstabEffects ? pat.backstabEffects : [])];
+  for (const eff of combinedEffects) {
     if (target.hp <= 0) break;
     if (!effectSurvivesBlock(block, eff.type)) continue;
 
     switch (eff.type) {
-      case 'push':
-        pushEntity(state, target, hitDir, eff.distance || 1, events);
+      case 'push': {
+        const extraPush = state.comboResonanceBonusPush || 0;
+        pushEntity(state, target, hitDir, (eff.distance || 1) + extraPush, events);
+        break;
+      }
+      case 'dispel_empower':
+        if (target.statuses?.empower) {
+          delete target.statuses.empower;
+          events.push({
+            type: 'status_cleared',
+            targetId: target.id,
+            status: 'empower'
+          });
+          events.push({
+            type: 'log',
+            text: `🧄 ${target.name} ztratil Zesílení (česnek mu vzal sílu)!`
+          });
+        }
         break;
       case 'pull':
         pullEntity(state, target, hero.cell, events);

@@ -62,7 +62,7 @@ export function createEnemyInstance(enemyId, cell, facing = -1) {
     isBoss: Boolean(def.isBoss),
     mirrorCloak: Boolean(def.mirrorCloak),
     bloodThorns: Boolean(def.bloodThorns),
-    corporateSynergy: Boolean(def.corporateSynergy),
+    lordSynergy: Boolean(def.lordSynergy || def.corporateSynergy),
     enrageTile: def.enrageTile || null,
     enraged: false,
     archetype: def.archetype || 'fodder',
@@ -84,8 +84,8 @@ export function createPropInstance(propKind, cell) {
     kind: propKind,
     entityType: 'prop',
     name: def.name,
-    givenName: propKind === 'barrel' ? 'Sud' : def.name,
-    epithet: propKind === 'barrel' ? 'Kyselé zelí' : '',
+    givenName: propKind === 'barrel' ? 'Sud' : propKind === 'holy_font' ? 'Kropenka' : propKind === 'mirror' ? 'Zrcadlo' : def.name,
+    epithet: propKind === 'barrel' ? 'Kyselé zelí' : propKind === 'holy_font' ? 'Svěcená voda' : propKind === 'mirror' ? 'Pravda' : '',
     bodyScale: 'prop',
     sprite: def.icon,
     maxHp: def.maxHp,
@@ -93,6 +93,8 @@ export function createPropInstance(propKind, cell) {
     cell,
     facing: 1,
     flying: false,
+    destructible: Boolean(def.destructible),
+    reflectsProjectiles: Boolean(def.reflectsProjectiles),
     statuses: {}
   };
 }
@@ -102,19 +104,39 @@ export function createBattleState(options = {}) {
   const rng = options.rng || createRng(seed);
   const encounterId = options.encounterId || 'tutorial_1';
   const encounter = ENCOUNTERS[encounterId] || ENCOUNTERS.tutorial_1;
+  const curseLevel = Math.max(0, Math.min(5, Number(options.curseLevel) || 0));
 
   const talismans = [...(options.talismans || [])];
   const maxQueueSlots = talismans.includes('wet_kerchief') ? MAX_QUEUE_SLOTS : QUEUE_SLOTS;
 
-  const heroMaxHp = options.heroMaxHp || HERO_START_HP;
+  const hunterId = options.hunterId || options.loadoutId || 'venca';
+  const heroMaxHp = options.heroMaxHp || (hunterId === 'dragoun' ? 24 : hunterId === 'zlodejka' ? 14 : HERO_START_HP);
   const heroHp = Math.min(heroMaxHp, options.heroHp ?? heroMaxHp);
 
-  const deckDefs = options.deck || [
-    { id: 'oak_stake', upgradeLevel: 0, permanentCdReduction: 0 },
-    { id: 'garlic_belch', upgradeLevel: 0, permanentCdReduction: 0 },
-    { id: 'holy_syringe', upgradeLevel: 0, permanentCdReduction: 0 },
-    { id: 'belly_vault', upgradeLevel: 0, permanentCdReduction: 0 }
-  ];
+  const defaultDecks = {
+    honza: [
+      { id: 'flail_sweep', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'plum_bun', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'heavy_windup', upgradeLevel: 0, permanentCdReduction: 0 }
+    ],
+    dragoun: [
+      { id: 'dragoon_sabre', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'dragoon_pistol', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'cavalry_parry', upgradeLevel: 0, permanentCdReduction: 0 }
+    ],
+    zlodejka: [
+      { id: 'stiletto_stab', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'glass_shards', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'shadow_slip', upgradeLevel: 0, permanentCdReduction: 0 }
+    ],
+    venca: [
+      { id: 'oak_stake', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'garlic_belch', upgradeLevel: 0, permanentCdReduction: 0 },
+      { id: 'holy_syringe', upgradeLevel: 0, permanentCdReduction: 0 }
+    ]
+  };
+
+  const deckDefs = options.deck || defaultDecks[hunterId] || defaultDecks.venca;
 
   const hand = deckDefs.map((entry, idx) => {
     const def = getHeroTileDefinition(entry.id, entry.upgradeLevel || 0);
@@ -133,13 +155,23 @@ export function createBattleState(options = {}) {
   const boardSize = encounter.boardSize || BOARD_SIZE;
   const terrain = Array.from({ length: boardSize }, () => ({ type: 'none' }));
 
+  const hunterNames = {
+    honza: { name: 'Hloupý Honza', givenName: 'Honza', epithet: 'Selský silák' },
+    dragoun: { name: 'Rittmeister Jaromír', givenName: 'Jaromír', epithet: 'Vysloužilý dragoun' },
+    zlodejka: { name: 'Káča Pavučina', givenName: 'Káča', epithet: 'Úskočná zlodějka' },
+    venca: { name: 'Venca Česnekáč', givenName: 'Venca', epithet: 'Česnekáč' },
+    classic: { name: 'Venca Česnekáč', givenName: 'Venca', epithet: 'Česnekáč' }
+  };
+  const hInfo = hunterNames[hunterId] || hunterNames.venca;
+
   const hero = {
-    id: 'hero_venca',
-    kind: 'venca',
+    id: `hero_${hunterId}`,
+    kind: hunterId === 'classic' ? 'venca' : hunterId,
+    hunterId: hunterId === 'classic' ? 'venca' : hunterId,
     entityType: 'hero',
-    name: 'Venca Česnekáč',
-    givenName: 'Venca',
-    epithet: 'Česnekáč',
+    name: hInfo.name,
+    givenName: hInfo.givenName,
+    epithet: hInfo.epithet,
     bodyScale: 'hero',
     sprite: 'hero.idle',
     maxHp: heroMaxHp,
@@ -148,12 +180,24 @@ export function createBattleState(options = {}) {
     facing: encounter.heroFacing ?? 1,
     flying: false,
     ichor: 'red',
+    bumpCooldown: 0,
     statuses: {}
   };
 
-  const enemies = (encounter.initialEnemies || []).map((e) =>
-    createEnemyInstance(e.enemyId, e.cell, e.facing ?? -1)
-  );
+  const enemies = (encounter.initialEnemies || []).map((e) => {
+    const inst = createEnemyInstance(e.enemyId, e.cell, e.facing ?? -1);
+    if (curseLevel >= 3 && (encounter.isElite || inst.isElite)) {
+      inst.statuses = inst.statuses || {};
+      inst.statuses.shield = (inst.statuses.shield || 0) + 1;
+    }
+    if (curseLevel >= 5 && (encounter.isBoss || inst.id.includes('drakula') || inst.id.includes('dracula'))) {
+      inst.maxHp = Math.ceil(inst.maxHp * 1.25);
+      inst.hp = inst.maxHp;
+      inst.statuses = inst.statuses || {};
+      inst.statuses.empower = (inst.statuses.empower || 0) + 1;
+    }
+    return inst;
+  });
 
   const occupiedCells = new Set([hero.cell, ...enemies.map((e) => e.cell)]);
   const props = [];
@@ -200,7 +244,7 @@ export function createBattleState(options = {}) {
 
   const reinforcements = (encounter.reinforcements || []).map((r, idx) => ({
     id: `reinf_${idx}`,
-    turnsRemaining: r.turnDelay,
+    turnsRemaining: Math.max(1, r.turnDelay - (curseLevel >= 1 ? 1 : 0)),
     gateCell: r.gateCell,
     enemyId: r.enemyId,
     spawned: false
@@ -216,6 +260,7 @@ export function createBattleState(options = {}) {
     isTutorial: Boolean(encounter.isTutorial),
     isElite: Boolean(encounter.isElite),
     isBoss: Boolean(encounter.isBoss),
+    curseLevel,
     goldReward: encounter.goldReward || 18,
     turn: 1,
     status: 'playing', // 'playing' | 'won' | 'lost'

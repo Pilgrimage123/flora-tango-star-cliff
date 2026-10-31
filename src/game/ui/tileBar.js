@@ -2,6 +2,7 @@
 import { getAssetUrl } from './assets.js';
 import { showTooltip, hideTooltip } from './tooltips.js';
 import { czechTurns } from '../config/strings.cs.js';
+import { TILE_TAGS } from '../config/tiles.js';
 
 export function renderTileBar(container, state, callbacks = {}) {
   if (!container || !state) return;
@@ -24,6 +25,12 @@ export function renderTileBar(container, state, callbacks = {}) {
       const badges = [];
       if (tile.quick) badges.push('<span class="tile-tag tile-tag-quick">⚡ Rychlovka</span>');
       if (tile.resonance) badges.push('<span class="tile-tag tile-tag-resonance">✨ Rezonance</span>');
+      if (tile.tags && Array.isArray(tile.tags)) {
+        for (const tId of tile.tags) {
+          const tInfo = TILE_TAGS[tId];
+          if (tInfo) badges.push(`<span class="tile-tag tile-tag-family" style="border-color:${tInfo.color};">${tInfo.icon} ${tInfo.name}</span>`);
+        }
+      }
 
       return `
         <button type="button"
@@ -89,6 +96,9 @@ export function renderTileBar(container, state, callbacks = {}) {
       <button type="button" class="btn-action" id="btn-act-right" ${!canStepRight ? 'disabled' : ''} title="Krok vpravo (Klávesa D nebo ➡)">
         Krok vpravo ➡ <kbd>D</kbd>
       </button>
+      <button type="button" class="btn-action btn-preview-toggle ${callbacks.isComboPreviewActive ? 'btn-preview-active' : ''}" id="btn-act-preview-toggle" ${!hasQueued ? 'disabled' : ''} title="Taktický náhled dopadu komba na Bojiště (vhodné pro mobily a dotykové displeje)">
+        👁️ Náhled
+      </button>
       <button type="button" class="${executeBtnClass}" id="btn-act-execute" ${!hasQueued ? 'disabled' : ''} title="${executeBtnTitle}">
         ${executeBtnText}
       </button>
@@ -105,7 +115,13 @@ export function renderTileBar(container, state, callbacks = {}) {
   container.querySelector('#btn-act-right')?.addEventListener('click', () => callbacks.onStep?.(1));
   container.querySelector('#btn-act-turn')?.addEventListener('click', () => callbacks.onTurn?.());
   container.querySelector('#btn-act-wait')?.addEventListener('click', () => callbacks.onWait?.());
-  container.querySelector('#btn-act-execute')?.addEventListener('click', () => callbacks.onExecuteQueue?.());
+  const execBtn = container.querySelector('#btn-act-execute');
+  execBtn?.addEventListener('click', () => callbacks.onExecuteQueue?.());
+  execBtn?.addEventListener('mouseenter', () => callbacks.onHoverExecute?.(true));
+  execBtn?.addEventListener('mouseleave', () => callbacks.onHoverExecute?.(false));
+
+  const previewToggleBtn = container.querySelector('#btn-act-preview-toggle');
+  previewToggleBtn?.addEventListener('click', () => callbacks.onToggleComboPreview?.());
 
   container.querySelectorAll('[data-tile-instance]').forEach((btn) => {
     const instanceId = btn.getAttribute('data-tile-instance');
@@ -141,6 +157,7 @@ function canHeroMoveDir(state, dir) {
 }
 
 function formatTileRangeLabel(tile) {
+  if (tile.stepBackward) return 'Úskok vzad';
   if (tile.leapDistance) return `Skok ${tile.leapDistance}`;
   if (tile.projectileRange) return `Střela 1–${tile.projectileRange}`;
   if (!tile.pattern || tile.pattern.length === 0) return 'Na místě';
@@ -166,6 +183,7 @@ export function buildTileTooltipHtml(tile) {
       ⚔️ Základní DMG: <strong>${tile.dmg}</strong> · ⏳ Cooldown: <strong>${tile.maxCooldown} ${czechTurns(tile.maxCooldown)}</strong>
       ${tile.quick ? ' · ⚡ <strong>Rychlovka (0 tahů)</strong>' : ''}
     </div>
+    ${tile.tags?.length ? `<div class="tt-tags" style="font-size:0.85em; color:#d4af37; margin-bottom:4px;">${tile.tags.map(t => TILE_TAGS[t] ? `${TILE_TAGS[t].icon} ${TILE_TAGS[t].name}` : '').filter(Boolean).join(' · ')}</div>` : ''}
     <div class="tt-desc">${tile.description}</div>
     ${tile.resonance ? `<div class="tt-bonus">✨ <strong>${tile.resonance.description}</strong></div>` : ''}
     ${tile.flavor ? `<div class="tt-flavor">${tile.flavor}</div>` : ''}

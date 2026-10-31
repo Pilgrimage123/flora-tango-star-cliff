@@ -1,6 +1,6 @@
 # Lovec upírů: Venca Česnekáč
 
-Taktická tahová 1D roguelike hra, ve které Venca Česnekáč bojuje proti hradní byrokracii a upírům skládáním komb z akčních destiček.
+Taktická tahová 1D roguelike hra, ve které Venca Česnekáč bojuje proti krvežíznivým upírům a nočním stvůrám skládáním komb z akčních destiček.
 
 ## Language
 
@@ -77,7 +77,7 @@ Vizuální grafický stav Venci Česnekáče (výchozí idle, útočný nápřah
 _Avoid_: Skin, Spritesheet, Kostým
 
 **Dráha střely (Projektil)**:
-Vizuální reprezentace dálkového útoku (stříkačka, razítko, blesk krucifixu) přelétávajícího po jednorozměrné ose bojiště mezi střelcem a zasaženým polem před vyvoláním poškození.
+Vizuální reprezentace dálkového útoku (stříkačka, kletba, blesk krucifixu) přelétávajícího po jednorozměrné ose bojiště mezi střelcem a zasaženým polem před vyvoláním poškození.
 _Avoid_: Kouzlo, Projektilová zóna, Raycast
 
 **Plynulý posun (Slide)**:

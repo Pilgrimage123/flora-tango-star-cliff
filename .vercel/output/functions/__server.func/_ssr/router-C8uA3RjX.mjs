@@ -2,8 +2,8 @@ import { i as __toESM, n as __exportAll } from "../_runtime.mjs";
 import { K as require_react, _ as createFileRoute, b as require_jsx_runtime, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-eEv5k570.js
-var router_eEv5k570_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-C8uA3RjX.js
+var router_C8uA3RjX_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -344,7 +344,7 @@ var Route$1 = createRootRoute({
 			{ title: APP_NAME },
 			{
 				name: "description",
-				content: "1D tahová taktická roguelite. Venca Česnekáč proti hradní upíří byrokracii."
+				content: "1D tahová taktická roguelite. Venca Česnekáč v boji proti hradním upírům a nočním stvůrám."
 			},
 			{
 				name: "theme-color",
@@ -381,7 +381,7 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-Bm7wC7Gj.mjs");
+var $$splitComponentImporter = () => import("./routes-BprkmWpd.mjs");
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({
 	component: lazyRouteComponent($$splitComponentImporter, "component"),
 	head: () => ({ links: [
@@ -413,4 +413,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_eEv5k570_exports as t };
+export { getRouter, router_C8uA3RjX_exports as t };

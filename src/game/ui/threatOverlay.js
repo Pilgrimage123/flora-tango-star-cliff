@@ -1,5 +1,5 @@
 // @ts-nocheck
-export function renderCellThreatAndPreviewHtml(cellIndex, cellThreat, queuePreview, state) {
+export function renderCellThreatAndPreviewHtml(cellIndex, cellThreat, queuePreview, state, simPreview = null) {
   const parts = [];
 
   // 1. ARMED_RED Ground Telegraph Crosshair on this cell
@@ -90,6 +90,19 @@ export function renderCellThreatAndPreviewHtml(cellIndex, cellThreat, queuePrevi
           👻 Venca (${queuePreview.ghostFacing === 1 ? '▶' : '◀'})
         </div>
       `);
+    }
+  }
+
+  if (simPreview?.ghosts) {
+    for (const g of simPreview.ghosts) {
+      if (g.cell === cellIndex) {
+        parts.push(`
+          <div class="ghost-silhouette ghost-${g.entityType}" title="Sem se ${g.name} přesune po odpalu komba">
+            <span class="ghost-icon">👻</span>
+            <span class="ghost-name">${g.name} (${g.facing === 1 ? '▶' : '◀'})</span>
+          </div>
+        `);
+      }
     }
   }
 

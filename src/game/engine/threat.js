@@ -17,8 +17,8 @@ export function computeEnemyTileTargetCells(state, enemy, tileDef, bonusCtx = nu
   const empowerBonus = getStatusAmount(enemy, 'empower');
   const synergy = bonusCtx && typeof bonusCtx.synergy === 'number'
     ? bonusCtx.synergy
-    : (!enemy.corporateSynergy &&
-      state.enemies?.some((e) => e.hp > 0 && e.corporateSynergy && e.id !== enemy.id)
+    : (!enemy.lordSynergy &&
+      state.enemies?.some((e) => e.hp > 0 && e.lordSynergy && e.id !== enemy.id)
         ? 1
         : 0);
 
@@ -81,7 +81,7 @@ export function computeBoardThreats(state, hoveredEnemyId = null) {
   put(state.hero);
   for (const ent of state.enemies || []) put(ent);
   for (const prop of state.props || []) put(prop);
-  const synergyIds = (state.enemies || []).filter((e) => e.hp > 0 && e.corporateSynergy).map((e) => e.id);
+  const synergyIds = (state.enemies || []).filter((e) => e.hp > 0 && e.lordSynergy).map((e) => e.id);
 
   sortedEnemies.forEach((enemy, index) => {
     const initiativeRank = index + 1;

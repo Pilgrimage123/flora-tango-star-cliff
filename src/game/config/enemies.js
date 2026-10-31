@@ -27,27 +27,27 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [] }],
-    description: 'Kousne do pole přímo před sebou za 1 DMG.'
+    pattern: [{ offset: 1, dmg: 2, effects: [] }],
+    description: 'Kousne do pole přímo před sebou za 2 DMG.'
   },
   tax_stamp_shot: {
     id: 'tax_stamp_shot',
-    name: 'Razítková střela',
+    name: 'Krvavý svitek',
     icon: 'intent.shoot',
     type: 'střela',
     delay: 3,
     cooldown: 3,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [] },
-      { offset: 2, dmg: 1, projectile: true, effects: [] },
-      { offset: 3, dmg: 1, projectile: true, effects: [] }
+      { offset: 1, dmg: 2, projectile: true, effects: [] },
+      { offset: 2, dmg: 2, projectile: true, effects: [] },
+      { offset: 3, dmg: 2, projectile: true, effects: [] }
     ],
-    description: 'Střelí úředním razítkem až o 3 pole vpřed (1 DMG prvnímu cíli v dráze).'
+    description: 'Vystřelí kletbu temného svitku až o 3 pole vpřed (2 DMG prvnímu cíli v dráze).'
   },
   retreat_step: {
     id: 'retreat_step',
-    name: 'Úřední odstup',
+    name: 'Opatrný ústup',
     icon: 'intent.step',
     type: 'krok',
     retreatIfClose: true,
@@ -65,7 +65,7 @@ export const ENEMY_TILES = {
     cooldown: 2,
     selfEffect: { type: 'empower', amount: 1 },
     pattern: [],
-    description: 'Napne svaly (+1 DMG k příštímu úderu ve frontě).'
+    description: 'Napne svaly (+2 DMG k příštímu úderu ve frontě).'
   },
   drab_lunge: {
     id: 'drab_lunge',
@@ -75,8 +75,8 @@ export const ENEMY_TILES = {
     delay: 3,
     cooldown: 3,
     lungeForward: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'push', distance: 1 }] }],
-    description: 'Popaskočí o 1 pole vpřed (je-li volno) a sekne před sebe za 2 DMG + odhození o 1 pole.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'push', distance: 1 }] }],
+    description: 'Popaskočí o 1 pole vpřed (je-li volno) a sekne před sebe za 4 DMG + odhození o 1 pole.'
   },
   cleaver_chop: {
     id: 'cleaver_chop',
@@ -85,8 +85,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 2 }] }],
-    description: 'Sekne řeznickým sekáčkem 1 pole vpřed za 2 DMG + Krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 2 }] }],
+    description: 'Sekne řeznickým sekáčkem 1 pole vpřed za 4 DMG + Krvácení.'
   },
   porter_bash: {
     id: 'porter_bash',
@@ -95,8 +95,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'push', distance: 2 }] }],
-    description: 'Udeří štítem 1 pole vpřed za 1 DMG a odhodí cíl o 2 pole.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'push', distance: 2 }] }],
+    description: 'Udeří štítem 1 pole vpřed za 2 DMG a odhodí cíl o 2 pole.'
   },
   porter_guard: {
     id: 'porter_guard',
@@ -105,9 +105,9 @@ export const ENEMY_TILES = {
     type: 'štít',
     delay: 2,
     cooldown: 2,
-    selfEffect: { type: 'shield', amount: 1 },
+    selfEffect: { type: 'shield', amount: 2 },
     pattern: [],
-    description: 'Zapře se za štít (+1 Štít).'
+    description: 'Zapře se za štít (+2 Štít).'
   },
   bat_swoop: {
     id: 'bat_swoop',
@@ -117,39 +117,39 @@ export const ENEMY_TILES = {
     delay: 1,
     cooldown: 1,
     pattern: [
-      { offset: 1, dmg: 1, effects: [] },
-      { offset: 2, dmg: 1, effects: [] }
+      { offset: 1, dmg: 2, effects: [] },
+      { offset: 2, dmg: 2, effects: [] }
     ],
-    description: 'Rychlý přelet nad 2 poli vpřed za 1 DMG.'
+    description: 'Rychlý přelet nad 2 poli vpřed za 2 DMG.'
   },
   accountant_buff: {
     id: 'accountant_buff',
-    name: 'Daňová optimalizace krve',
+    name: 'Temné povzbuzení krve',
     icon: 'intent.heal',
     type: 'léčení',
     delay: 2,
     cooldown: 3,
     supportAllies: true,
-    healAmount: 2,
+    healAmount: 4,
     empowerAmount: 1,
     pattern: [],
-    description: 'Vyléčí nejbližšího spojence o 2 HP a přidá mu Zesílení (+1 DMG).'
+    description: 'Vyléčí nejbližšího spojence o 4 HP a přidá mu Zesílení (+2 DMG).'
   },
   accountant_curse: {
     id: 'accountant_curse',
-    name: 'Upomínka v krvi',
+    name: 'Prokletí prastarého svitku',
     icon: 'intent.shoot',
     type: 'střela',
     delay: 3,
     cooldown: 3,
     projectileRange: 4,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 4, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 4, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Hodí lejstro na dosah 4 polí za 1 DMG + Zmatení.'
+    description: 'Vrhne temný pergamen na dosah 4 polí za 2 DMG + Zmatení.'
   },
   boss_sosak_drain: {
     id: 'boss_sosak_drain',
@@ -160,10 +160,10 @@ export const ENEMY_TILES = {
     cooldown: 2,
     lifesteal: 1,
     pattern: [
-      { offset: 1, dmg: 2, effects: [] },
-      { offset: 2, dmg: 2, effects: [] }
+      { offset: 1, dmg: 4, effects: [] },
+      { offset: 2, dmg: 4, effects: [] }
     ],
-    description: 'Švihne kordem na 2 pole vpřed za 2 DMG a vyléčí si 1 HP.'
+    description: 'Švihne kordem na 2 pole vpřed za 4 DMG a vyléčí si 1 HP.'
   },
   boss_sosak_summon: {
     id: 'boss_sosak_summon',
@@ -184,11 +184,11 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     pattern: [
-      { offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 2 }] },
-      { offset: 2, dmg: 2, effects: [{ type: 'bleed', amount: 2 }] },
-      { offset: 3, dmg: 2, effects: [{ type: 'bleed', amount: 2 }] }
+      { offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 2 }] },
+      { offset: 2, dmg: 4, effects: [{ type: 'bleed', amount: 2 }] },
+      { offset: 3, dmg: 4, effects: [{ type: 'bleed', amount: 2 }] }
     ],
-    description: 'Temná vlna na 3 pole vpřed za 2 DMG + Krvácení.'
+    description: 'Temná vlna na 3 pole vpřed za 4 DMG + Krvácení.'
   },
   boss_dagmar_thorns: {
     id: 'boss_dagmar_thorns',
@@ -199,40 +199,40 @@ export const ENEMY_TILES = {
     cooldown: 3,
     spawnSpikesAtHero: true,
     pattern: [
-      { offset: 1, dmg: 1, effects: [{ type: 'push', distance: 2 }] },
-      { offset: -1, dmg: 1, effects: [{ type: 'push', distance: 2 }] }
+      { offset: 1, dmg: 2, effects: [{ type: 'push', distance: 2 }] },
+      { offset: -1, dmg: 2, effects: [{ type: 'push', distance: 2 }] }
     ],
-    description: 'Odhodí sousedy na obou stranách za 1 DMG (Push 2) a nechá vyrazit kůly pod Vencou.'
+    description: 'Odhodí sousedy na obou stranách za 2 DMG (Push 2) a nechá vyrazit kůly pod Vencou.'
   },
-  boss_dracula_audit: {
-    id: 'boss_dracula_audit',
-    name: 'Generální audit krve',
+  boss_dracula_strike: {
+    id: 'boss_dracula_strike',
+    name: 'Temný ortel noci',
     icon: 'intent.strike',
     type: 'úder',
     delay: 2,
     cooldown: 2,
     pattern: [
-      { offset: 1, dmg: 3, effects: [{ type: 'push', distance: 1 }] },
-      { offset: 2, dmg: 3, effects: [{ type: 'push', distance: 1 }] }
+      { offset: 1, dmg: 6, effects: [{ type: 'push', distance: 1 }] },
+      { offset: 2, dmg: 6, effects: [{ type: 'push', distance: 1 }] }
     ],
-    description: 'Drtivý úder na 2 pole vpřed za 3 DMG + Push 1.'
+    description: 'Drtivý úder na 2 pole vpřed za 6 DMG + Push 1.'
   },
-  boss_dracula_decree: {
-    id: 'boss_dracula_decree',
-    name: 'Dekret představenstva',
+  boss_dracula_curse: {
+    id: 'boss_dracula_curse',
+    name: 'Kletba prastarého rodu',
     icon: 'intent.shoot',
     type: 'střela',
     delay: 3,
     cooldown: 3,
     projectileRange: 5,
     pattern: [
-      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
-      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
-      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
-      { offset: 4, dmg: 2, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
-      { offset: 5, dmg: 2, projectile: true, effects: [{ type: 'stun', amount: 1 }] }
+      { offset: 1, dmg: 4, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
+      { offset: 2, dmg: 4, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
+      { offset: 3, dmg: 4, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
+      { offset: 4, dmg: 4, projectile: true, effects: [{ type: 'stun', amount: 1 }] },
+      { offset: 5, dmg: 4, projectile: true, effects: [{ type: 'stun', amount: 1 }] }
     ],
-    description: 'Střela přes 5 polí za 2 DMG prvnímu cíli v dráze a omráčí ho.'
+    description: 'Střela přes 5 polí za 4 DMG prvnímu cíli v dráze a omráčí ho.'
   },
   sickle_cut: {
     id: 'sickle_cut',
@@ -241,8 +241,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Sekne rezavým srpem 1 pole vpřed za 2 DMG a drobné krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Sekne rezavým srpem 1 pole vpřed za 4 DMG a drobné krvácení.'
   },
   club_smash: {
     id: 'club_smash',
@@ -251,8 +251,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 3,
     cooldown: 3,
-    pattern: [{ offset: 1, dmg: 3, effects: [{ type: 'push', distance: 1 }] }],
-    description: 'Po nápřahu třískne kyjem 1 pole vpřed za 3 DMG a odhodí cíl o 1 pole.'
+    pattern: [{ offset: 1, dmg: 6, effects: [{ type: 'push', distance: 1 }] }],
+    description: 'Po nápřahu třískne kyjem 1 pole vpřed za 6 DMG a odhodí cíl o 1 pole.'
   },
   plague_spit: {
     id: 'plague_spit',
@@ -263,11 +263,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] }
     ],
-    description: 'Plivne zelenou slinu až 3 pole daleko za 1 DMG a krvácení.'
+    description: 'Plivne zelenou slinu až 3 pole daleko za 2 DMG a krvácení.'
   },
   hound_pounce: {
     id: 'hound_pounce',
@@ -277,8 +277,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lungeForward: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Skočí až o 2 pole vpřed (je-li volno) a kousne za 2 DMG + krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Skočí až o 2 pole vpřed (je-li volno) a kousne za 4 DMG + krvácení.'
   },
   halberd_thrust: {
     id: 'halberd_thrust',
@@ -288,10 +288,10 @@ export const ENEMY_TILES = {
     delay: 3,
     cooldown: 3,
     pattern: [
-      { offset: 1, dmg: 2, effects: [] },
-      { offset: 2, dmg: 2, effects: [{ type: 'push', distance: 1 }] }
+      { offset: 1, dmg: 4, effects: [] },
+      { offset: 2, dmg: 4, effects: [{ type: 'push', distance: 1 }] }
     ],
-    description: 'Bodne halapartnou na 1. a 2. pole vpřed za 2 DMG. Vzdálenější cíl odhodí o 1 pole.'
+    description: 'Bodne halapartnou na 1. a 2. pole vpřed za 4 DMG. Vzdálenější cíl odhodí o 1 pole.'
   },
   bulldog_bite: {
     id: 'bulldog_bite',
@@ -300,8 +300,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Zakousne se 1 pole vpřed za 2 DMG a nepustí se tak snadno (krvácení).'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Zakousne se 1 pole vpřed za 4 DMG a nepustí se tak snadno (krvácení).'
   },
   stone_chuck: {
     id: 'stone_chuck',
@@ -312,11 +312,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [] },
-      { offset: 2, dmg: 1, projectile: true, effects: [] },
-      { offset: 3, dmg: 1, projectile: true, effects: [] }
+      { offset: 1, dmg: 2, projectile: true, effects: [] },
+      { offset: 2, dmg: 2, projectile: true, effects: [] },
+      { offset: 3, dmg: 2, projectile: true, effects: [] }
     ],
-    description: 'Hodí kámen až 3 pole daleko za 1 DMG.'
+    description: 'Hodí kámen až 3 pole daleko za 2 DMG.'
   },
   boar_charge: {
     id: 'boar_charge',
@@ -326,8 +326,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lungeForward: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'push', distance: 1 }] }],
-    description: 'Rozběhne se až o 2 pole a vrazí do cíle za 2 DMG + odhození.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'push', distance: 1 }] }],
+    description: 'Rozběhne se až o 2 pole a vrazí do cíle za 4 DMG + odhození.'
   },
   vampig_bite: {
     id: 'vampig_bite',
@@ -337,8 +337,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lifesteal: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Kousne 1 pole vpřed za 2 DMG, způsobí krvácení a vysaje si 1 HP.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Kousne 1 pole vpřed za 4 DMG, způsobí krvácení a vysaje si 1 HP.'
   },
   slime_slap: {
     id: 'slime_slap',
@@ -347,8 +347,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Pleskne slizem 1 pole vpřed za 2 DMG a krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Pleskne slizem 1 pole vpřed za 4 DMG a krvácení.'
   },
   slime_spit: {
     id: 'slime_spit',
@@ -359,11 +359,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Plivne spory až 3 pole daleko za 1 DMG a zmatení.'
+    description: 'Plivne spory až 3 pole daleko za 2 DMG a zmatení.'
   },
   witch_claw: {
     id: 'witch_claw',
@@ -373,10 +373,10 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     pattern: [
-      { offset: 1, dmg: 2, effects: [] },
-      { offset: 2, dmg: 1, effects: [{ type: 'bleed', amount: 1 }] }
+      { offset: 1, dmg: 4, effects: [] },
+      { offset: 2, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }
     ],
-    description: 'Sekne pařátem na 1. pole za 2 DMG a na 2. pole za 1 DMG + krvácení.'
+    description: 'Sekne pařátem na 1. pole za 4 DMG a na 2. pole za 2 DMG + krvácení.'
   },
   witch_hex: {
     id: 'witch_hex',
@@ -387,12 +387,12 @@ export const ENEMY_TILES = {
     cooldown: 3,
     projectileRange: 4,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 4, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 4, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Pošle kletbu až na 4 pole za 1 DMG a zmatení.'
+    description: 'Pošle kletbu až na 4 pole za 2 DMG a zmatení.'
   },
   axe_chop: {
     id: 'axe_chop',
@@ -401,8 +401,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 3,
     cooldown: 3,
-    pattern: [{ offset: 1, dmg: 3, effects: [{ type: 'bleed', amount: 2 }] }],
-    description: 'Po nápřahu sekne rezavou sekerou za 3 DMG a silné krvácení.'
+    pattern: [{ offset: 1, dmg: 6, effects: [{ type: 'bleed', amount: 2 }] }],
+    description: 'Po nápřahu sekne rezavou sekerou za 6 DMG a silné krvácení.'
   },
   plank_bash: {
     id: 'plank_bash',
@@ -411,8 +411,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'push', distance: 2 }] }],
-    description: 'Vrazí dřevěným štítem za 1 DMG a odhodí cíl o 2 pole.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'push', distance: 2 }] }],
+    description: 'Vrazí dřevěným štítem za 2 DMG a odhodí cíl o 2 pole.'
   },
   plank_guard: {
     id: 'plank_guard',
@@ -421,9 +421,9 @@ export const ENEMY_TILES = {
     type: 'štít',
     delay: 2,
     cooldown: 2,
-    selfEffect: { type: 'shield', amount: 1 },
+    selfEffect: { type: 'shield', amount: 2 },
     pattern: [],
-    description: 'Schová se za fošnu a získá +1 Štít.'
+    description: 'Schová se za fošnu a získá +2 Štít.'
   },
   rococo_claw: {
     id: 'rococo_claw',
@@ -433,8 +433,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lifesteal: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Drapne krajkou 1 pole vpřed za 2 DMG, krvácení a vysaje si 1 HP.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Drapne krajkou 1 pole vpřed za 4 DMG, krvácení a vysaje si 1 HP.'
   },
   rococo_laugh: {
     id: 'rococo_laugh',
@@ -445,11 +445,11 @@ export const ENEMY_TILES = {
     cooldown: 3,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Vysmívá se až na 3 pole za 1 DMG a zmatení.'
+    description: 'Vysmívá se až na 3 pole za 2 DMG a zmatení.'
   },
   cylinder_bite: {
     id: 'cylinder_bite',
@@ -459,8 +459,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lifesteal: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [] }],
-    description: 'Kousne 1 pole vpřed za 2 DMG a vysaje si 1 HP.'
+    pattern: [{ offset: 1, dmg: 4, effects: [] }],
+    description: 'Kousne 1 pole vpřed za 4 DMG a vysaje si 1 HP.'
   },
   knife_fling: {
     id: 'knife_fling',
@@ -471,11 +471,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'bleed', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'bleed', amount: 1 }] }
     ],
-    description: 'Hodí nůž až 3 pole daleko za 1 DMG a krvácení.'
+    description: 'Hodí nůž až 3 pole daleko za 2 DMG a krvácení.'
   },
   pustule_gore: {
     id: 'pustule_gore',
@@ -485,8 +485,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lungeForward: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Přivalí se o pole blíž a roztrhne vřed za 2 DMG a krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Přivalí se o pole blíž a roztrhne vřed za 4 DMG a krvácení.'
   },
   hnis_spit: {
     id: 'hnis_spit',
@@ -497,11 +497,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Plivne hnis až na 3 pole za 1 DMG a zmatení.'
+    description: 'Plivne hnis až na 3 pole za 2 DMG a zmatení.'
   },
   leaf_hug: {
     id: 'leaf_hug',
@@ -510,8 +510,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'confusion', amount: 1 }] }],
-    description: 'Obalí cíl listím na 1 poli za 1 DMG a zmatení.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'confusion', amount: 1 }] }],
+    description: 'Obalí cíl listím na 1 poli za 2 DMG a zmatení.'
   },
   bog_shell: {
     id: 'bog_shell',
@@ -520,9 +520,9 @@ export const ENEMY_TILES = {
     type: 'štít',
     delay: 2,
     cooldown: 2,
-    selfEffect: { type: 'shield', amount: 1 },
+    selfEffect: { type: 'shield', amount: 2 },
     pattern: [],
-    description: 'Stáhne se do slizu a získá +1 Štít.'
+    description: 'Stáhne se do slizu a získá +2 Štít.'
   },
   gnome_rake: {
     id: 'gnome_rake',
@@ -532,8 +532,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lifesteal: 1,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Rozdrásá 1 pole vpřed za 2 DMG, krvácení a vysaje si 1 HP.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Rozdrásá 1 pole vpřed za 4 DMG, krvácení a vysaje si 1 HP.'
   },
   night_bite: {
     id: 'night_bite',
@@ -543,8 +543,8 @@ export const ENEMY_TILES = {
     delay: 2,
     cooldown: 2,
     lifesteal: 1,
-    pattern: [{ offset: 1, dmg: 1, effects: [] }],
-    description: 'Kousne potichu za 1 DMG a vysaje si 1 HP.'
+    pattern: [{ offset: 1, dmg: 2, effects: [] }],
+    description: 'Kousne potichu za 2 DMG a vysaje si 1 HP.'
   },
   flail_arc: {
     id: 'flail_arc',
@@ -554,10 +554,10 @@ export const ENEMY_TILES = {
     delay: 3,
     cooldown: 3,
     pattern: [
-      { offset: 1, dmg: 2, effects: [{ type: 'push', distance: 1 }] },
-      { offset: 2, dmg: 1, effects: [] }
+      { offset: 1, dmg: 4, effects: [{ type: 'push', distance: 1 }] },
+      { offset: 2, dmg: 2, effects: [] }
     ],
-    description: 'Švihne řemdihem na 1. pole za 2 DMG a odhození, na 2. pole za 1 DMG.'
+    description: 'Švihne řemdihem na 1. pole za 4 DMG a odhození, na 2. pole za 2 DMG.'
   },
   ghost_breath: {
     id: 'ghost_breath',
@@ -568,11 +568,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Z přilby vydechne zelený přízrak až na 3 pole za 1 DMG a zmatení.'
+    description: 'Z přilby vydechne zelený přízrak až na 3 pole za 2 DMG a zmatení.'
   },
   grave_clutch: {
     id: 'grave_clutch',
@@ -581,8 +581,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Sevře pole před sebou za 2 DMG a krvácení.'
+    pattern: [{ offset: 1, dmg: 4, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Sevře pole před sebou za 4 DMG a krvácení.'
   },
   dead_shove: {
     id: 'dead_shove',
@@ -591,8 +591,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'push', distance: 1 }] }],
-    description: 'Narazí do pole před sebou za 1 DMG a odhození.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'push', distance: 1 }] }],
+    description: 'Narazí do pole před sebou za 2 DMG a odhození.'
   },
   bone_chuck: {
     id: 'bone_chuck',
@@ -603,11 +603,11 @@ export const ENEMY_TILES = {
     cooldown: 3,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 2, projectile: true, effects: [] },
-      { offset: 2, dmg: 2, projectile: true, effects: [] },
-      { offset: 3, dmg: 2, projectile: true, effects: [] }
+      { offset: 1, dmg: 4, projectile: true, effects: [] },
+      { offset: 2, dmg: 4, projectile: true, effects: [] },
+      { offset: 3, dmg: 4, projectile: true, effects: [] }
     ],
-    description: 'Hodí žebro až 3 pole daleko za 2 DMG.'
+    description: 'Hodí žebro až 3 pole daleko za 4 DMG.'
   },
   shovel_smack: {
     id: 'shovel_smack',
@@ -616,8 +616,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 2, effects: [] }],
-    description: 'Praští lopatou 1 pole vpřed za 2 DMG.'
+    pattern: [{ offset: 1, dmg: 4, effects: [] }],
+    description: 'Praští lopatou 1 pole vpřed za 4 DMG.'
   },
   rat_gnaw: {
     id: 'rat_gnaw',
@@ -627,8 +627,8 @@ export const ENEMY_TILES = {
     delay: 1,
     cooldown: 1,
     lungeForward: 1,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Přiskočí o pole a hryzne za 1 DMG a krvácení.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Přiskočí o pole a hryzne za 2 DMG a krvácení.'
   },
   miasma_waft: {
     id: 'miasma_waft',
@@ -639,11 +639,11 @@ export const ENEMY_TILES = {
     cooldown: 2,
     projectileRange: 3,
     pattern: [
-      { offset: 1, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 2, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
-      { offset: 3, dmg: 1, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
+      { offset: 1, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 2, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] },
+      { offset: 3, dmg: 2, projectile: true, effects: [{ type: 'confusion', amount: 1 }] }
     ],
-    description: 'Vypustí ze zobáku zelený mor až na 3 pole za 1 DMG a zmatení.'
+    description: 'Vypustí ze zobáku zelený mor až na 3 pole za 2 DMG a zmatení.'
   },
   cane_poke: {
     id: 'cane_poke',
@@ -652,8 +652,8 @@ export const ENEMY_TILES = {
     type: 'úder',
     delay: 2,
     cooldown: 2,
-    pattern: [{ offset: 1, dmg: 1, effects: [{ type: 'bleed', amount: 1 }] }],
-    description: 'Šťouchne holí 1 pole vpřed za 1 DMG a krvácení.'
+    pattern: [{ offset: 1, dmg: 2, effects: [{ type: 'bleed', amount: 1 }] }],
+    description: 'Šťouchne holí 1 pole vpřed za 2 DMG a krvácení.'
   }
 };
 
@@ -667,7 +667,7 @@ export const ENEMIES = {
     sprite: 'enemy.praktikant',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['intern_bite'],
@@ -675,18 +675,18 @@ export const ENEMIES = {
   },
   urednik: {
     id: 'urednik',
-    name: 'Berní úředník Hubert',
+    name: 'Kryptový písař Hubert',
     givenName: 'Hubert',
-    epithet: 'Berní úředník',
+    epithet: 'Kryptový písař',
     bodyScale: 'human',
     sprite: 'enemy.urednik',
     archetype: 'ranged',
     comboCapacity: 2,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: false,
     actionPool: ['tax_stamp_shot', 'retreat_step'],
-    flavor: '„Kolkovné za vstup do hrobky jste uhradil?! Formulář K-13!“'
+    flavor: '„Krev do poháru, duši do temnoty! Z této hrobky živý neodejdeš!“'
   },
   drab: {
     id: 'drab',
@@ -697,7 +697,7 @@ export const ENEMIES = {
     sprite: 'enemy.drab',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 7,
+    maxHp: 14,
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'drab_lunge'],
@@ -712,7 +712,7 @@ export const ENEMIES = {
     sprite: 'enemy.vratny_stit',
     archetype: 'shielder',
     comboCapacity: 2,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: true,
     actionPool: ['porter_bash', 'porter_guard'],
@@ -727,26 +727,26 @@ export const ENEMIES = {
     sprite: 'enemy.netopyr',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 1,
+    maxHp: 2,
     flying: true,
     frontShield: false,
     actionPool: ['bat_swoop'],
-    flavor: '„Pííí! Doporučený dopis z finančáku!“ (Létá nad propastmi a prkny.)'
+    flavor: '„Pííí! Noční hlídka ze zámecké věže!“ (Létá nad propastmi a prkny.)'
   },
   ucetni_buffer: {
     id: 'ucetni_buffer',
-    name: 'Upíří účetní Květuše',
+    name: 'Hradní klíčnice Květuše',
     givenName: 'Květuše',
-    epithet: 'Účetní',
+    epithet: 'Klíčnice',
     bodyScale: 'human',
     sprite: 'enemy.ucetni_buffer',
     archetype: 'support',
     comboCapacity: 2,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['accountant_curse', 'accountant_buff'],
-    flavor: '„Krevní rozvaha musí sedět na kapku přesně!“ (Léčí a posiluje spolubojovníky.)'
+    flavor: '„Pán hradu žádá čerstvou krev do pohárů!“ (Léčí a posiluje spolubojovníky.)'
   },
   srpak: {
     id: 'srpak',
@@ -757,7 +757,7 @@ export const ENEMIES = {
     sprite: 'enemy.srpak',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 6,
+    maxHp: 12,
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'sickle_cut'],
@@ -772,7 +772,7 @@ export const ENEMIES = {
     sprite: 'enemy.kyjovec',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 8,
+    maxHp: 16,
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'club_smash'],
@@ -787,7 +787,7 @@ export const ENEMIES = {
     sprite: 'enemy.morak',
     archetype: 'ranged',
     comboCapacity: 2,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: false,
     actionPool: ['plague_spit', 'step_toward'],
@@ -802,7 +802,7 @@ export const ENEMIES = {
     sprite: 'enemy.vlkodav',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'hound_pounce'],
@@ -817,7 +817,7 @@ export const ENEMIES = {
     sprite: 'enemy.halapartnik',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 7,
+    maxHp: 14,
     flying: false,
     frontShield: false,
     actionPool: ['halberd_thrust', 'step_toward'],
@@ -832,7 +832,7 @@ export const ENEMIES = {
     sprite: 'enemy.buldok',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 7,
+    maxHp: 14,
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'bulldog_bite'],
@@ -847,7 +847,7 @@ export const ENEMIES = {
     sprite: 'enemy.kluk_kamen',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 3,
+    maxHp: 6,
     flying: false,
     frontShield: false,
     actionPool: ['stone_chuck'],
@@ -862,7 +862,7 @@ export const ENEMIES = {
     sprite: 'enemy.divocak',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 6,
+    maxHp: 12,
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'boar_charge'],
@@ -877,7 +877,7 @@ export const ENEMIES = {
     sprite: 'enemy.upirske_prase',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: false,
     actionPool: ['step_toward', 'vampig_bite'],
@@ -892,7 +892,7 @@ export const ENEMIES = {
     sprite: 'enemy.sliz',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 9,
+    maxHp: 18,
     flying: false,
     frontShield: false,
     actionPool: ['slime_slap', 'slime_spit'],
@@ -907,7 +907,7 @@ export const ENEMIES = {
     sprite: 'enemy.carodejnice',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 6,
+    maxHp: 12,
     flying: false,
     frontShield: false,
     actionPool: ['witch_claw', 'witch_hex'],
@@ -922,7 +922,7 @@ export const ENEMIES = {
     sprite: 'enemy.drevo',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 8,
+    maxHp: 16,
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'axe_chop'],
@@ -937,7 +937,7 @@ export const ENEMIES = {
     sprite: 'enemy.sedlak_stit',
     archetype: 'shielder',
     comboCapacity: 2,
-    maxHp: 6,
+    maxHp: 12,
     flying: false,
     frontShield: true,
     actionPool: ['plank_bash', 'plank_guard'],
@@ -952,7 +952,7 @@ export const ENEMIES = {
     sprite: 'enemy.hrabenka_amalie',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 7,
+    maxHp: 14,
     flying: false,
     frontShield: false,
     actionPool: ['rococo_claw', 'rococo_laugh'],
@@ -967,7 +967,7 @@ export const ENEMIES = {
     sprite: 'enemy.upirka_cilka',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['cylinder_bite'],
@@ -982,7 +982,7 @@ export const ENEMIES = {
     sprite: 'enemy.vrhac_nozu',
     archetype: 'ranged',
     comboCapacity: 1,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['knife_fling'],
@@ -997,7 +997,7 @@ export const ENEMIES = {
     sprite: 'enemy.prase_mutant',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 8,
+    maxHp: 16,
     flying: false,
     frontShield: false,
     actionPool: ['pustule_gore', 'hnis_spit'],
@@ -1012,7 +1012,7 @@ export const ENEMIES = {
     sprite: 'enemy.bazinny_sliz',
     archetype: 'support',
     comboCapacity: 2,
-    maxHp: 6,
+    maxHp: 12,
     flying: false,
     frontShield: false,
     actionPool: ['leaf_hug', 'bog_shell'],
@@ -1027,7 +1027,7 @@ export const ENEMIES = {
     sprite: 'enemy.upiri_trpaslik',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['gnome_rake', 'night_bite'],
@@ -1042,7 +1042,7 @@ export const ENEMIES = {
     sprite: 'enemy.rytir_prizrak',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 9,
+    maxHp: 18,
     flying: false,
     frontShield: true,
     actionPool: ['flail_arc', 'ghost_breath'],
@@ -1057,7 +1057,7 @@ export const ENEMIES = {
     sprite: 'enemy.zombie_hynek',
     archetype: 'brute',
     comboCapacity: 2,
-    maxHp: 8,
+    maxHp: 16,
     flying: false,
     frontShield: false,
     actionPool: ['grave_clutch', 'dead_shove'],
@@ -1072,7 +1072,7 @@ export const ENEMIES = {
     sprite: 'enemy.kostlivec_fabian',
     archetype: 'ranged',
     comboCapacity: 1,
-    maxHp: 4,
+    maxHp: 8,
     flying: false,
     frontShield: false,
     actionPool: ['bone_chuck', 'shovel_smack'],
@@ -1087,7 +1087,7 @@ export const ENEMIES = {
     sprite: 'enemy.krysa_piskota',
     archetype: 'fodder',
     comboCapacity: 1,
-    maxHp: 3,
+    maxHp: 6,
     flying: false,
     frontShield: false,
     actionPool: ['rat_gnaw'],
@@ -1102,7 +1102,7 @@ export const ENEMIES = {
     sprite: 'enemy.morovy_felcar',
     archetype: 'ranged',
     comboCapacity: 1,
-    maxHp: 5,
+    maxHp: 10,
     flying: false,
     frontShield: false,
     actionPool: ['miasma_waft', 'cane_poke'],
@@ -1119,7 +1119,7 @@ export const ENEMIES = {
     archetype: 'brute',
     isElite: true,
     comboCapacity: 3,
-    maxHp: 11,
+    maxHp: 22,
     flying: false,
     frontShield: false,
     actionPool: ['windup_roar', 'cleaver_chop', 'drab_lunge'],
@@ -1135,11 +1135,11 @@ export const ENEMIES = {
     archetype: 'ranged',
     isElite: true,
     comboCapacity: 3,
-    maxHp: 10,
+    maxHp: 20,
     flying: false,
     frontShield: true,
     actionPool: ['tax_stamp_shot', 'porter_bash', 'turn_toward'],
-    flavor: '„Exekuce krve se odkládat nebude!“ (Zepředu chráněn deskami spisu.)'
+    flavor: '„Hněv temnot se odkládat nebude!“ (Zepředu chráněn kovaným štítem.)'
   },
 
   boss_sosak: {
@@ -1153,7 +1153,7 @@ export const ENEMIES = {
     isBoss: true,
     act: 1,
     comboCapacity: 3,
-    maxHp: 14,
+    maxHp: 28,
     flying: false,
     frontShield: false,
     mirrorCloak: true,
@@ -1172,7 +1172,7 @@ export const ENEMIES = {
     isBoss: true,
     act: 2,
     comboCapacity: 3,
-    maxHp: 18,
+    maxHp: 36,
     flying: false,
     frontShield: false,
     bloodThorns: true,
@@ -1182,22 +1182,22 @@ export const ENEMIES = {
   },
   boss_drakula: {
     id: 'boss_drakula',
-    name: 'Drákula, generální ředitel Krvavé a.s.',
+    name: 'Hrabě Drákula, Pán temnot',
     givenName: 'Drákula',
-    epithet: 'Ředitel',
+    epithet: 'Pán temnot',
     bodyScale: 'boss',
     sprite: 'boss.drakula_generalni_reditel',
     archetype: 'boss',
     isBoss: true,
     act: 3,
     comboCapacity: 3,
-    maxHp: 24,
+    maxHp: 48,
     flying: false,
     frontShield: false,
     mirrorCloak: true,
-    corporateSynergy: true,
+    lordSynergy: true,
     enrageTile: 'boss_sosak_summon',
-    actionPool: ['boss_dracula_audit', 'boss_dracula_decree', 'boss_sosak_summon'],
-    flavor: '„Vaše stížnost na kousnutí do krku byla postoupena oddělení věčného spánku!“'
+    actionPool: ['boss_dracula_strike', 'boss_dracula_curse', 'boss_sosak_summon'],
+    flavor: '„Tato noc patří nám, smrtelníku! Tvá krev napojí hradní kryptu!“'
   }
 };

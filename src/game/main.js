@@ -17,7 +17,8 @@ import {
   openPubModal,
   openWorkshopModal,
   openEventModal,
-  openTreasureModal
+  openTreasureModal,
+  openCastleArchiveModal
 } from './ui/modal.js';
 import { initTooltips } from './ui/tooltips.js';
 import { initKeyboardInput } from './ui/input.js';
@@ -35,6 +36,9 @@ const appState = {
   isAnimating: false,
   hoveredEnemyId: null,
   hoveredTileId: null,
+  comboPreviewActive: false,
+  hoveredExecute: false,
+  hoveredQueueSlot: null,
   metaStats: loadedMeta,
   settings: {
     animSpeed: loadedMeta.animSpeed ?? 1,
@@ -54,7 +58,16 @@ export function startGame() {
 function loadMetaStats() {
   try {
     const raw = localStorage.getItem(META_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const p = JSON.parse(raw);
+      return {
+        fangs: 0,
+        unlockedLoadouts: ['classic', 'honza'],
+        selectedLoadout: 'classic',
+        ...p,
+        unlockedLoadouts: Array.isArray(p.unlockedLoadouts) ? p.unlockedLoadouts : ['classic']
+      };
+    }
   } catch {
     // ignore storage errors
   }
@@ -62,7 +75,10 @@ function loadMetaStats() {
     bestAct: 1,
     victories: 0,
     totalKills: 0,
-    lastSeed: 'VENCA-1899'
+    lastSeed: 'VENCA-1899',
+    fangs: 0,
+    unlockedLoadouts: ['classic', 'honza'],
+    selectedLoadout: 'classic'
   };
 }
 
@@ -116,7 +132,20 @@ async function bootstrap(token) {
     onStep: (dir) => actions.handlePlayerStep(dir),
     onTurn: () => actions.handlePlayerTurn(),
     onWait: () => actions.handlePlayerWait(),
-    onExecuteQueue: () => actions.handleExecuteOrPrepareQueue(),
+    onExecuteQueue: () => {
+      appState.comboPreviewActive = false;
+      actions.handleExecuteOrPrepareQueue();
+    },
+    onHoverExecute: (hovered) => {
+      if (appState.hoveredExecute !== hovered) {
+        appState.hoveredExecute = hovered;
+        renderBattleBoardOnly();
+      }
+    },
+    onToggleComboPreview: () => {
+      appState.comboPreviewActive = !appState.comboPreviewActive;
+      renderAll();
+    },
     onPopQueue: () => {
       if (appState.battleState && appState.battleState.queue.length > 0) {
         actions.handleRemoveQueueSlot(appState.battleState.queue.length - 1);
@@ -151,7 +180,9 @@ function startNewRun(seedInput = 'VENCA-1899') {
   appState.metaStats.lastSeed = seedInput;
   saveMetaStats();
 
-  appState.runState = createNewRun(seedInput);
+  const loadoutId = appState.metaStats.selectedLoadout || 'classic';
+  const curseLevel = appState.metaStats.selectedCurse || 0;
+  appState.runState = createNewRun(seedInput, loadoutId, curseLevel);
   const firstNode = appState.runState.map.nodes[0];
   enterMapNode(firstNode);
 }
@@ -174,7 +205,9 @@ function enterMapNode(node) {
       heroMaxHp: run.heroMaxHp,
       heroHp: run.heroHp,
       deck: run.deck,
-      talismans: run.talismans
+      talismans: run.talismans,
+      curseLevel: run.curseLevel || 0,
+      hunterId: run.hunterId || run.loadoutId || 'classic'
     });
     renderAll();
     return;
@@ -207,7 +240,8 @@ function enterMapNode(node) {
 
   if (node.type === NODE_TYPES.TREASURE) {
     renderAll();
-    openTreasureModal(modalRoot, run, () => {
+    openTreasureModal,
+  openCastleArchiveModal(modalRoot, run, () => {
       completeCurrentNodeAndShowMap();
     });
   }
@@ -245,6 +279,19 @@ function renderAll() {
   const modalRoot = document.getElementById('modal-root');
 
   renderHud(hudRoot, appState.runState, appState.battleState, {
+    metaStats: appState.metaStats,
+    onOpenArchive: () => {
+      openCastleArchiveModal(
+        modalRoot,
+        appState,
+        () => renderAll(),
+        (loadoutId) => {
+          appState.metaStats.selectedLoadout = loadoutId;
+          saveMetaStats();
+          renderAll();
+        }
+      );
+    },
     onToggleMap: () => {
       if (appState.screen === 'map' && appState.battleState) {
         appState.screen = 'battle';
@@ -293,11 +340,26 @@ function renderAll() {
     appState.battleState,
     {
       hoveredEnemyId: appState.hoveredEnemyId,
-      hoveredTileId: appState.hoveredTileId
+      hoveredTileId: appState.hoveredTileId,
+    comboPreviewActive: appState.comboPreviewActive,
+    hoveredExecute: appState.hoveredExecute,
+    hoveredQueueSlot: appState.hoveredQueueSlot
     },
     {
       onRemoveQueueSlot: (slotIdx) => actions.handleRemoveQueueSlot(slotIdx),
       onReorderQueue: (fromIdx, toIdx) => actions.handleReorderQueue(fromIdx, toIdx),
+    onHoverQueueSlot: (slotIdx) => {
+      if (appState.hoveredQueueSlot !== slotIdx) {
+        appState.hoveredQueueSlot = slotIdx;
+        renderBattleBoardOnly();
+      }
+    },
+      onHoverQueueSlot: (slotIdx) => {
+        if (appState.hoveredQueueSlot !== slotIdx) {
+          appState.hoveredQueueSlot = slotIdx;
+          renderBattleBoardOnly();
+        }
+      },
       onHoverEnemy: (enemyId) => {
         if (appState.hoveredEnemyId !== enemyId) {
           appState.hoveredEnemyId = enemyId;
@@ -308,10 +370,24 @@ function renderAll() {
   );
 
   renderTileBar(bottomRoot, appState.battleState, {
+    isComboPreviewActive: appState.comboPreviewActive,
     onStep: (dir) => actions.handlePlayerStep(dir),
     onTurn: () => actions.handlePlayerTurn(),
     onWait: () => actions.handlePlayerWait(),
-    onExecuteQueue: () => actions.handleExecuteOrPrepareQueue(),
+    onExecuteQueue: () => {
+      appState.comboPreviewActive = false;
+      actions.handleExecuteOrPrepareQueue();
+    },
+    onHoverExecute: (hovered) => {
+      if (appState.hoveredExecute !== hovered) {
+        appState.hoveredExecute = hovered;
+        renderBattleBoardOnly();
+      }
+    },
+    onToggleComboPreview: () => {
+      appState.comboPreviewActive = !appState.comboPreviewActive;
+      renderAll();
+    },
     onSelectTile: (instanceId) => actions.handleSelectTile(instanceId),
     onHoverTile: (instanceId) => {
       if (appState.hoveredTileId !== instanceId) {
@@ -331,12 +407,25 @@ function renderBattleBoardOnly() {
   const centerStage = document.getElementById('center-stage');
   const uiState = {
     hoveredEnemyId: appState.hoveredEnemyId,
-    hoveredTileId: appState.hoveredTileId
+    hoveredTileId: appState.hoveredTileId,
+    comboPreviewActive: appState.comboPreviewActive,
+    hoveredExecute: appState.hoveredExecute,
+    hoveredQueueSlot: appState.hoveredQueueSlot
   };
-  if (refreshBoardOverlays(centerStage, appState.battleState, uiState)) return;
+  const hasSimPreview = Boolean(
+    (uiState.comboPreviewActive || uiState.hoveredExecute || uiState.hoveredQueueSlot !== null) &&
+    appState.battleState.queue.length > 0
+  );
+  if (!hasSimPreview && refreshBoardOverlays(centerStage, appState.battleState, uiState)) return;
   renderBattleBoard(centerStage, appState.battleState, uiState, {
     onRemoveQueueSlot: (slotIdx) => actions.handleRemoveQueueSlot(slotIdx),
     onReorderQueue: (fromIdx, toIdx) => actions.handleReorderQueue(fromIdx, toIdx),
+    onHoverQueueSlot: (slotIdx) => {
+      if (appState.hoveredQueueSlot !== slotIdx) {
+        appState.hoveredQueueSlot = slotIdx;
+        renderBattleBoardOnly();
+      }
+    },
     onHoverEnemy: (enemyId) => {
       if (appState.hoveredEnemyId === enemyId) return;
       appState.hoveredEnemyId = enemyId;

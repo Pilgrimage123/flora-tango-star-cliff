@@ -75,6 +75,31 @@ function renderCharacterSvg(key, label) {
     </svg>`;
   }
 
+  if (key === 'prop.holy_font' || key === 'terrain.holy_font') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+      <ellipse cx="128" cy="236" rx="64" ry="12" fill="rgba(0,0,0,0.3)"/>
+      <rect x="100" y="140" width="56" height="80" rx="6" fill="#64748b" stroke="#1a110b" stroke-width="5"/>
+      <path d="M50 80 Q128 60 206 80 L180 144 Q128 160 76 144 Z" fill="#94a3b8" stroke="#1a110b" stroke-width="6"/>
+      <ellipse cx="128" cy="86" rx="68" ry="22" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/>
+      <path d="M128 50 L128 72 M118 60 L138 60" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="128" cy="95" r="6" fill="#ffffff" opacity="0.8"/>
+      <rect x="34" y="210" width="188" height="26" rx="6" fill="#e2e8f0" stroke="#1a110b" stroke-width="4"/>
+      <text x="128" y="228" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">${label}</text>
+    </svg>`;
+  }
+
+  if (key === 'prop.mirror' || key === 'terrain.mirror') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+      <ellipse cx="128" cy="236" rx="64" ry="12" fill="rgba(0,0,0,0.3)"/>
+      <rect x="68" y="32" width="120" height="180" rx="60" fill="#cbd5e1" stroke="#334155" stroke-width="10"/>
+      <rect x="80" y="44" width="96" height="156" rx="48" fill="#e0f2fe" stroke="#0284c7" stroke-width="4"/>
+      <path d="M96 60 L160 170" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+      <path d="M108 52 L148 120" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+      <rect x="34" y="210" width="188" height="26" rx="6" fill="#f8fafc" stroke="#1a110b" stroke-width="4"/>
+      <text x="128" y="228" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">${label}</text>
+    </svg>`;
+  }
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
     <ellipse cx="128" cy="238" rx="68" ry="12" fill="rgba(0,0,0,0.28)"/>
     <!-- Cape / Coat in Neprakta ink style -->
@@ -117,6 +142,31 @@ function renderTerrainSvg(key, label) {
     </svg>`;
   }
 
+  if (key === 'prop.holy_font' || key === 'terrain.holy_font') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+      <ellipse cx="128" cy="236" rx="64" ry="12" fill="rgba(0,0,0,0.3)"/>
+      <rect x="100" y="140" width="56" height="80" rx="6" fill="#64748b" stroke="#1a110b" stroke-width="5"/>
+      <path d="M50 80 Q128 60 206 80 L180 144 Q128 160 76 144 Z" fill="#94a3b8" stroke="#1a110b" stroke-width="6"/>
+      <ellipse cx="128" cy="86" rx="68" ry="22" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/>
+      <path d="M128 50 L128 72 M118 60 L138 60" stroke="#fde047" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="128" cy="95" r="6" fill="#ffffff" opacity="0.8"/>
+      <rect x="34" y="210" width="188" height="26" rx="6" fill="#e2e8f0" stroke="#1a110b" stroke-width="4"/>
+      <text x="128" y="228" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">${label}</text>
+    </svg>`;
+  }
+
+  if (key === 'prop.mirror' || key === 'terrain.mirror') {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+      <ellipse cx="128" cy="236" rx="64" ry="12" fill="rgba(0,0,0,0.3)"/>
+      <rect x="68" y="32" width="120" height="180" rx="60" fill="#cbd5e1" stroke="#334155" stroke-width="10"/>
+      <rect x="80" y="44" width="96" height="156" rx="48" fill="#e0f2fe" stroke="#0284c7" stroke-width="4"/>
+      <path d="M96 60 L160 170" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+      <path d="M108 52 L148 120" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+      <rect x="34" y="210" width="188" height="26" rx="6" fill="#f8fafc" stroke="#1a110b" stroke-width="4"/>
+      <text x="128" y="228" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">${label}</text>
+    </svg>`;
+  }
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 128" width="256" height="128">
     <rect x="8" y="8" width="240" height="112" rx="12" fill="#d6c7a1" stroke="#1a110b" stroke-width="5"/>
     <text x="128" y="72" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#1a110b" text-anchor="middle">${label}</text>
@@ -137,6 +187,14 @@ function renderIconSvg(key, label) {
     'tile.plank_stomp': '🥾',
     'tile.funeral_shroud': '👻',
     'tile.silver_crucifix_beam': '✝️',
+    'tile.nimble_step': '👟',
+    'tile.garlic_pinch': '🧄',
+    'tile.pub_elbow': '💪',
+    'prop.holy_font': '⛲',
+    'prop.mirror': '🪞',
+    'terrain.holy_water_puddle': '💦',
+    'terrain.holy_font': '⛲',
+    'terrain.mirror': '🪞',
     'intent.step': '👣',
     'intent.strike': '⚔️',
     'intent.shoot': '🎯',

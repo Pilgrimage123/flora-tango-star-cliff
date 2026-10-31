@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { TALISMANS } from '../config/talismans.js';
 import { STRINGS } from '../config/strings.cs.js';
+import { getCurseDefinition } from '../config/curses.js';
 import { showTooltip, hideTooltip } from './tooltips.js';
 
 export function renderHud(container, runState, battleState, callbacks = {}) {
@@ -10,6 +11,10 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
   const maxHp = battleState ? battleState.hero.maxHp : runState.heroMaxHp;
   const actName = STRINGS.acts[runState.act] || `Akt ${runState.act}`;
   const locationTitle = battleState ? battleState.encounterName : 'Mapa výpravy';
+  const curseDef = getCurseDefinition(runState.curseLevel || 0);
+  const curseHtml = (runState.curseLevel > 0)
+    ? `<span class="hud-separator">·</span><span class="hud-curse-pill" title="${curseDef.name}: ${curseDef.description} (+${Math.round((curseDef.fangMultiplier - 1) * 100)} % tesáků)">🌙 ${curseDef.shortName}</span>`
+    : '';
 
   const heartsHtml = Array.from({ length: maxHp }, (_, i) => {
     const full = i < hp;
@@ -38,7 +43,7 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
           <span class="hud-separator">·</span>
           <span class="hud-act">${actName}</span>
           <span class="hud-separator">·</span>
-          <span class="hud-location">${locationTitle}</span>
+          <span class="hud-location">${locationTitle}</span>${curseHtml}
         </div>
         <div class="hud-vitals">
           <div class="hud-hp-group" title="Zdraví Venci Česnekáče">
@@ -49,6 +54,10 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
           <span class="hud-separator">·</span>
           <div class="hud-gold" title="Hradní dukáty na útratu v hospodě a dílně">
             💰 <strong>${runState.gold}</strong> dukátů
+          </div>
+          <span class="hud-separator">·</span>
+          <div class="hud-fangs" title="Upíří tesáky pro trvalá vylepšení v Hradním archivu">
+            🦷 <strong>${callbacks.metaStats?.fangs || 0}</strong>
           </div>
           <span class="hud-separator">·</span>
           <div class="hud-seed" title="Deterministický seed výpravy">
@@ -65,6 +74,9 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
       <div class="hud-actions">
         <button type="button" class="btn-parchment btn-sm" id="btn-hud-map" title="Zobrazit mapu aktu" aria-label="Zobrazit mapu aktu">
           <span class="btn-icon">🗺️</span><span class="btn-text"> Mapa</span>
+        </button>
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-archive" title="Hradní archiv a zbrojnice – odemykání výzbroje za tesáky" aria-label="Hradní archiv a zbrojnice">
+          <span class="btn-icon">🏛️</span><span class="btn-text"> Archiv</span>
         </button>
         <button type="button" class="btn-parchment btn-sm" id="btn-hud-rules" title="Pravidla a nápověda (F1)" aria-label="Pravidla a nápověda (F1)">
           <span class="btn-icon">📖</span><span class="btn-text"> Pravidla</span>
@@ -92,6 +104,7 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
   });
 
   container.querySelector('#btn-hud-map')?.addEventListener('click', () => callbacks.onToggleMap?.());
+  container.querySelector('#btn-hud-archive')?.addEventListener('click', () => callbacks.onOpenArchive?.());
   container.querySelector('#btn-hud-rules')?.addEventListener('click', () => callbacks.onOpenRules?.());
   container.querySelector('#btn-hud-settings')?.addEventListener('click', () => callbacks.onOpenSettings?.());
 }

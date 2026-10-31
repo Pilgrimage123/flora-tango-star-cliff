@@ -103,6 +103,9 @@ export function addStatus(entity, statusId, amount = 1, events = []) {
   if (!entity.statuses) entity.statuses = {};
 
   entity.statuses[statusId] = (entity.statuses[statusId] || 0) + amount;
+  if (statusId === 'shield') {
+    entity.statuses.shieldTurnsLeft = 1;
+  }
   events.push({
     type: 'status_added',
     targetId: entity.id,
@@ -140,19 +143,31 @@ export function applyDamage(state, target, amount, sourceInfo = {}, events = [])
     }
   }
 
-  // Status shield check
-  if (consumeStatus(target, 'shield', 1) > 0) {
+  // Status shield check (1 bod štítu pohltí 1 DMG)
+  if (target.statuses?.shield > 0) {
+    const shieldPoints = target.statuses.shield;
+    const absorbed = Math.min(shieldPoints, finalDmg);
+    target.statuses.shield -= absorbed;
+    if (target.statuses.shield <= 0) {
+      delete target.statuses.shield;
+      delete target.statuses.shieldTurnsLeft;
+    }
+    finalDmg -= absorbed;
     events.push({
       type: 'shield_blocked',
       targetId: target.id,
       cell: target.cell,
-      text: `${target.name} vykryl zásah štítem!`
+      absorbed,
+      shieldRemaining: target.statuses?.shield || 0,
+      text: `${target.name} pohltil ${absorbed} DMG štítem! (Zbývá ${target.statuses?.shield || 0} Štítu)`
     });
     events.push({
       type: 'log',
-      text: `🛡️ Štít zachránil postavu ${target.name} před zásahem!`
+      text: `🛡️ Štít postavy ${target.name} pohltil ${absorbed} DMG! (Zbývá ${target.statuses?.shield || 0} Štítu)`
     });
-    return 0;
+    if (finalDmg <= 0) {
+      return 0;
+    }
   }
 
   target.hp = Math.max(0, target.hp - finalDmg);
@@ -358,6 +373,29 @@ export function handleEntityDeath(state, target, sourceInfo = {}, events = []) {
       type: 'log',
       text: `🛢️ Sud s kyselým zelím na poli ${target.cell + 1} explodoval v gejzíru šťávy!`
     });
+  } else if (target.entityType === 'prop' && target.kind === 'holy_font') {
+    events.push({
+      type: 'holy_font_shatter',
+      cell: target.cell
+    });
+    events.push({
+      type: 'log',
+      text: `💦 Kamenná kropenka se roztříštila! Gejzír svěcené vody zasáhl okolní nemrtvé za 2 DMG a vytvořil posvěcenou louži!`
+    });
+    state.terrain[target.cell] = { type: 'holy_water_puddle', duration: 3 };
+    events.push({
+      type: 'terrain_spawn',
+      terrainType: 'holy_water_puddle',
+      cell: target.cell
+    });
+    for (const c of [target.cell - 1, target.cell, target.cell + 1]) {
+      if (isValidCell(c, state)) {
+        const enemy = state.enemies.find((e) => e.hp > 0 && e.cell === c);
+        if (enemy) {
+          applyDamage(state, enemy, 4, { reason: 'holy_font_shatter', type: 'holy' }, events);
+        }
+      }
+    }
   } else if (target.entityType === 'enemy') {
     state.stats.enemiesKilled = (state.stats.enemiesKilled || 0) + 1;
     events.push({
@@ -367,7 +405,7 @@ export function handleEntityDeath(state, target, sourceInfo = {}, events = []) {
   } else if (target.entityType === 'hero') {
     events.push({
       type: 'log',
-      text: `⚰️ Venca Česnekáč padl! Upíří byrokracie dnes zvítězila.`
+      text: `⚰️ Venca Česnekáč padl! Upíři a noční stvůry dnes zvítězili.`
     });
   }
 
@@ -411,6 +449,21 @@ export function triggerCellTerrainOnEnter(state, entity, cell, events = []) {
       text: `🗡️ ${entity.name} naběhl na naostřené kůly na poli ${cell + 1} (${SPIKES_DAMAGE} DMG)!`
     });
     applyDamage(state, entity, SPIKES_DAMAGE, { reason: 'spikes' }, events);
+    return;
+  }
+
+  if (terrainObj.type === 'holy_water_puddle' && entity.entityType === 'enemy') {
+    events.push({
+      type: 'terrain_trigger',
+      terrainType: 'holy_water_puddle',
+      cell,
+      targetId: entity.id
+    });
+    events.push({
+      type: 'log',
+      text: `🔥 ${entity.name} vstoupil do posvěcené louže a škvaří se (1 DMG)!`
+    });
+    applyDamage(state, entity, 2, { reason: 'holy_water_puddle', type: 'holy' }, events);
     return;
   }
 
@@ -489,6 +542,31 @@ export function pushEntity(state, target, direction, distance, events = []) {
           addStatus(target, 'confusion', 1, events);
         }
         // If barrel broke and target survived, move target onto the barrel's former cell
+        if (blocker.hp <= 0 && target.hp > 0 && !getEntityAt(state, nextCell)) {
+          const fromCell = target.cell;
+          target.cell = nextCell;
+          events.push({
+            type: 'push_move',
+            targetId: target.id,
+            from: fromCell,
+            to: nextCell
+          });
+          triggerCellTerrainOnEnter(state, target, nextCell, events);
+        }
+        break;
+      } else if (blocker.entityType === 'prop' && blocker.kind === 'holy_font') {
+        events.push({
+          type: 'collision_font',
+          targetId: target.id,
+          fontId: blocker.id,
+          cell: nextCell
+        });
+        events.push({
+          type: 'log',
+          text: `💦 ${target.name} vší silou narazil do kamenné kropenky! Kropenka se tříští na kusy!`
+        });
+        applyDamage(state, blocker, blocker.hp, { reason: 'font_smash' }, events);
+        applyDamage(state, target, targetColDmg, { reason: 'font_smash' }, events);
         if (blocker.hp <= 0 && target.hp > 0 && !getEntityAt(state, nextCell)) {
           const fromCell = target.cell;
           target.cell = nextCell;

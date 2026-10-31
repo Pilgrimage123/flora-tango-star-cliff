@@ -315,7 +315,7 @@ export function buildEnemyTooltipHtml(enemy, initiativeRank) {
     ${enemy.frontShield ? '<div class="tt-next-intent-line">🛡️ Zepředu krytý štítem. Úder musí přijít zezadu, odhozením nebo po otočení.</div>' : ''}
     ${enemy.mirrorCloak ? '<div class="tt-next-intent-line">🪞 Zrcadlový plášť: druhý zásah komba ze stejné strany ho prohodí se sudem nebo netopýrem.</div>' : ''}
     ${enemy.bloodThorns ? '<div class="tt-next-intent-line">🌹 Krajkové trny: kdo ji sekne, dostane 1 DMG zpět.</div>' : ''}
-    ${enemy.corporateSynergy ? '<div class="tt-next-intent-line">💼 Firemní synergie: dokud ředitel stojí, ostatní upíři dávají +1 DMG.</div>' : ''}
+    ${enemy.lordSynergy ? '<div class="tt-next-intent-line">👑 Upíří nadvláda: dokud Hrabě stojí, ostatní upíři dávají +1 DMG.</div>' : ''}
 
     ${stateDesc}
     ${nextActionDesc ? `<div class="tt-next-intent-line"><strong>Záměr:</strong> ${nextActionDesc}</div>` : ''}

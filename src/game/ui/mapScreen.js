@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { NODE_TYPES } from '../config/constants.js';
 import { STRINGS } from '../config/strings.cs.js';
+import { getCurseDefinition } from '../config/curses.js';
 import { getAvailableNodes } from '../engine/run.js';
 import { getAssetUrl } from './assets.js';
 
@@ -64,6 +65,7 @@ export function renderMapScreen(container, runState, callbacks = {}) {
       <div class="map-header-banner">
         <div>
           <h2 class="map-act-heading">${STRINGS.acts[runState.act] || `Akt ${runState.act}`}</h2>
+          ${(runState.curseLevel > 0) ? `<div class="map-curse-pill">🌙 ${getCurseDefinition(runState.curseLevel).name}</div>` : ''}
           <p class="map-act-subtitle">${
             callbacks.canReturnToBattle
               ? 'Venca má rozdělanou bitvu! K dokončení střetnutí se vrať tlačítkem zpět do probíhající bitvy.'

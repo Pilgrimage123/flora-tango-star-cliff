@@ -23,20 +23,20 @@ export const NARRATIVE_EVENTS = [
   },
   {
     id: 'vampire_tax_form',
-    title: 'Přepážka upířího katastru',
-    text: 'Za zamřížovaným okénkem klimbá stoletý úředník. Na pultě leží nevyplněný formulář „Žádost o prominutí kousnutí do krční tepny“ a měšec s kolky.',
+    title: 'Zaprášené hradní skriptorium',
+    text: 'U kamenného pultu dospává starý upíří písař. Na pergamenech jsou načrtnuté kletby krve a vedle leží měšec se stříbrňáky.',
     choices: [
       {
-        label: 'Orazítkovat si povolení a sebrat kasu (+18 dukátů, ale úředník tě škrábne brkem: −1 HP)',
-        effect: { goldDelta: 18, damage: 1, log: 'Škrábanec od inkoustového brku pálí (−1 HP), ale v kapse cinká 18 dukátů!' }
+        label: 'Sebrat měšec a probodnout kletbu (+18 dukátů, ale písař tě škrábne drápem: −1 HP)',
+        effect: { goldDelta: 18, damage: 1, log: 'Škrábanec od upířího drápu pálí (−1 HP), ale v kapse cinká 18 dukátů!' }
       },
       {
         label: 'Seřídit si opasek a vylepšit náhodnou destičku zdarma',
-        effect: { upgradeRandomTile: true, log: 'Klid u přepážky posloužil k vykování jedné destičky!' }
+        effect: { upgradeRandomTile: true, log: 'Klid ve skriptoriu posloužil k vykování jedné destičky!' }
       },
       {
-        label: 'Po špičkách odejít a zdřímnout si na lavici (+2 HP)',
-        effect: { heal: 2, log: 'Dvacet minut šlofíka v čekárně bez pořadového čísla (+2 HP).' }
+        label: 'Po špičkách odejít a odpočinout si ve stínu klenby (+2 HP)',
+        effect: { heal: 2, log: 'Dvacet minut klidného oddechu v chladném stínu katakomb (+2 HP).' }
       }
     ]
   },

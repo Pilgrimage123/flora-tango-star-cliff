@@ -3,15 +3,15 @@ export const BOARD_SIZE = 7;
 export const QUEUE_SLOTS = 3;
 export const MAX_QUEUE_SLOTS = 4;
 export const QUEUE_INSERT_COST = 1;
-export const HERO_START_HP = 10;
+export const HERO_START_HP = 20;
 export const HERO_START_GOLD = 25;
 export const GARLIC_CLOUD_DURATION = 2;
 export const BLEED_DURATION = 2;
-export const BARREL_MAX_HP = 2;
-export const SPIKES_DAMAGE = 2;
-export const PLANK_COLLAPSE_DAMAGE = 2;
-export const BARREL_EXPLODE_DAMAGE = 2;
-export const COLLISION_DAMAGE = 1;
+export const BARREL_MAX_HP = 4;
+export const SPIKES_DAMAGE = 4;
+export const PLANK_COLLAPSE_DAMAGE = 4;
+export const BARREL_EXPLODE_DAMAGE = 4;
+export const COLLISION_DAMAGE = 2;
 
 export const ANIMATION_TIMINGS = {
   QUEUE_STEP_MS: 450,
