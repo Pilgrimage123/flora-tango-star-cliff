@@ -4,6 +4,12 @@ let keyHandler = null;
 export function initKeyboardInput(callbacks = {}) {
   if (keyHandler) window.removeEventListener('keydown', keyHandler);
   keyHandler = (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      e.preventDefault();
+      callbacks.onEscape?.();
+      return;
+    }
+
     if (callbacks.isInputLocked?.()) return;
 
     // Ignore shortcuts when typing in an input or select

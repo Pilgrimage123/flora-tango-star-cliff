@@ -698,7 +698,28 @@ console.log('🧪 Spouštím testy herního enginu LOVEC UPÍRŮ...');
   console.log('  ✔ 26. Dálkové střely a emise projectile_vfx pro animaci dráhy letu ověřeny');
 }
 
-console.log('✅ VŠECH 26 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
+// 27. Okované půllitry (hobnailed_boots): nepřátelé utrží +1 kolizní DMG, ale Venca je chráněn před bonusem na sobě
+{
+  const state = createCleanTestBattle();
+  state.talismans = ['hobnailed_boots'];
+
+  // Nepřítel do zdi: 1 (základ) + 1 (hobnailed_boots) = 2 DMG
+  const enemy = createEnemyInstance('urednik', 6, -1);
+  state.enemies = [enemy];
+  const enemyHpBefore = enemy.hp;
+  pushEntity(state, enemy, 1, 1, []);
+  assert.equal(enemy.hp, enemyHpBefore - 2, 'Nepřítel v okovaných botách musí utržit +1 kolizní bonus (celkem 2 DMG)');
+
+  // Venca do zdi: pouze 1 DMG (základ), žádný self-inflicted bonus
+  state.hero.cell = 0;
+  const heroHpBefore = state.hero.hp;
+  pushEntity(state, state.hero, -1, 1, []);
+  assert.equal(state.hero.hp, heroHpBefore - 1, 'Hrdina nesmí utržit zvýšené poškození od vlastního talismanu');
+
+  console.log('  ✔ 27. Okované půllitry dávají +1 DMG nepřátelům, ale neubližují Vencovi');
+}
+
+console.log('✅ VŠECH 27 TESTOVACÍCH SAD ÚSPĚŠNĚ PROŠLO!');
 
 
 

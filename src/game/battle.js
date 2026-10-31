@@ -200,6 +200,7 @@ export function createBattleActions(deps) {
     runState.stats.totalDamageDealt += battleState.stats.damageDealt || 0;
     runState.stats.totalFriendlyFire += battleState.stats.friendlyFireCount || 0;
     runState.stats.totalTurns += battleState.stats.turnsTaken || 0;
+    runState.stats.enemiesKilled = (runState.stats.enemiesKilled || 0) + (battleState.stats.enemiesKilled || 0);
 
     appState.metaStats.totalKills =
       (appState.metaStats.totalKills || 0) + (battleState.stats.enemiesKilled || 0);

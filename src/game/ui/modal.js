@@ -26,13 +26,13 @@ export function openRulesModal(modalRoot) {
         </div>
         <div class="modal-body rules-grid">
           <div class="rule-block">
-            <h4>1. 1D Bojiště (7 polí) a Ekonomika tahu</h4>
-            <p>Na každém ze 7 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
+            <h4>1. 1D Bojiště (7–9 polí) a Ekonomika tahu</h4>
+            <p>Na každém ze 7–9 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
             <ul>
               <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Cílové pole musí být volné (do obsazeného pole nelze vstoupit ani ho krokem přeskočit – přes překážky skáče pouze destička <em>Hospodský přemet</em>).</li>
               <li><strong>Otočení (W):</strong> Změní směr pohledu (◀ / ▶). Stojíš-li v <strong>Česnekovém oblaku</strong>, je otočení <strong>ZDARMA (0 tahů)</strong>!</li>
               <li><strong>Čekání (S):</strong> Stojí 1 tah, sníží cooldowny tvých destiček.</li>
-              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
+              <li><strong>Vložení destičky do Fronty (1–4 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
               <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Okamžitý odpal! Všechny destičky ve frontě se provedou zleva doprava bez nutnosti přípravného nápřahu za <strong>JEDEN tah</strong>!</li>
             </ul>
           </div>
@@ -261,11 +261,11 @@ export function openPubModal(modalRoot, runState, onLeavePub) {
 
   const ownedTileIds = new Set(runState.deck.map((d) => d.id));
   const shopTilePool = Object.keys(HERO_TILES).filter((id) => !ownedTileIds.has(id));
-  const shopTileId = shopTilePool[0] || 'rosary_slap';
+  const shopTileId = (runState.rng && shopTilePool.length > 0) ? runState.rng.pick(shopTilePool) : (shopTilePool[0] || 'rosary_slap');
   const shopTileDef = getHeroTileDefinition(shopTileId, 0);
 
   const unownedTalismans = Object.keys(TALISMANS).filter((id) => !runState.talismans.includes(id));
-  const shopTalismanId = unownedTalismans[0] || null;
+  const shopTalismanId = (unownedTalismans.length > 0) ? ((runState.rng) ? runState.rng.pick(unownedTalismans) : unownedTalismans[0]) : null;
   const shopTalisman = shopTalismanId ? TALISMANS[shopTalismanId] : null;
 
   let healedInThisVisit = false;
@@ -564,6 +564,7 @@ export function openRunEndModal(modalRoot, runState, isVictory, callbacks = {}) 
           <div class="summary-stats-grid">
             <div class="stat-pill">Dosažený akt: <strong>${runState.act} / 3</strong></div>
             <div class="stat-pill">Vyhrané bitvy: <strong>${runState.stats.battlesWon}</strong></div>
+            <div class="stat-pill">Poraženo upírů: <strong>${runState.stats.enemiesKilled || 0}</strong></div>
             <div class="stat-pill">Rozdané poškození: <strong>${runState.stats.totalDamageDealt} DMG</strong></div>
             <div class="stat-pill">Friendly Fire zásahy: <strong>${runState.stats.totalFriendlyFire}</strong></div>
             <div class="stat-pill">Odehrané tahy: <strong>${runState.stats.totalTurns}</strong></div>

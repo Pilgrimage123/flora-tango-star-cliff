@@ -33,6 +33,7 @@ export function createNewRun(seedInput = 'VENCA-1899') {
       battlesWon: 0,
       elitesDefeated: 0,
       bossesDefeated: 0,
+      enemiesKilled: 0,
       totalDamageDealt: 0,
       totalFriendlyFire: 0,
       totalTurns: 0,

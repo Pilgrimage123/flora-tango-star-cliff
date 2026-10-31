@@ -870,6 +870,9 @@
   z-index: 2000;
   pointer-events: none;
   width: 310px;
+  max-width: calc(100vw - 24px);
+  box-sizing: border-box;
+  word-break: break-word;
   background:
     linear-gradient(180deg, #fffaf0, var(--bg-parchment-card));
   border: 3px solid var(--ink-dark);
@@ -1037,16 +1040,44 @@
     gap: 6px;
   }
 
-  .hud-act,
+    .hud-act,
   .hud-location,
   .hud-seed,
   .hud-separator,
   .hud-vital-label,
   .hud-center-talismans,
+  .hud-hearts,
   .hero-queue-label,
   .hero-queue-hint,
   .chronicle-header {
     display: none;
+  }
+
+  .hud-hp-icon {
+    display: inline;
+    margin-right: 2px;
+  }
+
+  .hud-actions .btn-text {
+    display: none;
+  }
+
+  .hud-actions .btn-parchment.btn-sm {
+    padding: 4px 6px;
+    min-width: 34px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hud-title {
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .hud-gold {
+    white-space: nowrap;
   }
 
   .hero-queue-panel {

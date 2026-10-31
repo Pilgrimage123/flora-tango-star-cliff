@@ -7,13 +7,13 @@
       "status": 200,
       "title": "Lovec upírů: Venca Česnekáč",
       "hasCanvas": false,
-      "bodyTextLen": 1107,
-      "bodyTextHash": "983c6e33a767c34bdda60a1b23c5f2e69f03a82ddbc68691924c1f62c776aba7",
+      "bodyTextLen": 1034,
+      "bodyTextHash": "c02f0ea270aec41c019d0408a8ef5af45b1d04ed1ba56aad6c319186975f6091",
       "bodyTextPrefix": "🧄 LOVEC UPÍRŮ · Akt I: Zatuchlé předhradí a berňák · Předhradí:",
       "horizontalOverflow": false,
       "consoleErrors": [],
       "pageErrors": [],
-      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+      "screenshot": "D:\\Games\\antigravity\\lovec upírů\\screenshots\\app-builder-preview.png"
     },
     "mobile": {
       "width": 390,
@@ -21,16 +21,18 @@
       "status": 200,
       "title": "Lovec upírů: Venca Česnekáč",
       "hasCanvas": false,
-      "bodyTextLen": 713,
-      "bodyTextHash": "9bbbf465c800200fb82d9cb59b2b869a515c423bd89ddce1673df8e9424c0c14",
-      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ 10/10 HP 💰 25 duká",
+      "bodyTextLen": 737,
+      "bodyTextHash": "d9ec25e262e2ca69d7764e22c57cc25984fa8863531300531dfb503fa63d45ec",
+      "bodyTextPrefix": "🧄 LOVEC UPÍRŮ ❤️10/10 HP 💰 25 dukátů 🗺️ 📖 ⚙️ 🎓 TIP 1 (Kroky",
       "horizontalOverflow": false,
       "consoleErrors": [],
       "pageErrors": [],
-      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+      "screenshot": "D:\\Games\\antigravity\\lovec upírů\\screenshots\\app-builder-preview-mobile.png"
     }
   },
-  "brandWarnings": [],
+  "brandWarnings": [
+    "BRAND NOTE: no custom public/og.jpg — the platform will serve the og.grok.me placeholder. Custom cards are the default for games of every kind (DOM board/word games included), whimsical apps, creative tools, and brand-forward pages — only plain utilities (converters, CRUD trackers, admin dashboards) keep the placeholder. If this app is not a plain utility, finish the brand-asset pass per \\workspace\\.grok\\skills\\og\\SKILL.md."
+  ],
   "authWarnings": [],
-  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+  "verdictFile": "D:\\Games\\antigravity\\lovec upírů\\screenshots\\app-builder-preview.json"
 }

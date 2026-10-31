@@ -10,6 +10,7 @@ import { renderTileBar } from './ui/tileBar.js';
 import { renderChronicleLog } from './ui/log.js';
 import { renderMapScreen } from './ui/mapScreen.js';
 import {
+  closeModal,
   openRulesModal,
   openFullLogModal,
   openSettingsModal,
@@ -122,7 +123,21 @@ async function bootstrap(token) {
       const tile = appState.battleState?.hand[idx];
       if (tile) actions.handleSelectTile(tile.instanceId);
     },
-    onOpenRules: () => openRulesModal(document.getElementById('modal-root'))
+    onOpenRules: () => openRulesModal(document.getElementById('modal-root')),
+    onEscape: () => {
+      const modalRoot = document.getElementById('modal-root');
+      if (modalRoot && !modalRoot.classList.contains('hidden')) {
+        const closeBtn = modalRoot.querySelector('#btn-modal-close, #btn-leave-pub, #btn-leave-workshop, #btn-skip-reward, #btn-treasure-done, #btn-event-continue');
+        if (closeBtn) {
+          closeBtn.click();
+        } else {
+          closeModal(modalRoot);
+        }
+      } else if (appState.screen === 'map' && appState.battleState && appState.battleState.status === 'playing') {
+        appState.screen = 'battle';
+        renderAll();
+      }
+    }
   });
 
   startNewRun(appState.metaStats.lastSeed || 'VENCA-1899');

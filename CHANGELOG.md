@@ -4,6 +4,34 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.3.3] - 2026-10-31
+
+### Opraveno
+- **UI a HUD grafika, responzivita a ovládání**:
+  - **Kritické přetékání horní lišty (HUD) na mobilních zařízeních**:
+    - Na zařízeních s šířkou obrazovky pod 720px (např. 390×844) se v horní liště HUD skrývá zbytečný řádek 10 jednotlivých srdíček (`.hud-hearts`), který zabíral přes 180 px, a namísto toho se zobrazuje kompaktní textové zdraví `❤️ 10/10 HP`.
+    - Texty tlačítek akcí v HUD (`Mapa`, `Pravidla`, `Nastavení`) jsou na mobilu zredukovány na elegantní pergamenové ikony `[🗺️]`, `[📖]`, `[⚙️]` se zachovanými atributy `title` a `aria-label`.
+    - Všechna 3 ovládací tlačítka v HUD se nyní na mobilním telefonu bezpečně vejdou do šířky obrazovky (šířka lišty končí na 373 px z dostupných 390 px) a již nejsou odsunuta 100% mimo obrazovku.
+  - **Zavírání oken a návrat na bojiště klávesou Escape**:
+    - V `src/game/ui/input.js` a `src/game/main.js` implementován globální odchyt klávesy `Escape` před kontrolou zámku vstupu.
+    - Hráč nyní může jakékoliv otevřené modální okno (Pravidla, Nastavení, Celý deník, Hospoda, Dílna, Odměny) okamžitě zavřít stiskem `Escape`, stejně jako se z mapy aktu okamžitě vrátit zpět do probíhající bitvy bez nutnosti hledat křížek či tlačítko myší.
+  - **Srozumitelné české formátování dosahů destiček v ruce**:
+    - V `src/game/ui/tileBar.js` v `formatTileRangeLabel` nahrazeny nicneříkající technické popisky (`Pole +1`, `Pole +1, -1`) přirozeným českým značením: `Vpřed 1`, `Vzad 1`, `Kolem sebe (1)`, `Vpřed 1–2`, `Vpřed 1–3`.
+    - U destiček s vlastností `quick: true` (cena vložení 0 tahů) doplněn štítek `⚡ Rychlovka` přímo na kartu v ruce.
+  - **Zpřesnění textu v pravidlech hry**:
+    - V manuálu pravidel v `src/game/ui/modal.js` opraven zavádějící údaj o fixních 7 polích na skutečných 7–9 kamenných polí a upřesněna zkratka pro výběr destiček na 1–4 namísto 1–9.
+  - **Ochrana plovoucí nápovědy (Tooltip) před přetečením obrazovky**:
+    - V `src/game/styles/ui.css` na `.neprakta-tooltip` doplněno `max-width: calc(100vw - 24px); box-sizing: border-box; word-break: break-word;`, což garantuje bezpečné zobrazení nápověd bez vodorovného posunu i na úzkých displejích.
+- **Herní mechaniky a balance**:
+  - **Oprava friendly fire pasti u talismanu Okované půllitry (`hobnailed_boots`)**:
+    - V `src/game/engine/board.js` v `pushEntity` opraven výpočet kolizního poškození při nárazu do zdi, sudu i mezi postavami. Bonusové poškození talismanu se již nevztahuje na Vencu samotného, pokud je sám odhozen nepřítelem. Vencovy boty tak již nezvyšují poškození, které utrží on sám.
+  - **Statistika poražených upírů (`enemiesKilled`) v běhu a souhrnu výpravy**:
+    - V `src/game/engine/run.js` inicializován čítač `enemiesKilled: 0` v objektu statistik běhu.
+    - V `src/game/battle.js` zajištěno přičítání počtu poražených nepřátel z každé vyhrané i prohrané bitvy do statistik běhu.
+    - V závěrečném okně výpravy (`openRunEndModal`) přidána statistika `Poraženo upírů: X`.
+  - **Deterministická pestrost nabídky v hospodě (Pub Shop)**:
+    - V `openPubModal` v `src/game/ui/modal.js` nahrazen statický výběr prvního prvku pole náhodným výběrem řízeným seedem (`runState.rng.pick`), takže hospoda nabízí v každém uzlu a seedu odlišné destičky i talismany namísto věčného Vlhkého šátku na čelo.
+
 ## [1.3.2] - 2026-10-31
 
 ### Opraveno

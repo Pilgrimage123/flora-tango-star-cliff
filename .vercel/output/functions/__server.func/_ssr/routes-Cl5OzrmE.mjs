@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-T1CoWKR2.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-6N_JQhjT.js
+import "./router-BdYaJ_UJ.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-Cl5OzrmE.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -3632,7 +3632,7 @@ function pushEntity(state, target, direction, distance, events = []) {
 	if (!target || target.hp <= 0 || distance <= 0 || !direction) return;
 	const stepDir = Math.sign(direction);
 	const bonusCollision = state.talismans?.includes("hobnailed_boots") ? 1 : 0;
-	const colDmg = 1 + bonusCollision;
+	const targetColDmg = 1 + (target.entityType !== "hero" ? bonusCollision : 0);
 	for (let step = 0; step < distance; step++) {
 		if (target.hp <= 0) break;
 		const nextCell = target.cell + stepDir;
@@ -3645,9 +3645,9 @@ function pushEntity(state, target, direction, distance, events = []) {
 			});
 			events.push({
 				type: "log",
-				text: `🧱 ${target.name} narazil hlavou do hradní zdi (${colDmg} DMG)!`
+				text: `🧱 ${target.name} narazil hlavou do hradní zdi (${targetColDmg} DMG)!`
 			});
-			applyDamage(state, target, colDmg, { reason: "wall_collision" }, events);
+			applyDamage(state, target, targetColDmg, { reason: "wall_collision" }, events);
 			break;
 		}
 		const blocker = getEntityAt(state, nextCell);
@@ -3664,7 +3664,7 @@ function pushEntity(state, target, direction, distance, events = []) {
 					text: `🛢️ ${target.name} vletěl přímo do sudu s kyselým zelím! Sud praská (2 DMG + Zmatení)!`
 				});
 				applyDamage(state, blocker, blocker.hp, { reason: "barrel_smash" }, events);
-				applyDamage(state, target, 2 + bonusCollision, { reason: "barrel_smash" }, events);
+				applyDamage(state, target, 2 + (target.entityType !== "hero" ? bonusCollision : 0), { reason: "barrel_smash" }, events);
 				if (target.hp > 0) addStatus(target, "confusion", 1, events);
 				if (blocker.hp <= 0 && target.hp > 0 && !getEntityAt(state, nextCell)) {
 					const fromCell = target.cell;
@@ -3686,12 +3686,14 @@ function pushEntity(state, target, direction, distance, events = []) {
 				cell: nextCell
 			});
 			const quote = STRINGS.collisionQuotes[0];
+			const blockerColDmg = 1 + (blocker.entityType !== "hero" ? bonusCollision : 0);
+			const dmgLabel = targetColDmg === blockerColDmg ? `oba ${targetColDmg} DMG` : `${target.name} ${targetColDmg} DMG, ${blocker.name} ${blockerColDmg} DMG`;
 			events.push({
 				type: "log",
-				text: `💥 Srážka! ${target.name} vrazil do postavy ${blocker.name} (oba ${colDmg} DMG)! ${quote}`
+				text: `💥 Srážka! ${target.name} vrazil do postavy ${blocker.name} (${dmgLabel})! ${quote}`
 			});
-			applyDamage(state, target, colDmg, { reason: "entity_collision" }, events);
-			applyDamage(state, blocker, colDmg, { reason: "entity_collision" }, events);
+			applyDamage(state, target, targetColDmg, { reason: "entity_collision" }, events);
+			applyDamage(state, blocker, blockerColDmg, { reason: "entity_collision" }, events);
 			break;
 		}
 		const fromCell = target.cell;
@@ -4697,6 +4699,7 @@ function createNewRun(seedInput = "VENCA-1899") {
 			battlesWon: 0,
 			elitesDefeated: 0,
 			bossesDefeated: 0,
+			enemiesKilled: 0,
 			totalDamageDealt: 0,
 			totalFriendlyFire: 0,
 			totalTurns: 0,
@@ -5605,7 +5608,7 @@ function renderHud(container, runState, battleState, callbacks = {}) {
           <div class="hud-hp-group" title="Zdraví Venci Česnekáče">
             <span class="hud-vital-label">Zdraví:</span>
             <div class="hud-hearts">${heartsHtml}</div>
-            <span class="hud-hp-numbers">${hp}/${maxHp} HP</span>
+            <span class="hud-hp-numbers"><span class="hud-hp-icon" aria-hidden="true">❤️</span>${hp}/${maxHp} HP</span>
           </div>
           <span class="hud-separator">·</span>
           <div class="hud-gold" title="Hradní dukáty na útratu v hospodě a dílně">
@@ -5624,14 +5627,14 @@ function renderHud(container, runState, battleState, callbacks = {}) {
       </div>
 
       <div class="hud-actions">
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-map" title="Zobrazit mapu aktu">
-          🗺️ Mapa
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-map" title="Zobrazit mapu aktu" aria-label="Zobrazit mapu aktu">
+          <span class="btn-icon">🗺️</span><span class="btn-text"> Mapa</span>
         </button>
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-rules" title="Pravidla a nápověda (F1)">
-          📖 Pravidla
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-rules" title="Pravidla a nápověda (F1)" aria-label="Pravidla a nápověda (F1)">
+          <span class="btn-icon">📖</span><span class="btn-text"> Pravidla</span>
         </button>
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-settings" title="Nastavení rychlosti, zvuku a seedu">
-          ⚙️ Nastavení
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-settings" title="Nastavení rychlosti, zvuku a seedu" aria-label="Nastavení rychlosti, zvuku a seedu">
+          <span class="btn-icon">⚙️</span><span class="btn-text"> Nastavení</span>
         </button>
       </div>
     </div>
@@ -7423,6 +7426,7 @@ function renderTileBar(container, state, callbacks = {}) {
 		const disabled = onCd || inQ || state.queue.length >= state.maxQueueSlots || state.status !== "playing";
 		const rangeText = formatTileRangeLabel(tile);
 		const badges = [];
+		if (tile.quick) badges.push("<span class=\"tile-tag tile-tag-quick\">⚡ Rychlovka</span>");
 		if (tile.resonance) badges.push("<span class=\"tile-tag tile-tag-resonance\">✨ Rezonance</span>");
 		return `
         <button type="button"
@@ -7520,7 +7524,15 @@ function formatTileRangeLabel(tile) {
 	if (tile.leapDistance) return `Skok ${tile.leapDistance}`;
 	if (tile.projectileRange) return `Střela 1–${tile.projectileRange}`;
 	if (!tile.pattern || tile.pattern.length === 0) return "Na místě";
-	return `Pole ${tile.pattern.map((p) => p.offset > 0 ? `+${p.offset}` : `${p.offset}`).join(", ")}`;
+	const offsets = tile.pattern.map((p) => p.offset).sort((a, b) => a - b);
+	if (offsets.length === 1) {
+		if (offsets[0] === 1) return "Vpřed 1";
+		if (offsets[0] === -1) return "Vzad 1";
+		return offsets[0] > 0 ? `Vpřed ${offsets[0]}` : `Vzad ${Math.abs(offsets[0])}`;
+	}
+	if (offsets.length === 2 && offsets[0] === -1 && offsets[1] === 1) return "Kolem sebe (1)";
+	if (offsets.every((o) => o > 0)) return `Vpřed ${Math.min(...offsets)}–${Math.max(...offsets)}`;
+	return `Pole ${offsets.map((o) => o > 0 ? `+${o}` : `${o}`).join(", ")}`;
 }
 function buildTileTooltipHtml(tile) {
 	return `
@@ -7692,13 +7704,13 @@ function openRulesModal(modalRoot) {
         </div>
         <div class="modal-body rules-grid">
           <div class="rule-block">
-            <h4>1. 1D Bojiště (7 polí) a Ekonomika tahu</h4>
-            <p>Na každém ze 7 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
+            <h4>1. 1D Bojiště (7–9 polí) a Ekonomika tahu</h4>
+            <p>Na každém ze 7–9 kamenných polí smí stát nejvýše jedna postava nebo sud. Jeden tvůj <strong>TAH</strong> je právě jedna z akcí:</p>
             <ul>
               <li><strong>Krok vlevo / vpravo (A / D):</strong> Posun o 1 pole bez změny směru pohledu. Cílové pole musí být volné (do obsazeného pole nelze vstoupit ani ho krokem přeskočit – přes překážky skáče pouze destička <em>Hospodský přemet</em>).</li>
               <li><strong>Otočení (W):</strong> Změní směr pohledu (◀ / ▶). Stojíš-li v <strong>Česnekovém oblaku</strong>, je otočení <strong>ZDARMA (0 tahů)</strong>!</li>
               <li><strong>Čekání (S):</strong> Stojí 1 tah, sníží cooldowny tvých destiček.</li>
-              <li><strong>Vložení destičky do Fronty (1–9 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
+              <li><strong>Vložení destičky do Fronty (1–4 / klik):</strong> Stojí 1 tah (vyjma destiček s vlastností <em>Rychlovka</em>, jejichž vložení stojí 0 tahů). Vyjmutí i libovolné přerovnání destiček ve frontě je vždy zdarma.</li>
               <li><strong>PROVÉST KOMBO (Mezerník / Space):</strong> Okamžitý odpal! Všechny destičky ve frontě se provedou zleva doprava bez nutnosti přípravného nápřahu za <strong>JEDEN tah</strong>!</li>
             </ul>
           </div>
@@ -7900,9 +7912,11 @@ function openBattleRewardModal(modalRoot, runState, choices, onComplete) {
 function openPubModal(modalRoot, runState, onLeavePub) {
 	modalRoot.classList.remove("hidden");
 	const ownedTileIds = new Set(runState.deck.map((d) => d.id));
-	const shopTileId = Object.keys(HERO_TILES).filter((id) => !ownedTileIds.has(id))[0] || "rosary_slap";
+	const shopTilePool = Object.keys(HERO_TILES).filter((id) => !ownedTileIds.has(id));
+	const shopTileId = runState.rng && shopTilePool.length > 0 ? runState.rng.pick(shopTilePool) : shopTilePool[0] || "rosary_slap";
 	const shopTileDef = getHeroTileDefinition(shopTileId, 0);
-	const shopTalismanId = Object.keys(TALISMANS).filter((id) => !runState.talismans.includes(id))[0] || null;
+	const unownedTalismans = Object.keys(TALISMANS).filter((id) => !runState.talismans.includes(id));
+	const shopTalismanId = unownedTalismans.length > 0 ? runState.rng ? runState.rng.pick(unownedTalismans) : unownedTalismans[0] : null;
 	const shopTalisman = shopTalismanId ? TALISMANS[shopTalismanId] : null;
 	let healedInThisVisit = false;
 	let cdReducedInThisVisit = false;
@@ -8149,6 +8163,7 @@ function openRunEndModal(modalRoot, runState, isVictory, callbacks = {}) {
           <div class="summary-stats-grid">
             <div class="stat-pill">Dosažený akt: <strong>${runState.act} / 3</strong></div>
             <div class="stat-pill">Vyhrané bitvy: <strong>${runState.stats.battlesWon}</strong></div>
+            <div class="stat-pill">Poraženo upírů: <strong>${runState.stats.enemiesKilled || 0}</strong></div>
             <div class="stat-pill">Rozdané poškození: <strong>${runState.stats.totalDamageDealt} DMG</strong></div>
             <div class="stat-pill">Friendly Fire zásahy: <strong>${runState.stats.totalFriendlyFire}</strong></div>
             <div class="stat-pill">Odehrané tahy: <strong>${runState.stats.totalTurns}</strong></div>
@@ -8181,6 +8196,11 @@ var keyHandler = null;
 function initKeyboardInput(callbacks = {}) {
 	if (keyHandler) window.removeEventListener("keydown", keyHandler);
 	keyHandler = (e) => {
+		if (e.key === "Escape" || e.key === "Esc") {
+			e.preventDefault();
+			callbacks.onEscape?.();
+			return;
+		}
 		if (callbacks.isInputLocked?.()) return;
 		const tag = e.target && e.target.tagName || "";
 		if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
@@ -9055,6 +9075,7 @@ function createBattleActions(deps) {
 		runState.stats.totalDamageDealt += battleState.stats.damageDealt || 0;
 		runState.stats.totalFriendlyFire += battleState.stats.friendlyFireCount || 0;
 		runState.stats.totalTurns += battleState.stats.turnsTaken || 0;
+		runState.stats.enemiesKilled = (runState.stats.enemiesKilled || 0) + (battleState.stats.enemiesKilled || 0);
 		appState.metaStats.totalKills = (appState.metaStats.totalKills || 0) + (battleState.stats.enemiesKilled || 0);
 		appState.metaStats.bestAct = Math.max(appState.metaStats.bestAct || 1, runState.act);
 		try {
@@ -9202,7 +9223,18 @@ async function bootstrap(token) {
 			const tile = appState.battleState?.hand[idx];
 			if (tile) actions.handleSelectTile(tile.instanceId);
 		},
-		onOpenRules: () => openRulesModal(document.getElementById("modal-root"))
+		onOpenRules: () => openRulesModal(document.getElementById("modal-root")),
+		onEscape: () => {
+			const modalRoot = document.getElementById("modal-root");
+			if (modalRoot && !modalRoot.classList.contains("hidden")) {
+				const closeBtn = modalRoot.querySelector("#btn-modal-close, #btn-leave-pub, #btn-leave-workshop, #btn-skip-reward, #btn-treasure-done, #btn-event-continue");
+				if (closeBtn) closeBtn.click();
+				else closeModal(modalRoot);
+			} else if (appState.screen === "map" && appState.battleState && appState.battleState.status === "playing") {
+				appState.screen = "battle";
+				renderAll();
+			}
+		}
 	});
 	startNewRun(appState.metaStats.lastSeed || "VENCA-1899");
 }

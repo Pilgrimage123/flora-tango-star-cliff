@@ -22,6 +22,7 @@ export function renderTileBar(container, state, callbacks = {}) {
 
       const rangeText = formatTileRangeLabel(tile);
       const badges = [];
+      if (tile.quick) badges.push('<span class="tile-tag tile-tag-quick">⚡ Rychlovka</span>');
       if (tile.resonance) badges.push('<span class="tile-tag tile-tag-resonance">✨ Rezonance</span>');
 
       return `
@@ -143,8 +144,19 @@ function formatTileRangeLabel(tile) {
   if (tile.leapDistance) return `Skok ${tile.leapDistance}`;
   if (tile.projectileRange) return `Střela 1–${tile.projectileRange}`;
   if (!tile.pattern || tile.pattern.length === 0) return 'Na místě';
-  const offsets = tile.pattern.map((p) => (p.offset > 0 ? `+${p.offset}` : `${p.offset}`));
-  return `Pole ${offsets.join(', ')}`;
+  const offsets = tile.pattern.map((p) => p.offset).sort((a, b) => a - b);
+  if (offsets.length === 1) {
+    if (offsets[0] === 1) return 'Vpřed 1';
+    if (offsets[0] === -1) return 'Vzad 1';
+    return offsets[0] > 0 ? `Vpřed ${offsets[0]}` : `Vzad ${Math.abs(offsets[0])}`;
+  }
+  if (offsets.length === 2 && offsets[0] === -1 && offsets[1] === 1) {
+    return 'Kolem sebe (1)';
+  }
+  if (offsets.every((o) => o > 0)) {
+    return `Vpřed ${Math.min(...offsets)}–${Math.max(...offsets)}`;
+  }
+  return `Pole ${offsets.map((o) => (o > 0 ? `+${o}` : `${o}`)).join(', ')}`;
 }
 
 export function buildTileTooltipHtml(tile) {

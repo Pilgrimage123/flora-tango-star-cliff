@@ -447,7 +447,7 @@ export function pushEntity(state, target, direction, distance, events = []) {
   if (!target || target.hp <= 0 || distance <= 0 || !direction) return;
   const stepDir = Math.sign(direction);
   const bonusCollision = state.talismans?.includes('hobnailed_boots') ? 1 : 0;
-  const colDmg = COLLISION_DAMAGE + bonusCollision;
+  const targetColDmg = COLLISION_DAMAGE + (target.entityType !== 'hero' ? bonusCollision : 0);
 
   for (let step = 0; step < distance; step++) {
     if (target.hp <= 0) break;
@@ -463,9 +463,9 @@ export function pushEntity(state, target, direction, distance, events = []) {
       });
       events.push({
         type: 'log',
-        text: `🧱 ${target.name} narazil hlavou do hradní zdi (${colDmg} DMG)!`
+        text: `🧱 ${target.name} narazil hlavou do hradní zdi (${targetColDmg} DMG)!`
       });
-      applyDamage(state, target, colDmg, { reason: 'wall_collision' }, events);
+      applyDamage(state, target, targetColDmg, { reason: 'wall_collision' }, events);
       break;
     }
 
@@ -484,7 +484,7 @@ export function pushEntity(state, target, direction, distance, events = []) {
           text: `🛢️ ${target.name} vletěl přímo do sudu s kyselým zelím! Sud praská (${BARREL_EXPLODE_DAMAGE} DMG + Zmatení)!`
         });
         applyDamage(state, blocker, blocker.hp, { reason: 'barrel_smash' }, events);
-        applyDamage(state, target, BARREL_EXPLODE_DAMAGE + bonusCollision, { reason: 'barrel_smash' }, events);
+        applyDamage(state, target, BARREL_EXPLODE_DAMAGE + (target.entityType !== 'hero' ? bonusCollision : 0), { reason: 'barrel_smash' }, events);
         if (target.hp > 0) {
           addStatus(target, 'confusion', 1, events);
         }
@@ -511,12 +511,14 @@ export function pushEntity(state, target, direction, distance, events = []) {
         cell: nextCell
       });
       const quote = STRINGS.collisionQuotes[0];
+      const blockerColDmg = COLLISION_DAMAGE + (blocker.entityType !== 'hero' ? bonusCollision : 0);
+      const dmgLabel = targetColDmg === blockerColDmg ? `oba ${targetColDmg} DMG` : `${target.name} ${targetColDmg} DMG, ${blocker.name} ${blockerColDmg} DMG`;
       events.push({
         type: 'log',
-        text: `💥 Srážka! ${target.name} vrazil do postavy ${blocker.name} (oba ${colDmg} DMG)! ${quote}`
+        text: `💥 Srážka! ${target.name} vrazil do postavy ${blocker.name} (${dmgLabel})! ${quote}`
       });
-      applyDamage(state, target, colDmg, { reason: 'entity_collision' }, events);
-      applyDamage(state, blocker, colDmg, { reason: 'entity_collision' }, events);
+      applyDamage(state, target, targetColDmg, { reason: 'entity_collision' }, events);
+      applyDamage(state, blocker, blockerColDmg, { reason: 'entity_collision' }, events);
       break;
     }
 

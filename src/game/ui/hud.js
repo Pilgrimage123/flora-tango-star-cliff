@@ -44,7 +44,7 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
           <div class="hud-hp-group" title="Zdraví Venci Česnekáče">
             <span class="hud-vital-label">Zdraví:</span>
             <div class="hud-hearts">${heartsHtml}</div>
-            <span class="hud-hp-numbers">${hp}/${maxHp} HP</span>
+            <span class="hud-hp-numbers"><span class="hud-hp-icon" aria-hidden="true">❤️</span>${hp}/${maxHp} HP</span>
           </div>
           <span class="hud-separator">·</span>
           <div class="hud-gold" title="Hradní dukáty na útratu v hospodě a dílně">
@@ -63,14 +63,14 @@ export function renderHud(container, runState, battleState, callbacks = {}) {
       </div>
 
       <div class="hud-actions">
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-map" title="Zobrazit mapu aktu">
-          🗺️ Mapa
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-map" title="Zobrazit mapu aktu" aria-label="Zobrazit mapu aktu">
+          <span class="btn-icon">🗺️</span><span class="btn-text"> Mapa</span>
         </button>
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-rules" title="Pravidla a nápověda (F1)">
-          📖 Pravidla
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-rules" title="Pravidla a nápověda (F1)" aria-label="Pravidla a nápověda (F1)">
+          <span class="btn-icon">📖</span><span class="btn-text"> Pravidla</span>
         </button>
-        <button type="button" class="btn-parchment btn-sm" id="btn-hud-settings" title="Nastavení rychlosti, zvuku a seedu">
-          ⚙️ Nastavení
+        <button type="button" class="btn-parchment btn-sm" id="btn-hud-settings" title="Nastavení rychlosti, zvuku a seedu" aria-label="Nastavení rychlosti, zvuku a seedu">
+          <span class="btn-icon">⚙️</span><span class="btn-text"> Nastavení</span>
         </button>
       </div>
     </div>
