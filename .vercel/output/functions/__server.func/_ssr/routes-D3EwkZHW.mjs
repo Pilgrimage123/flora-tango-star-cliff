@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-DxRFUarl.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-B-K_Ix7q.js
+import "./router-CGW1GTZ0.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-D3EwkZHW.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -6879,8 +6879,9 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
       </div>
     </div>
 
-    <div class="battlefield-1d-stage ${painted ? painted.className : ""}" id="battlefield-stage">
-      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" />${cellsHtml}</div>` : cellsHtml}
+    <div class="battlefield-1d-stage ${painted ? painted.className : ""}" id="battlefield-stage"${painted ? "" : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
+      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ""}
+      ${cellsHtml}
     </div>
   `;
 	let draggedSlotIdx = null;

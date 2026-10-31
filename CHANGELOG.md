@@ -4,6 +4,28 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.3.1] - 2026-10-31
+
+### Opraveno
+- **Responzivita a zobrazení arény bojiště a nepřátel na všech zařízeních**:
+  - **Zabránění kolapsu arény na zařízeních s menší výškou**:
+    - Odstraněna chyba, kdy `#app-shell` s fixním `height: 100dvh; overflow: hidden;` a flexibilní arénou (`flex: 1 1 0%; min-height: 0;`) na obrazovkách s výškou pod ~750px (iPhone SE 375×667, mobilní landscape 844×390, menší notebooky 1024×600 a 1366×650) stlačil 1D arénu s nepřáteli na 0–17 px, čímž byla herní scéna zcela skryta.
+    - Zavedena garance minimální hratelné výšky bojiště (`min-height: 220px;` v základu, `min-height: 200px;` na mobilních zařízeních) a vertikální scroll fallback na `#app-shell` (`overflow-x: hidden; overflow-y: auto;`), takže žádná část herní plochy nemůže být oříznuta ani skryta.
+    - Omezena maximální výška scény na vysokých mobilních displejích (`max-height: 280px;`), čímž se zamezilo nežádoucímu vertikálnímu natažení kamenných polí do nepřirozeně úzkých věží.
+  - **Ochrana před ořezem záměrů a jmenovek nepřátel**:
+    - Přepnuta hierarchie v `.battlefield-1d-stage`: pozadí malované scény (`.yard-scene`) má samostatný ořez s border-radiusem, zatímco samotné buňky bojiště jsou přímými potomky arény s `overflow: visible;`. Jmenovky, ukazatele zdraví a telegrafované záměry nepřátel (např. `#1 NABÍJÍ`, `#2 NABÍJÍ`) již nejsou nahoře ořezávány hranou arény.
+    - Ve standardním mřížkovém zobrazení přepnuto `overflow: visible;` na `.cell-entity-stage`, aby entity a intent boxy nebyly stlačovány či uřezávány.
+  - **Oprava překryvu u pravé brány (Gate Pillar)**:
+    - Změněno absolutní polohování `.gate-pillar` na kompaktní štítky s vlastním odsazením a poloprůhledným pozadím.
+    - Na úzkých displejích (`@media (max-width: 720px)`) je statický popisek brány skryt a zobrazuje se pouze kompaktní varování posily, aby banner nezakrýval nepřátele ani jejich záměry na krajních polích.
+  - **Kompaktní rozvržení ovládacích prvků a lišt na mobilních zařízeních**:
+    - Lišta kombo fronty (`.hero-queue-panel`) na mobilu udržuje sloty v jednom nezalamovaném řádku (`flex-wrap: nowrap; height: 34px;`), což uspořilo přes 90 px vertikálního prostoru.
+    - Tlačítka pohybu (`.action-controls-row`) jsou na úzkých displejích kompaktní a horizontálně posuvná s touch podporou; klávesové zkratky `<kbd>` jsou na dotykových zařízeních skryty.
+    - Karty destiček v ruce (`.player-tile-card`) jsou na mobilu zmenšeny na šířku 96–108 px se zmenšenou ikonou, textem i statistikami.
+    - Kronika (`.chronicle-panel`) na malých zařízeních redukována na jednořádkový přehled posledního záznamu (`max-height: 26px;`).
+  - **Dynamická podpora počtu sloupců nemalovaných střetnutí**:
+    - Aréna nyní dynamicky nastavuje `grid-template-columns: repeat(var(--board-size), minmax(0, 1fr))` podle parametru `boardSize` střetnutí namísto dřívějšího natvrdo zadaného čísla 7.
+
 ## [1.3.0] - 2026-10-30
 
 ### Opraveno
@@ -48,47 +70,3 @@ Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 - **Vyhlazení CSS klíčových snímků**:
   - `boundStep` (krok bestií a potvor) nyní plynule dosedá zpět do `scale(1, 1)` bez skokového škubnutí.
   - Doplněna plná podpora `prefers-reduced-motion` a škálování podle nastavení rychlosti `animSpeed` pro projektily a posuny.
-
-### Opraveno
-- **Životní cyklus póz Venci a zobrazení padlého hrdiny**:
-  - Opraveno zasekávání Venci v pózách `attack` a `hurt`; zaveden automatický návrat do `idle` přes `scheduleHeroIdle`.
-  - Zabráněno nežádoucímu vzkříšení Venci do živého stavu po jeho porážce (`startHeroIdle` padlého hrdinu nepřebíjí, Venca zůstává v póze `hero.dead`).
-  - Odstraněno duplicitní spouštění nápřahu `anim-lunge` při zásahu hrdinou.
-
-## [1.1.0] - 2026-10-30
-
-### Přidáno
-- **Doménová dokumentace a ADR**:
-  - `GLOSSARY.md` — závazný slovník pojmů (Bojiště, Tah, Krok, Výstroj / Arzenál, Fronta komba, Rychlovka, Odpal komba, ARMED_RED, Friendly Fire, Momentum, Kolize, Omráčení).
-  - `docs/adr/0001-queue-direct-execution-and-synchronous-pacing.md` — architektonické rozhodnutí k okamžitému odpalu komba bez nutnosti přípravného tahu.
-  - `docs/adr/0002-action-pool-and-arsenal-data-structure.md` — sjednocení akčního modelu nepřátel (`actionPool` + `actionQueue`) a formalizace konceptu Výstroje (Arzenálu).
-- **Mechanika Rychlovka (`quick: true`)**:
-  - Plná podpora v enginu (`playerEnqueueTileNoEnd` / `playerEnqueueTile`), umožňující vložení vybraných destiček do fronty komba zdarma bez spotřeby tahu světa (`freeTurn: true`).
-- **Centrální správa statusů**:
-  - Funkce `hasStatus`, `getStatusAmount` a `consumeStatus` v `src/game/engine/board.js` pro bezpečné čtení, odečítání a automatické promazávání vyčerpaných statusů.
-- **Testovací pokrytí**:
-  - Rozšíření nativní testovací sady `tests/engine.test.js` na 24 komplexních testovacích sad (pokrytí Rychlovky, čistoty datových struktur nepřátel a fungování helperů statusů).
-
-### Změněno
-- **Optimalizace assetů a grafiky**:
-  - Drastická redukce velikosti složky `public/assets/` z 27.5 MB na 11.5 MB (úspora 16 MB).
-  - Resampling a downscale 20 nadrozměrných textur nepřátel a postav na max 512px se zachováním 32-bitové RGBA průhlednosti.
-  - Optimalizace pozadí `naves-yard.jpg` (2752×1536 na 1920×1072, JPEG q85).
-  - Doplnění registrace chybějících klíčů scén v `public/assets/manifest.json`.
-- **Refaktoring modelu nepřátel a AI**:
-  - Sjednocení nepřátel na moderní model `actionPool` (dostupné schopnosti a cooldowny), `actionQueue` (naplánované akce) a `queueState` (`EMPTY`, `QUEUING_GRAY`, `ARMED_RED`).
-  - Vyčištění logiky v `threat.js` a `enemyAI.js` od duplicitních větví starého cyklického systému.
-- **Pravidla a tempo hry**:
-  - Běžný krok je striktně blokován obsazeným polem (přeskakovat může výhradně manévr typu `Hospodský přemet`).
-  - Zrušen mrtvý kód přípravy fronty (`playerPrepareQueue`, `isQueuePrepared`) a nepoužívané CSS třídy.
-  - Odstraněn mrtvý kód pro poziční bonusy slotů a bonusové otočení cíle (`bonuses.flipTarget`).
-
-### Odstraněno
-- Smazány osiřelé a nepoužívané textury postav: `venca_idle_b.png`, `venca_walk_a.png`, `venca_walk_b.png`.
-- Odstraněna mrtvá exportovaná funkce `advanceEnemyTileQueue`.
-- Vyřazen koncept Staggeru (zůstává pouze přímé Stun omráčení).
-
-### Opraveno
-- Detekce klávesové zkratky F1 (Herní manuál) v `src/game/ui/input.js` nezávisle na velikosti písmen (`key.toLowerCase() === 'f1'`).
-- Opraven callback dokončení bitvy po porážce bosse v `src/game/battle.js` na správné `completeCurrentNodeAndShowMap()`.
-- Nahrazeno pomalé hluboké klonování `structuredClone(enemy)` ve spawneru za lehký event payload.

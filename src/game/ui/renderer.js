@@ -253,8 +253,9 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
       </div>
     </div>
 
-    <div class="battlefield-1d-stage ${painted ? painted.className : ''}" id="battlefield-stage">
-      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" />${cellsHtml}</div>` : cellsHtml}
+    <div class="battlefield-1d-stage ${painted ? painted.className : ''}" id="battlefield-stage"${painted ? '' : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
+      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ''}
+      ${cellsHtml}
     </div>
   `;
 
