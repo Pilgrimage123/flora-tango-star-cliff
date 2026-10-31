@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-CGW1GTZ0.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-D3EwkZHW.js
+import "./router-T1CoWKR2.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-6N_JQhjT.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -5447,7 +5447,19 @@ function renderIconSvg(key, label) {
 		"map.workshop": "⚒️",
 		"map.event": "❓",
 		"map.treasure": "💎",
-		"map.boss": "👑"
+		"map.boss": "👑",
+		"talisman.wet_kerchief": "🧣",
+		"talisman.brass_lantern": "🏮",
+		"talisman.beer_frog": "🐸",
+		"talisman.garlic_braid": "🧄",
+		"talisman.hobnailed_boots": "🥾",
+		"talisman.sexton_keyring": "🗝️",
+		"talisman.sacred_flask": "🍶",
+		"talisman.notary_stamp": "💮",
+		"talisman.oak_splinter": "🪵",
+		"talisman.pocket_watch": "⏱️",
+		"talisman.butcher_apron": "🥩",
+		"talisman.holy_aspergillum": "💦"
 	}[key] || "⚜️"}</text>
     <text x="64" y="108" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#2c1d11" text-anchor="middle">${label.slice(0, 14)}</text>
   </svg>`;
@@ -6786,7 +6798,8 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 	sortedEnemies.forEach((e, i) => initiativeMap.set(e.id, i + 1));
 	const boardSize = state.boardSize || 7;
 	const painted = PAINTED_SCENES[state.encounterId] || null;
-	const paintedEdges = painted && painted.edges.length === boardSize + 1 ? painted.edges : null;
+	const isPaintedValid = Boolean(painted && painted.edges && painted.edges.length === boardSize + 1);
+	const paintedEdges = isPaintedValid ? painted.edges : null;
 	const leftGateReinf = state.reinforcements.find((r) => !r.spawned && r.gateCell === 0);
 	const rightGateReinf = state.reinforcements.find((r) => !r.spawned && r.gateCell === boardSize - 1);
 	const queueSlotsHtml = Array.from({ length: state.maxQueueSlots }, (_, slotIdx) => {
@@ -6879,8 +6892,8 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
       </div>
     </div>
 
-    <div class="battlefield-1d-stage ${painted ? painted.className : ""}" id="battlefield-stage"${painted ? "" : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
-      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ""}
+    <div class="battlefield-1d-stage ${isPaintedValid ? painted.className : ""}" id="battlefield-stage"${isPaintedValid ? "" : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
+      ${isPaintedValid ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ""}
       ${cellsHtml}
     </div>
   `;
@@ -7066,6 +7079,7 @@ function refreshBoardOverlays(container, state, uiState = {}) {
 }
 function gaitFor(entity) {
 	if (entity.entityType === "hero") return "hero";
+	if (entity.entityType === "prop" || entity.bodyScale === "prop") return "prop";
 	if (entity.flying || entity.bodyScale === "flyer") return "flyer";
 	if (entity.bodyScale === "critter") return "critter";
 	if (entity.bodyScale === "beast") return "beast";
@@ -7120,19 +7134,20 @@ async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = "🎯
 	const startY = rFrom.top + rFrom.height * .42;
 	const targetX = rTo.left + rTo.width / 2;
 	const targetY = rTo.top + rTo.height * .42;
+	const flipX = targetX > startX ? -1 : 1;
 	const flyEl = document.createElement("div");
 	flyEl.className = "flying-projectile";
 	flyEl.textContent = icon;
 	flyEl.style.left = `${startX}px`;
 	flyEl.style.top = `${startY}px`;
-	flyEl.style.transform = "translate(-50%, -50%) scale(0.6)";
+	flyEl.style.transform = `translate(-50%, -50%) scale(${.6 * flipX}, 0.6)`;
 	flyEl.style.opacity = "0";
 	document.body.appendChild(flyEl);
 	const durationMs = Math.max(90, Math.round(180 / (animSpeed || 1)));
 	flyEl.offsetWidth;
 	flyEl.style.transition = `transform ${durationMs}ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 80ms ease-out`;
 	flyEl.style.opacity = "1";
-	flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(1.15)`;
+	flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(${1.15 * flipX}, 1.15)`;
 	await sleep(180, animSpeed);
 	flyEl.style.opacity = "0";
 	setTimeout(() => flyEl.remove(), 100);
@@ -7146,7 +7161,7 @@ async function playEntityMove(container, ev, animSpeed = 1) {
 	let isBackwards = false;
 	if (fromIdx !== void 0 && toIdx !== void 0 && fromIdx !== toIdx) {
 		const moveDir = toIdx > fromIdx ? 1 : -1;
-		const facing = ev.facing ?? 1;
+		const facing = ev.facing ?? (entityEl?.querySelector?.(".facing-left") ? -1 : 1);
 		isBackwards = moveDir === 1 && facing === -1 || moveDir === -1 && facing === 1;
 	}
 	const animClass = ev.type === "leap" ? "anim-leap" : isBackwards ? "anim-walk-back" : "anim-walk";
@@ -7366,7 +7381,7 @@ function triggerSpriteAnim(container, entityId, className) {
 	if (!entityId) return;
 	const el = container.querySelector(`#entity-dom-${entityId} .entity-sprite-img`);
 	if (!el) return;
-	el.classList.remove("anim-walk", "anim-lunge", "anim-shoot", "anim-leap", "anim-hurt");
+	el.classList.remove("anim-walk", "anim-walk-back", "anim-lunge", "anim-shoot", "anim-leap", "anim-hurt");
 	if (className !== "anim-death") el.classList.remove("anim-death");
 	el.offsetWidth;
 	el.classList.add(className);

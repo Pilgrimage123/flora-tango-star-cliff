@@ -4,6 +4,27 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.3.2] - 2026-10-31
+
+### Opraveno
+- **Grafika a animace na bojišti**:
+  - **Nehybné objekty (props)**:
+    - V `gaitFor(entity)` v `src/game/ui/renderer.js` doplněna detekce objektů typu `prop`. V `src/game/styles/animations.css` přidáno pravidlo `.gait-prop { animation: none !important; }`. Sudy se zelím a další překážky již nepohupují v lidském dechovém cyklu (`idleHuman`).
+  - **Čištění tříd animací kroku a úderů**:
+    - V `triggerSpriteAnim` v `renderer.js` doplněno odstranění třídy `'anim-walk-back'`. Odstraněna chyba, kdy na entitě mohl uvíznout stav couvání, který kvůli kaskádě stylů blokoval animaci chůze vpřed i úderů.
+  - **Směr pohledu a couvání při posunu a odhození**:
+    - V `playEntityMove` v `renderer.js` ošetřeno odvození pohledu entity z DOM při chybějícím `ev.facing` u událostí `push_move` a `pull_move`. Entity odhozené či přitažené proti svému směru pohledu nyní správně přehrávají animaci couvání (`anim-walk-back`).
+  - **Směrová orientace letících projektilů**:
+    - V `playProjectileFly` v `renderer.js` doplněno dynamické horizontální převrácení projektilu podle vektoru letu (`targetX > startX`). Stříkačky se svěcenou vodou, kosti a projektily letí vždy hrotem napřed k cíli.
+  - **Viditelnost padlého hrdiny při prohře**:
+    - V `animations.css` v `@keyframes heroDeath` opravena koncová průhlednost na `opacity: 1` namísto dřívější hodnoty `0.15`. Hrdina po vyčerpání zdraví nezmizí jako poloprůhledný duch, ale zůstává viditelně ležet na dlažbě ve své padlé póze.
+  - **Stabilita a odstranění jitteru tlačítka odpalu komba**:
+    - V `ui.css` v `@keyframes pulse-execute-primed` nahrazeno neustálé geometrické přeškálování (`transform: scale(1.03)`) pulzující červenou září stínů (`box-shadow`), což zabraňuje mikropohybům ovládací lišty a selháním detekce kliknutí na dotykových zařízeních.
+  - **Validace malovaných arén (Painted Scenes)**:
+    - V `renderer.js` zavedena kontrola `isPaintedValid`, která aktivuje třídy specifického malovaného pozadí pouze v případě, že počet hran přesně odpovídá velikosti desky bojiště (`edges.length === boardSize + 1`), čímž se předchází kolapsu pozic buněk.
+  - **SVG zástupné ikony pro talismany**:
+    - V `src/game/ui/assets.js` doplněno všech 12 klíčů talismanů (`talisman.*`) do mapy ikon v `renderIconSvg` pro spolehlivé grafické zobrazení talismanů v inventáři, obchodu i kartách odměn.
+
 ## [1.3.1] - 2026-10-31
 
 ### Opraveno

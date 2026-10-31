@@ -231,7 +231,7 @@
   }
   100% {
     transform: translateY(10px) scale(0.98);
-    opacity: 0.15;
+    opacity: 1;
     filter: none;
   }
 }
@@ -251,6 +251,10 @@
   animation: idleHuman 2.7s ease-in-out infinite;
   animation-delay: var(--idle-delay, 0s);
   transform-origin: 50% 100%;
+}
+
+.sprite-flip-wrapper .entity-sprite-img.gait-prop {
+  animation: none !important;
 }
 
 .sprite-flip-wrapper .entity-sprite-img.gait-hero {

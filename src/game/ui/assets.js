@@ -151,7 +151,19 @@ function renderIconSvg(key, label) {
     'map.workshop': '⚒️',
     'map.event': '❓',
     'map.treasure': '💎',
-    'map.boss': '👑'
+    'map.boss': '👑',
+    'talisman.wet_kerchief': '🧣',
+    'talisman.brass_lantern': '🏮',
+    'talisman.beer_frog': '🐸',
+    'talisman.garlic_braid': '🧄',
+    'talisman.hobnailed_boots': '🥾',
+    'talisman.sexton_keyring': '🗝️',
+    'talisman.sacred_flask': '🍶',
+    'talisman.notary_stamp': '💮',
+    'talisman.oak_splinter': '🪵',
+    'talisman.pocket_watch': '⏱️',
+    'talisman.butcher_apron': '🥩',
+    'talisman.holy_aspergillum': '💦'
   };
   const glyph = emojiMap[key] || '⚜️';
 

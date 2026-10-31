@@ -135,7 +135,8 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
 
   const boardSize = state.boardSize || BOARD_SIZE;
   const painted = PAINTED_SCENES[state.encounterId] || null;
-  const paintedEdges = painted && painted.edges.length === boardSize + 1 ? painted.edges : null;
+  const isPaintedValid = Boolean(painted && painted.edges && painted.edges.length === boardSize + 1);
+  const paintedEdges = isPaintedValid ? painted.edges : null;
 
   // Gate reinforcement indicators on the end cells
   const leftGateReinf = state.reinforcements.find((r) => !r.spawned && r.gateCell === 0);
@@ -253,8 +254,8 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
       </div>
     </div>
 
-    <div class="battlefield-1d-stage ${painted ? painted.className : ''}" id="battlefield-stage"${painted ? '' : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
-      ${painted ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ''}
+    <div class="battlefield-1d-stage ${isPaintedValid ? painted.className : ''}" id="battlefield-stage"${isPaintedValid ? '' : ` style="--board-size: ${boardSize}; grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));"`}>
+      ${isPaintedValid ? `<div class="yard-scene"><img class="${painted.imgClass}" alt="" src="${painted.image}" /></div>` : ''}
       ${cellsHtml}
     </div>
   `;
@@ -529,6 +530,7 @@ export function refreshBoardOverlays(container, state, uiState = {}) {
 
 function gaitFor(entity) {
   if (entity.entityType === 'hero') return 'hero';
+  if (entity.entityType === 'prop' || entity.bodyScale === 'prop') return 'prop';
   if (entity.flying || entity.bodyScale === 'flyer') return 'flyer';
   if (entity.bodyScale === 'critter') return 'critter';
   if (entity.bodyScale === 'beast') return 'beast';
@@ -598,12 +600,13 @@ async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = '🎯
   const targetX = rTo.left + rTo.width / 2;
   const targetY = rTo.top + rTo.height * 0.42;
 
+  const flipX = targetX > startX ? -1 : 1;
   const flyEl = document.createElement('div');
   flyEl.className = 'flying-projectile';
   flyEl.textContent = icon;
   flyEl.style.left = `${startX}px`;
   flyEl.style.top = `${startY}px`;
-  flyEl.style.transform = 'translate(-50%, -50%) scale(0.6)';
+  flyEl.style.transform = `translate(-50%, -50%) scale(${0.6 * flipX}, 0.6)`;
   flyEl.style.opacity = '0';
   document.body.appendChild(flyEl);
 
@@ -612,7 +615,7 @@ async function playProjectileFly(container, fromCellIdx, toCellIdx, icon = '🎯
   void flyEl.offsetWidth;
   flyEl.style.transition = `transform ${durationMs}ms cubic-bezier(0.2, 0.8, 0.4, 1), opacity 80ms ease-out`;
   flyEl.style.opacity = '1';
-  flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(1.15)`;
+  flyEl.style.transform = `translate(calc(-50% + ${targetX - startX}px), calc(-50% + ${targetY - startY}px)) scale(${1.15 * flipX}, 1.15)`;
 
   await sleep(180, animSpeed);
   flyEl.style.opacity = '0';
@@ -630,7 +633,7 @@ async function playEntityMove(container, ev, animSpeed = 1) {
 
   if (fromIdx !== undefined && toIdx !== undefined && fromIdx !== toIdx) {
     const moveDir = toIdx > fromIdx ? 1 : -1;
-    const facing = ev.facing ?? 1;
+    const facing = ev.facing ?? (entityEl?.querySelector?.('.facing-left') ? -1 : 1);
     isBackwards = (moveDir === 1 && facing === -1) || (moveDir === -1 && facing === 1);
   }
 
@@ -914,7 +917,7 @@ function triggerSpriteAnim(container, entityId, className) {
   if (!entityId) return;
   const el = container.querySelector(`#entity-dom-${entityId} .entity-sprite-img`);
   if (!el) return;
-  el.classList.remove('anim-walk', 'anim-lunge', 'anim-shoot', 'anim-leap', 'anim-hurt');
+  el.classList.remove('anim-walk', 'anim-walk-back', 'anim-lunge', 'anim-shoot', 'anim-leap', 'anim-hurt');
   if (className !== 'anim-death') el.classList.remove('anim-death');
   void el.offsetWidth;
   el.classList.add(className);
