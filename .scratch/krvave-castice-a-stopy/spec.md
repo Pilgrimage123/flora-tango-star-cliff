@@ -16,6 +16,13 @@ Zdokonalit vizuální zpracování krve a ichoru v soubojích:
 4. **Působivější dynamika částic**:
    - Aerodynamické kapky natahující se podle směru a rychlosti letu.
    - Tepenné gejzíry, odskakující kapičky při dopadu, bubliny, jiskry a smrtící rázová vlna.
+5. **Dramatická vylepšení a organické kaluže (v1.7.1)**:
+   - Tepenné stuhy v letu (`jet` & `spurt` trails) s kapalinovými křivkami.
+   - Seknutí čepelí a rázový záblesk rány (`slash_wave` & `flash`).
+   - Oprava vrstvení `z-index`: kaluže leží přímo na kamenných blocích `.cell-floor-stone`.
+   - Organické vícelaločné Bézierovy kaluže (`buildOrganicPuddlePath`) a stékání pramínků přes přední hranu kamene.
+   - Fyzikální rozstřik na sousední pole a vycentrování krvavých šrámů na siluety postav.
 
 ## Fáze realizace (Tikety)
-1. `01`: Oprava plátna, trvalé stopy na podlaze bojiště a spritech postav s podporou tří barev ichoru.
+1. `01`: Oprava plátna, trvalé stopy na podlaze bojiště a spritech postav s podporou tří barev ichoru. (hotovo)
+2. `02`: Dramatická vylepšení krevních částic, stuh v letu, organických kaluží na kameni a stékání přes hranu. (hotovo)

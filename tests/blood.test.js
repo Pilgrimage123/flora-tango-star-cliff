@@ -64,13 +64,17 @@ test('Blood FX: 3. Damage records persistent blood on sprite and on ground', () 
   assert.ok(enemy.bloodStains.length > 0, 'Enemy must have blood stains on sprite');
   const enemyStain = enemy.bloodStains[0];
   assert.equal(enemyStain.ichor, enemy.ichor || 'blue');
-  assert.ok(['slash', 'splat', 'drip', 'cluster'].includes(enemyStain.type));
+  assert.ok(['slash', 'splat', 'drip', 'cluster', 'arterial'].includes(enemyStain.type));
 
   // Ground on enemy cell has accumulated stains
   assert.ok(state.cellBlood[enemy.cell]?.length > 0, 'Cell floor must have blood stains');
   const groundStain = state.cellBlood[enemy.cell][0];
   assert.equal(groundStain.ichor, enemy.ichor || 'blue');
   assert.ok(groundStain.splats.length >= 2, 'Ground stain must have satellite splatters');
+  assert.ok(Array.isArray(groundStain.drips), 'Ground stain must include stone-slab front drips array');
+
+  // Heavy melee strike (amount >= 3) also splatters the cell behind the target (cell 4)
+  assert.ok(state.cellBlood[4]?.length > 0, 'Heavy directional hit must splatter onto adjacent cell behind target');
 
   // Hunter (melee attacker) was sprayed with target ichor
   assert.ok(state.hero.bloodStains.length > 0, 'Hunter must receive blood spray from melee strike');
@@ -93,6 +97,7 @@ test('Blood FX: 4. Renders SVG markup for ground and sprite blood', () => {
   // Ground blood SVG
   const groundHtml = renderCellGroundBloodHtml(enemy.cell, state);
   assert.ok(groundHtml.includes('<svg class="ground-blood-svg"'), 'Ground HTML must contain SVG');
+  assert.ok(groundHtml.includes('<path d="M'), 'Ground SVG must contain organic Bezier puddle paths');
   assert.ok(groundHtml.includes('<ellipse'), 'Ground SVG must contain ellipses for puddles');
 
   // Sprite blood overlay

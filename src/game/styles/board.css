@@ -680,7 +680,7 @@
   flex-direction: column;
   gap: 3px;
   align-items: center;
-  z-index: 4;
+  z-index: 8;
 }
 
 .threat-badge {
@@ -1006,6 +1006,7 @@
   justify-content: flex-end;
   align-items: center;
   position: relative;
+  z-index: 6;
   min-height: 0;
   width: 100%;
   overflow: visible;
@@ -1439,18 +1440,34 @@
   height: 100%;
   pointer-events: none;
   overflow: visible;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.82)) saturate(1.18);
 }
 
-/* Persistent Ground Blood Zone on Stone Slabs */
+.sprite-flip-wrapper.blood-hit-gleam .entity-sprite-img {
+  animation: sprite-blood-gleam 320ms ease-out;
+}
+
+@keyframes sprite-blood-gleam {
+  0% {
+    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.95)) brightness(1.45) contrast(1.2);
+  }
+  45% {
+    filter: drop-shadow(0 0 8px rgba(185, 28, 28, 0.75)) brightness(1.18) contrast(1.1);
+  }
+  100% {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55));
+  }
+}
+
+/* Persistent Ground Blood Zone on Stone Slabs (sits directly ON TOP of .cell-floor-stone z-index: 4) */
 .cell-ground-blood-zone {
   position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: 0;
-  height: 68px;
+  left: 3px;
+  right: 3px;
+  bottom: -4px;
+  height: 58px;
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
   overflow: visible;
 }
 
@@ -1461,7 +1478,7 @@
   height: 100%;
   pointer-events: none;
   overflow: visible;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65)) saturate(1.15);
 }
 
 /* Floor Stone & Terrain Badges */

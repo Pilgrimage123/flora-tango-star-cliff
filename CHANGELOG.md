@@ -4,6 +4,16 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.7.1] - 2026-11-01
+
+### Vylepšeno
+- **Dramatické vylepšení krevních efektů, tepenných stuh a organických kaluží (`blood.js`, `board.css`)**:
+  - **Tepenné stuhy v letu (`jet` / `spurt` trails)**: Vysokorychlostní proudy krve a ichoru nyní vykreslují plynule se zužující vícesegmentové kapalinové stuhy s tmavým sraženým lemem a mokrým odleskem.
+  - **Seknutí čepelí a rázový záblesk (`slash_wave`, `flash`)**: Při útocích zblízka a kritických zásazích vzniká směrová půlměsícová krvavá vlna a radiální aerosolový záblesk v místě rány.
+  - **Organické kaluže přímo na kamenných deskách a stékání přes hranu**: Opraveno překrývání vrstev (`z-index`), takže kaluže leží přímo na světlém povrchu kamenných kvádrů (`.cell-floor-stone`) s vysokým kontrastem, využívají vícelaločné Bézierovy křivky (`buildOrganicPuddlePath`) a stékají v pramíncích dolů přes přední hranu kamenného bloku.
+  - **Fyzikální rozstřik do sousedních polí**: Těžké kapky a gejzíry letící přes bojiště při dopadu na podlahu dynamicky vytvářejí trvalé krvavé stopy přímo v poli dopadu (včetně vedlejších polí za zasaženým cílem).
+  - **Detailní zranění na postavách (`arterial`, `slash`, `drip`, `splat`) a záblesk zásahu**: Krvavé šrámy na spritech jsou vycentrovány na siluetu těla, obsahují tržné rány se stékajícími pramínky a při zásahu krátce zvýrazní zasažený sprite krvavým odleskem (`.blood-hit-gleam`).
+
 ## [1.7.0] - 2026-11-01
 
 ### Přidáno
