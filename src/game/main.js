@@ -23,6 +23,7 @@ import {
 import { initTooltips } from './ui/tooltips.js';
 import { initKeyboardInput } from './ui/input.js';
 import { setSoundEnabled } from './ui/audio.js';
+import { clearBattleBlood } from './ui/blood.js';
 import { createBattleActions } from './battle.js';
 
 const META_STORAGE_KEY = 'lovec_upiru_meta_v1';
@@ -176,6 +177,7 @@ async function bootstrap(token) {
 }
 
 function startNewRun(seedInput = 'VENCA-1899') {
+  clearBattleBlood();
   appState.settings.currentSeed = seedInput;
   appState.metaStats.lastSeed = seedInput;
   saveMetaStats();
@@ -197,6 +199,7 @@ function enterMapNode(node) {
     node.type === NODE_TYPES.ELITE ||
     node.type === NODE_TYPES.BOSS
   ) {
+    clearBattleBlood();
     appState.screen = 'battle';
     appState.battleState = createBattleState({
       seed: `${run.seed}_${node.id}`,

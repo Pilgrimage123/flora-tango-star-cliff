@@ -12,7 +12,12 @@ import { renderEnemyIntentStripHtml, buildEnemyTooltipHtml } from './enemyIntent
 import { renderCellThreatAndPreviewHtml } from './threatOverlay.js';
 import { showTooltip, hideTooltip } from './tooltips.js';
 import { SFX } from './audio.js';
-import { spawnBloodBurst } from './blood.js';
+import {
+  spawnBloodBurst,
+  renderCellGroundBloodHtml,
+  renderSpriteBloodHtml,
+  recordEntityHitBlood
+} from './blood.js';
 import { ENCOUNTERS } from '../config/encounters.js';
 import { ENEMIES } from '../config/enemies.js';
 import { getEncounterTheme } from '../config/themes.js';
@@ -111,8 +116,11 @@ async function playHeroPose(container, pose, ms, animSpeed) {
   }
 }
 
+let currentRenderState = null;
+
 export function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
   if (!container || !state) return;
+  currentRenderState = state;
 
   const hoveredEnemyId = uiState.hoveredEnemyId || null;
   const hoveredTileId = uiState.hoveredTileId || null;
@@ -218,6 +226,9 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
         <div class="cell-overlay-zone">
           ${overlayHtml}
         </div>
+        <div class="cell-ground-blood-zone" aria-hidden="true">
+          ${renderCellGroundBloodHtml(state.cellBlood?.[cellIdx] || cellIdx, state)}
+        </div>
         <div class="cell-entity-stage" id="cell-stage-${cellIdx}">
           ${entityHtml}
         </div>
@@ -259,6 +270,7 @@ export function renderBattleBoard(container, state, uiState = {}, callbacks = {}
       <div class="battlefield-stone-track" id="battlefield-stone-track" style="grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));">
         ${cellsHtml}
       </div>
+      <canvas class="blood-fx-layer" id="blood-fx-canvas" aria-hidden="true"></canvas>
       <div class="battlefield-foreground-layer" id="battlefield-foreground">
         <div class="foreground-vignette"></div>
         <div class="foreground-atmosphere-particles">
@@ -545,6 +557,7 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1, impact = null) {
              class="entity-sprite-img gait-${gait} ${heroClass} ${entity.flying ? 'sprite-flying' : ''}"
              style="--idle-delay: -${idleDelaySec(entity.id)}s"
              referrerpolicy="no-referrer" />
+        ${renderSpriteBloodHtml(entity, currentRenderState)}
       </div>
     </div>
   `;
@@ -854,8 +867,9 @@ async function playEntityMove(container, ev, animSpeed = 1) {
   await sleep(moveDuration, animSpeed);
 }
 
-export async function playEngineEvents(container, events, animSpeed = 1) {
+export async function playEngineEvents(container, events, animSpeed = 1, state = null) {
   if (!container || !events || events.length === 0) return;
+  const activeState = state || currentRenderState;
 
   for (const ev of events) {
     switch (ev.type) {
@@ -960,15 +974,30 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
             scheduleHeroIdle(container, 340, animSpeed);
           }
         }
-        spawnBloodBurst(container, {
-          cell: ev.cell,
-          ichor: ev.ichor,
-          amount: ev.amount,
-          reason: ev.reason,
-          attackerCell: ev.attackerCell,
-          fatal: ev.fatal || ev.remainingHp <= 0,
-          animSpeed
-        });
+        if (ev.ichor) {
+          recordEntityHitBlood(activeState, {
+            targetId: ev.targetId,
+            attackerId: ev.attackerId,
+            cell: ev.cell,
+            attackerCell: ev.attackerCell,
+            amount: ev.amount,
+            ichor: ev.ichor,
+            reason: ev.reason,
+            fatal: ev.fatal || ev.remainingHp <= 0
+          });
+          spawnBloodBurst(container, {
+            cell: ev.cell,
+            ichor: ev.ichor,
+            amount: ev.amount,
+            reason: ev.reason,
+            attackerCell: ev.attackerCell,
+            fatal: ev.fatal || ev.remainingHp <= 0,
+            targetId: ev.targetId,
+            attackerId: ev.attackerId,
+            state: activeState,
+            animSpeed
+          });
+        }
         spawnFloatingBadgeOnCell(container, ev.cell, `−${ev.amount} HP`, 'float-dmg');
         if (ev.attackerId && isHeroEntity(container, ev.attackerId) && !isHeroEntity(container, ev.targetId)) {
           const heroImg = heroSprite(container);
@@ -1085,12 +1114,22 @@ export async function playEngineEvents(container, events, animSpeed = 1) {
           setHeroPose(container, 'dead', 0);
         }
         if (ev.ichor) {
+          recordEntityHitBlood(activeState, {
+            targetId: ev.targetId,
+            cell: ev.cell,
+            amount: 6,
+            ichor: ev.ichor,
+            reason: 'death',
+            fatal: true
+          });
           spawnBloodBurst(container, {
             cell: ev.cell,
             ichor: ev.ichor,
             amount: 6,
             reason: 'death',
             fatal: true,
+            targetId: ev.targetId,
+            state: activeState,
             animSpeed
           });
         }

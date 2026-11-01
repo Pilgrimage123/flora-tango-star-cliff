@@ -73,6 +73,7 @@ export function createEnemyInstance(enemyId, cell, facing = -1) {
     nextAction: null, // { type: 'turn' | 'step' | 'queue_tile' | 'arm' | 'execute_queue' | 'idle', dir?, tileId? }
     countdown: 2,
     statuses: {},
+    bloodStains: [],
     flavor: def.flavor || ''
   };
 }
@@ -181,7 +182,8 @@ export function createBattleState(options = {}) {
     flying: false,
     ichor: 'red',
     bumpCooldown: 0,
-    statuses: {}
+    statuses: {},
+    bloodStains: []
   };
 
   const enemies = (encounter.initialEnemies || []).map((e) => {
@@ -275,6 +277,7 @@ export function createBattleState(options = {}) {
     hand,
     queue: [], // array of tile instanceIds
     reinforcements,
+    cellBlood: {},
     log: [
       `⚔️ Bitva začíná: ${encounter.name}! Venca si odplivl a pozvedl krucifix.`
     ],

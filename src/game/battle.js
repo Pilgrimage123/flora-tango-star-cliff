@@ -27,7 +27,7 @@ export function createBattleActions(deps) {
   async function finishPlayerAction(state, res, turnBefore, extraCd = 0) {
     const boardContainer = document.getElementById('center-stage');
     appendEventsToLog(state, res.events, turnBefore);
-    await playEngineEvents(boardContainer, res.events, appState.settings.animSpeed);
+    await playEngineEvents(boardContainer, res.events, appState.settings.animSpeed, state);
     clearTransientCorpses(state);
     renderAll();
 
@@ -41,7 +41,7 @@ export function createBattleActions(deps) {
     const enemyEvents = [];
     endPlayerTurn(state, enemyEvents, extraCd);
     appendEventsToLog(state, enemyEvents, turnBefore);
-    await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
+    await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed, state);
     clearTransientCorpses(state);
 
     appState.isAnimating = false;
@@ -116,7 +116,7 @@ export function createBattleActions(deps) {
     const turnBefore = state.turn;
     const endEvents = finalizeQueueExecution(state, comboLength);
     appendEventsToLog(state, endEvents, turnBefore);
-    await playEngineEvents(boardContainer, endEvents, appState.settings.animSpeed);
+    await playEngineEvents(boardContainer, endEvents, appState.settings.animSpeed, state);
     clearTransientCorpses(state);
     renderAll();
   }
@@ -138,14 +138,14 @@ export function createBattleActions(deps) {
     const stunned = consumeHeroStun(state);
     if (stunned) {
       appendEventsToLog(state, stunned.events, turnBefore);
-      await playEngineEvents(boardContainer, stunned.events, appState.settings.animSpeed);
+      await playEngineEvents(boardContainer, stunned.events, appState.settings.animSpeed, state);
       clearTransientCorpses(state);
       renderAll();
 
       const enemyEvents = [];
       endPlayerTurn(state, enemyEvents);
       appendEventsToLog(state, enemyEvents, turnBefore);
-      await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
+      await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed, state);
       clearTransientCorpses(state);
 
       appState.isAnimating = false;
@@ -168,7 +168,7 @@ export function createBattleActions(deps) {
       );
       appendEventsToLog(state, stepEvents, turnBefore);
 
-      await playEngineEvents(boardContainer, stepEvents, appState.settings.animSpeed);
+      await playEngineEvents(boardContainer, stepEvents, appState.settings.animSpeed, state);
       clearTransientCorpses(state);
       renderAll();
       await sleep(ANIMATION_TIMINGS.QUEUE_STEP_MS, appState.settings.animSpeed);

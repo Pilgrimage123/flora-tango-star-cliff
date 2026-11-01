@@ -24,7 +24,8 @@ export function cloneBattleState(state) {
     stats: JSON.parse(JSON.stringify(state.stats || {})),
     reinforcements: JSON.parse(JSON.stringify(state.reinforcements || [])),
     comboResonanceBonusPush: state.comboResonanceBonusPush || 0,
-    lastTurnAspergillumTurn: state.lastTurnAspergillumTurn
+    lastTurnAspergillumTurn: state.lastTurnAspergillumTurn,
+    cellBlood: state.cellBlood ? JSON.parse(JSON.stringify(state.cellBlood)) : {}
   };
 
   if (state.rng) {

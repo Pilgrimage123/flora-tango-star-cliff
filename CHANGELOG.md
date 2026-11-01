@@ -4,6 +4,31 @@ Veškeré významné změny v projektu Lovec upírů jsou zaznamenány v tomto s
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/).
 
+## [1.7.0] - 2026-11-01
+
+### Přidáno
+- **Trvalé skvrny krve a ichoru na kamenné podlaze bojiště (Ground Stains)**:
+  - Zavedena nová diegetická vrstva `.cell-ground-blood-zone` v každém poli bojiště.
+  - Krev dopadající na zem vytváří trvalé louže, cákance a satelitní kapky, které zůstávají na kamenných deskách po celou dobu bitvy a přetrvávají napříč koly i překreslením scény.
+  - Automatické přizpůsobení typu ichoru:
+    - *Červená krev* (živé maso / hrdina / zvířata / bandité): tmavá viskózní karmínová s lesklým odleskem a sraženým okrajem.
+    - *Modrý ichor* (upíři / netopýři / hrabata / Drákula): hluboký safírový a indigový ichor s okultním azurovým zábleskem.
+    - *Zelený sliz* (mutanti / moráci / slizy / morový felčar): žíravá toxická žluč se zářivým limetkovým jádrem a kyselým okrajem.
+- **Trvalé krvavé šrámy a potřísnění na spritech nepřátel a lovce (Sprite Blood Overlay)**:
+  - Zavedena vrstva `.sprite-blood-overlay` uvnitř `.sprite-flip-wrapper` každé entity.
+  - Zraněné entity akumulují na svých tělech a oděvech krvavé šrámy, sečné rány, stékající kapky a cákance, které se automaticky otáčejí se směrem pohledu postavy a pohybují se s animacemi běhu, útoku i zranění.
+  - Zásahy v kontaktním boji (na blízko, vzdálenost $\le 1$ pole) navíc postříkají i útočníka ichorem zasaženého cíle (např. Venca potřísněný modrým upířím ichorem či zeleným jedem).
+  - Při smrti entity zůstávají veškerá zranění na těle padlého i na zemi.
+
+### Opraveno
+- **Oprava životního cyklu a pozicování plátna částic (`blood.js`)**:
+  - Plátno částic přesunuto přímo do kontejneru `#battlefield-stage` s absolutním pozicováním, čímž byl odstraněn dřívější drift souřadnic při posunu stránky nebo změně velikosti okna.
+  - Odstraněna chyba, kdy vypršení animace částic (`particles.length === 0`) kompletně smazalo veškerou krev ze scény.
+  - Opraven výpočet úrovně země (`hitPoint`): dříve se úroveň podlahy počítala ze spodního okraje spritu, což u létajících netopýrů a malých monster způsobovalo, že krev dopadala a zůstávala viset v prázdném vzduchu. Nyní se podlaha spolehlivě počítá z kamenné desky daného pole.
+- **Zvýšení působivosti a dynamiky částicových efektů**:
+  - Částice se nyní dynamicky natahují ve směru letu podle své rychlosti (aerodynamické kapky s rychlostním rozmazáním namísto statických koleček).
+  - Přidány nové typy částic: vysokorychlostní tepenné gejzíry (`spurt`), těžké viskózní kapky, které se při dopadu na zem rozstříknou na drobné odskakující kapičky, mystická mlha a zářivé jiskry pro upíří ichor, toxické bubliny pro mutanty a rázová krvavá vlna (`shockwave`) při smrtících zásazích.
+
 ## [1.6.0] - 2026-10-31
 
 ### Přidáno

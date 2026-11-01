@@ -1,7 +1,7 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { K as require_react, b as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-import "./router-BxIFjzu0.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CvbsPlqa.js
+import "./router-CYXFFyGp.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-0d01Ro7_.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var ANIMATION_TIMINGS = {
@@ -5337,6 +5337,7 @@ function createEnemyInstance(enemyId, cell, facing = -1) {
 		nextAction: null,
 		countdown: 2,
 		statuses: {},
+		bloodStains: [],
 		flavor: def.flavor || ""
 	};
 }
@@ -5501,7 +5502,8 @@ function createBattleState(options = {}) {
 		flying: false,
 		ichor: "red",
 		bumpCooldown: 0,
-		statuses: {}
+		statuses: {},
+		bloodStains: []
 	};
 	const enemies = (encounter.initialEnemies || []).map((e) => {
 		const inst = createEnemyInstance(e.enemyId, e.cell, e.facing ?? -1);
@@ -5580,6 +5582,7 @@ function createBattleState(options = {}) {
 		hand,
 		queue: [],
 		reinforcements,
+		cellBlood: {},
 		log: [`⚔️ Bitva začíná: ${encounter.name}! Venca si odplivl a pozvedl krucifix.`],
 		stats: {
 			turnsTaken: 0,
@@ -8087,7 +8090,8 @@ function cloneBattleState(state) {
 		stats: JSON.parse(JSON.stringify(state.stats || {})),
 		reinforcements: JSON.parse(JSON.stringify(state.reinforcements || [])),
 		comboResonanceBonusPush: state.comboResonanceBonusPush || 0,
-		lastTurnAspergillumTurn: state.lastTurnAspergillumTurn
+		lastTurnAspergillumTurn: state.lastTurnAspergillumTurn,
+		cellBlood: state.cellBlood ? JSON.parse(JSON.stringify(state.cellBlood)) : {}
 	};
 	if (state.rng) {
 		clone.rng = createRng("sim_clone");
@@ -8958,139 +8962,462 @@ var SFX = {
 		setTimeout(() => playTone(160, "sawtooth", .35, .14, 95), 180);
 	}
 };
+function makePaletteArray(light, mid, dark, stain, stainRim, highlight, glow) {
+	const arr = [
+		...light,
+		...mid,
+		...dark
+	];
+	arr.light = light;
+	arr.mid = mid;
+	arr.dark = dark;
+	arr.stain = stain;
+	arr.stainRim = stainRim;
+	arr.highlight = highlight;
+	arr.glow = glow;
+	return arr;
+}
 var PALETTE = {
-	red: [
+	red: makePaletteArray([
 		"#fff1f2",
 		"#fecaca",
+		"#fca5a5"
+	], [
 		"#f87171",
 		"#ef4444",
 		"#dc2626",
-		"#b91c1c",
+		"#b91c1c"
+	], [
+		"#991b1b",
 		"#7f1d1d",
-		"#450a0a"
-	],
-	blue: [
+		"#450a0a",
+		"#260404"
+	], "#880808", "#3b0606", "rgba(255, 230, 230, 0.75)", "rgba(239, 68, 68, 0.35)"),
+	blue: makePaletteArray([
 		"#f0f9ff",
 		"#bae6fd",
+		"#7dd3fc"
+	], [
 		"#38bdf8",
 		"#2563eb",
 		"#1d4ed8",
-		"#6d28d9",
+		"#4f46e5"
+	], [
+		"#4338ca",
 		"#312e81",
-		"#1e1b4b"
-	],
-	green: [
+		"#1e1b4b",
+		"#0f172a"
+	], "#1e3a8a", "#0f172a", "rgba(224, 242, 254, 0.85)", "rgba(56, 189, 248, 0.45)"),
+	green: makePaletteArray([
 		"#f7fee7",
 		"#d9f99d",
+		"#bef264"
+	], [
 		"#a3e635",
+		"#84cc16",
 		"#65a30d",
-		"#4d7c0f",
+		"#4d7c0f"
+	], [
+		"#3f6212",
 		"#166534",
 		"#14532d",
 		"#052e16"
-	]
+	], "#365314", "#052e16", "rgba(247, 254, 231, 0.8)", "rgba(163, 230, 53, 0.4)")
 };
-var MAX_ALIVE = 260;
+var MAX_ALIVE = 320;
 var canvas = null;
 var ctx = null;
 var particles = [];
 var raf = 0;
 var lastTs = 0;
 var stageRect = null;
+var groundStainsMap = /* @__PURE__ */ new Map();
+var entityStainsMap = /* @__PURE__ */ new Map();
 function reducedMotion() {
 	return typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 function rand(a, b) {
 	return a + Math.random() * (b - a);
 }
-function colorFor(ichor, kind) {
-	const colors = PALETTE[ichor] || PALETTE.red;
-	if (kind === "spark" || kind === "mist") return colors[Math.random() * 3 | 0];
-	if (kind === "glob" || kind === "bubble") return colors[3 + (Math.random() * (colors.length - 3) | 0)];
-	return colors[1 + (Math.random() * (colors.length - 2) | 0)];
+function _pick(list) {
+	if (!list || list.length === 0) return "#dc2626";
+	return list[Math.random() * list.length | 0];
 }
-function rollKind(ichor, style) {
+function colorFor(ichor, kind) {
+	const pal = PALETTE[ichor] || PALETTE.red;
+	if (kind === "spark") return _pick(pal.light);
+	if (kind === "mist") return _pick(pal.light.concat(pal.mid));
+	if (kind === "bubble") return _pick(pal.mid);
+	if (kind === "glob") return _pick(pal.dark);
+	if (kind === "spurt") return _pick(pal.mid.concat(pal.dark));
+	return _pick(pal.mid);
+}
+function rollKind(ichor, style, fatal = false) {
 	const r = Math.random();
-	if (style === "drip") return r < .62 ? "drop" : r < .84 ? "streak" : "glob";
+	if (style === "drip") return r < .65 ? "drop" : r < .85 ? "spurt" : "glob";
+	if (fatal && r < .22) return "spurt";
 	if (ichor === "blue") {
 		if (r < .2) return "mist";
 		if (r < .36) return "spark";
-		if (r < .62) return "streak";
+		if (r < .62) return "spurt";
 		if (r < .84) return "drop";
 		return "glob";
 	}
 	if (ichor === "green") {
-		if (r < .32) return "glob";
-		if (r < .48) return "bubble";
+		if (r < .28) return "glob";
+		if (r < .46) return "bubble";
 		if (r < .68) return "drop";
-		if (r < .86) return "streak";
+		if (r < .86) return "spurt";
 		return "mist";
 	}
-	if (r < .38) return "streak";
-	if (r < .7) return "drop";
+	if (r < .36) return "spurt";
+	if (r < .68) return "drop";
 	if (r < .86) return "glob";
 	return "mist";
 }
 function spraySpec(reason, attackerCell, cell, fatal) {
 	if (reason === "death") return {
 		angle: -Math.PI / 2,
-		spread: Math.PI,
-		speed: [2.2, 6.4],
+		spread: Math.PI * .95,
+		speed: [2.6, 7.8],
 		style: "gush",
-		countMul: 1.35
+		countMul: 1.6
 	};
 	if (reason === "bleed") return {
 		angle: Math.PI / 2,
-		spread: .55,
-		speed: [.6, 2.2],
+		spread: .45,
+		speed: [.8, 2.8],
 		style: "drip",
-		countMul: .45
+		countMul: .6
 	};
 	if (reason === "spikes") return {
 		angle: -Math.PI / 2,
-		spread: .95,
-		speed: [2.4, 5.8],
+		spread: .85,
+		speed: [2.8, 6.8],
 		style: "fountain",
-		countMul: 1
+		countMul: 1.2
 	};
 	if (reason === "wall_collision") return {
 		angle: cell <= 0 ? 0 : cell >= 6 ? Math.PI : -Math.PI / 2,
-		spread: .9,
-		speed: [1.8, 4.6],
+		spread: .85,
+		speed: [2.4, 5.8],
 		style: "burst",
-		countMul: .85
+		countMul: 1.1
 	};
 	if (typeof attackerCell === "number" && attackerCell !== cell) {
 		const away = Math.sign(cell - attackerCell) || 1;
 		return {
-			angle: Math.atan2(-.55, away),
-			spread: .95,
-			speed: [2.2, 6.2],
+			angle: Math.atan2(-.45, away),
+			spread: .85,
+			speed: [2.6, 7],
 			style: "burst",
-			countMul: fatal ? 1.25 : 1
+			countMul: fatal ? 1.4 : 1.1
 		};
 	}
 	return {
 		angle: -Math.PI / 2,
-		spread: 1.35,
-		speed: [1.6, 5.2],
+		spread: 1.3,
+		speed: [2, 6],
 		style: "burst",
-		countMul: 1
+		countMul: fatal ? 1.3 : 1
 	};
 }
-function ensureCanvas() {
+function clearBattleBlood() {
+	groundStainsMap.clear();
+	entityStainsMap.clear();
+	particles = [];
+	if (raf) {
+		cancelAnimationFrame(raf);
+		raf = 0;
+	}
+	lastTs = 0;
+	if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+function getGroundStains(cellIdx, state = null) {
+	const c = Number(cellIdx);
+	if (state?.cellBlood && Array.isArray(state.cellBlood[c])) return state.cellBlood[c];
+	return groundStainsMap.get(c) || [];
+}
+function getEntityStains(entityId, state = null) {
+	if (!entityId) return [];
+	if (state) {
+		if (state.hero && (state.hero.id === entityId || entityId === "hero_venca") && Array.isArray(state.hero.bloodStains)) return state.hero.bloodStains;
+		const enemy = (state.enemies || []).find((e) => e.id === entityId);
+		if (enemy && Array.isArray(enemy.bloodStains)) return enemy.bloodStains;
+	}
+	return entityStainsMap.get(entityId) || [];
+}
+function recordEntityHitBlood(state, opts = {}) {
+	const { targetId, attackerId, cell, attackerCell, amount = 1, ichor = "red", reason = "attack", fatal = false } = opts;
+	if (!ichor || !PALETTE[ichor]) return;
+	const pal = PALETTE[ichor];
+	const targetCell = typeof cell === "number" ? cell : Number(cell);
+	if (targetId) {
+		const stainCount = fatal ? Math.floor(rand(2, 4)) : Math.min(3, 1 + Math.floor((amount || 1) / 2));
+		for (let i = 0; i < stainCount; i++) {
+			const type = reason === "bleed" ? "drip" : fatal ? _pick(["slash", "splat"]) : _pick([
+				"slash",
+				"splat",
+				"drip",
+				"cluster"
+			]);
+			const newStain = {
+				id: `stain_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+				type,
+				x: Math.round(rand(22, 78)),
+				y: Math.round(rand(type === "drip" ? 45 : 25, 75)),
+				scale: Number(rand(.75, fatal ? 1.4 : 1.15).toFixed(2)),
+				rot: Math.round(rand(-45, 45)),
+				color: _pick(pal.mid),
+				darkColor: _pick(pal.dark),
+				highlight: pal.highlight,
+				ichor,
+				opacity: Number(rand(.82, .96).toFixed(2))
+			};
+			if (state) {
+				if (state.hero && (state.hero.id === targetId || targetId === "hero_venca")) {
+					state.hero.bloodStains = state.hero.bloodStains || [];
+					state.hero.bloodStains.push(newStain);
+					if (state.hero.bloodStains.length > 10) state.hero.bloodStains.shift();
+				} else {
+					const enemy = (state.enemies || []).find((e) => e.id === targetId);
+					if (enemy) {
+						enemy.bloodStains = enemy.bloodStains || [];
+						enemy.bloodStains.push(newStain);
+						if (enemy.bloodStains.length > 10) enemy.bloodStains.shift();
+					}
+				}
+			}
+			const list = entityStainsMap.get(targetId) || [];
+			list.push(newStain);
+			if (list.length > 10) list.shift();
+			entityStainsMap.set(targetId, list);
+		}
+	}
+	if (attackerId && typeof attackerCell === "number" && typeof targetCell === "number") {
+		if (Math.abs(attackerCell - targetCell) <= 1 && attackerId !== targetId) {
+			const sprayStain = {
+				id: `stain_spray_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+				type: "cluster",
+				x: Math.round(rand(30, 70)),
+				y: Math.round(rand(30, 70)),
+				scale: Number(rand(.65, .95).toFixed(2)),
+				rot: Math.round(rand(-35, 35)),
+				color: _pick(pal.mid),
+				darkColor: _pick(pal.dark),
+				highlight: pal.highlight,
+				ichor,
+				opacity: Number(rand(.75, .9).toFixed(2))
+			};
+			if (state) {
+				if (state.hero && (state.hero.id === attackerId || attackerId === "hero_venca")) {
+					state.hero.bloodStains = state.hero.bloodStains || [];
+					state.hero.bloodStains.push(sprayStain);
+					if (state.hero.bloodStains.length > 10) state.hero.bloodStains.shift();
+				} else {
+					const enemy = (state.enemies || []).find((e) => e.id === attackerId);
+					if (enemy) {
+						enemy.bloodStains = enemy.bloodStains || [];
+						enemy.bloodStains.push(sprayStain);
+						if (enemy.bloodStains.length > 10) enemy.bloodStains.shift();
+					}
+				}
+			}
+			const list = entityStainsMap.get(attackerId) || [];
+			list.push(sprayStain);
+			if (list.length > 10) list.shift();
+			entityStainsMap.set(attackerId, list);
+		}
+	}
+	if (typeof targetCell === "number" && targetCell >= 0) {
+		const groundCount = fatal ? Math.floor(rand(2, 4)) : Math.min(3, 1 + Math.floor((amount || 1) / 3));
+		for (let i = 0; i < groundCount; i++) {
+			const splatCount = Math.floor(rand(3, 6));
+			const splats = [];
+			const rx = Number(rand(fatal ? 9 : 5, fatal ? 18 : 12).toFixed(1));
+			const ry = Number((rx * rand(.35, .55)).toFixed(1));
+			for (let s = 0; s < splatCount; s++) {
+				const ang = rand(0, Math.PI * 2);
+				const dist = rand(rx * 1.1, rx * 2.2);
+				splats.push({
+					dx: Number((Math.cos(ang) * dist).toFixed(1)),
+					dy: Number((Math.sin(ang) * dist * .5).toFixed(1)),
+					r: Number(rand(1.2, 2.8).toFixed(1))
+				});
+			}
+			const newGroundStain = {
+				id: `gstain_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+				x: Math.round(rand(18, 82)),
+				y: Math.round(rand(fatal ? 48 : 56, 84)),
+				rx,
+				ry,
+				rot: Math.round(rand(-28, 28)),
+				color: _pick(pal.mid),
+				rimColor: pal.stainRim,
+				highlight: pal.highlight,
+				ichor,
+				splats,
+				opacity: Number(rand(.85, .98).toFixed(2))
+			};
+			if (state) {
+				state.cellBlood = state.cellBlood || {};
+				state.cellBlood[targetCell] = state.cellBlood[targetCell] || [];
+				state.cellBlood[targetCell].push(newGroundStain);
+				if (state.cellBlood[targetCell].length > 16) state.cellBlood[targetCell].shift();
+			}
+			const list = groundStainsMap.get(targetCell) || [];
+			list.push(newGroundStain);
+			if (list.length > 16) list.shift();
+			groundStainsMap.set(targetCell, list);
+		}
+	}
+	if (typeof document !== "undefined") {
+		if (targetId) {
+			const flipWrapper = document.getElementById(`entity-dom-${targetId}`)?.querySelector(".sprite-flip-wrapper");
+			if (flipWrapper) {
+				let overlay = flipWrapper.querySelector(".sprite-blood-overlay");
+				const html = renderSpriteBloodHtml(getEntityStains(targetId, state));
+				if (overlay) overlay.outerHTML = html;
+				else if (html) flipWrapper.insertAdjacentHTML("beforeend", html);
+			}
+		}
+		if (typeof targetCell === "number") {
+			const groundZone = document.querySelector(`.board-cell[data-cell-index="${targetCell}"]`)?.querySelector(".cell-ground-blood-zone");
+			if (groundZone) groundZone.innerHTML = renderCellGroundBloodHtml(getGroundStains(targetCell, state));
+		}
+		if (attackerId && attackerId !== targetId) {
+			const aFlip = document.getElementById(`entity-dom-${attackerId}`)?.querySelector(".sprite-flip-wrapper");
+			if (aFlip) {
+				let aOverlay = aFlip.querySelector(".sprite-blood-overlay");
+				const ahtml = renderSpriteBloodHtml(getEntityStains(attackerId, state));
+				if (aOverlay) aOverlay.outerHTML = ahtml;
+				else if (ahtml) aFlip.insertAdjacentHTML("beforeend", ahtml);
+			}
+		}
+	}
+}
+function renderCellGroundBloodHtml(stainsOrCellIdx, state = null) {
+	let stains = [];
+	if (Array.isArray(stainsOrCellIdx)) stains = stainsOrCellIdx;
+	else if (typeof stainsOrCellIdx === "number") stains = getGroundStains(stainsOrCellIdx, state);
+	if (!stains || stains.length === 0) return "";
+	return `
+    <svg class="ground-blood-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      ${stains.map((stain) => {
+		const rx = stain.rx || 8;
+		const ry = stain.ry || 4;
+		const rimColor = stain.rimColor || "#1a0505";
+		const color = stain.color || "#dc2626";
+		const highlight = stain.highlight || "rgba(255,255,255,0.6)";
+		const opacity = stain.opacity || .9;
+		const splatSvg = (stain.splats || []).map((s) => `
+      <circle cx="${s.dx}" cy="${s.dy}" r="${s.r}" fill="${color}" opacity="0.9" />
+      <circle cx="${s.dx - s.r * .25}" cy="${s.dy - s.r * .25}" r="${Math.max(.4, s.r * .35)}" fill="${highlight}" opacity="0.6" />
+    `).join("");
+		return `
+      <g transform="translate(${stain.x}, ${stain.y}) rotate(${stain.rot || 0})" opacity="${opacity}">
+        <!-- Coagulated dark perimeter -->
+        <ellipse cx="0" cy="0" rx="${(rx * 1.18).toFixed(1)}" ry="${(ry * 1.18).toFixed(1)}" fill="${rimColor}" opacity="0.95" />
+        <!-- Rich liquid puddle -->
+        <ellipse cx="0" cy="0" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="${color}" opacity="0.92" />
+        <!-- Specular shine -->
+        <ellipse cx="${(-rx * .28).toFixed(1)}" cy="${(-ry * .25).toFixed(1)}" rx="${Math.max(1, rx * .38).toFixed(1)}" ry="${Math.max(.6, ry * .28).toFixed(1)}" fill="${highlight}" opacity="0.65" />
+        <!-- Satellite splatter droplets -->
+        ${splatSvg}
+      </g>
+    `;
+	}).join("")}
+    </svg>
+  `;
+}
+function renderSpriteBloodHtml(entityOrStains, state = null) {
+	let stains = [];
+	if (Array.isArray(entityOrStains)) stains = entityOrStains;
+	else if (typeof entityOrStains === "string") stains = getEntityStains(entityOrStains, state);
+	else if (entityOrStains && typeof entityOrStains === "object") stains = entityOrStains.bloodStains || getEntityStains(entityOrStains.id, state);
+	if (!stains || stains.length === 0) return "";
+	return `
+    <div class="sprite-blood-overlay" aria-hidden="true">
+      <svg class="sprite-blood-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        ${stains.map((stain) => {
+		const x = stain.x || 50;
+		const y = stain.y || 50;
+		const scale = stain.scale || 1;
+		const rot = stain.rot || 0;
+		const color = stain.color || "#dc2626";
+		const darkColor = stain.darkColor || "#7f1d1d";
+		const highlight = stain.highlight || "rgba(255,255,255,0.7)";
+		const opacity = stain.opacity || .9;
+		let body = "";
+		if (stain.type === "slash") body = `
+        <path d="M -12 -5 Q -2 0 14 6" stroke="${darkColor}" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95" />
+        <path d="M -11 -5 Q -2 0 13 6" stroke="${color}" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.95" />
+        <circle cx="-5" cy="-7" r="1.5" fill="${color}" />
+        <circle cx="8" cy="8" r="1.3" fill="${color}" />
+        <circle cx="16" cy="11" r="0.9" fill="${color}" />
+      `;
+		else if (stain.type === "drip") body = `
+        <path d="M 0 -8 C -2 -4 -2 6 0 10 C 2 6 2 -4 0 -8 Z" fill="${darkColor}" opacity="0.95" />
+        <path d="M 0 -7 C -1.2 -3 -1.2 5 0 8.5 C 1.2 5 1.2 -3 0 -7 Z" fill="${color}" opacity="0.92" />
+        <circle cx="0" cy="13" r="1.6" fill="${color}" />
+        <circle cx="-0.4" cy="12.5" r="0.6" fill="${highlight}" opacity="0.75" />
+      `;
+		else if (stain.type === "cluster") body = `
+        <circle cx="0" cy="0" r="2.8" fill="${darkColor}" />
+        <circle cx="0" cy="0" r="2.2" fill="${color}" />
+        <circle cx="-0.6" cy="-0.6" r="0.8" fill="${highlight}" opacity="0.7" />
+        <circle cx="-4" cy="-3" r="1.4" fill="${color}" />
+        <circle cx="5" cy="-2" r="1.6" fill="${color}" />
+        <circle cx="2" cy="4" r="1.2" fill="${color}" />
+        <circle cx="-3" cy="3" r="1.0" fill="${color}" />
+      `;
+		else body = `
+        <ellipse cx="0" cy="0" rx="4.8" ry="3.6" fill="${darkColor}" opacity="0.95" />
+        <ellipse cx="0" cy="0" rx="3.8" ry="2.8" fill="${color}" opacity="0.92" />
+        <circle cx="-1.2" cy="-1" r="1.1" fill="${highlight}" opacity="0.7" />
+        <circle cx="-5" cy="-4" r="1.5" fill="${color}" />
+        <circle cx="6" cy="3" r="1.8" fill="${color}" />
+        <circle cx="-4" cy="5" r="1.2" fill="${color}" />
+        <circle cx="4" cy="-5" r="1.3" fill="${color}" />
+      `;
+		return `
+      <g transform="translate(${x}, ${y}) rotate(${rot}) scale(${scale})" opacity="${opacity}">
+        ${body}
+      </g>
+    `;
+	}).join("")}
+      </svg>
+    </div>
+  `;
+}
+function ensureCanvas(container) {
 	if (typeof document === "undefined") return false;
-	if (canvas && canvas.isConnected && ctx) return true;
+	const stage = container?.querySelector?.("#battlefield-stage") || document.getElementById("battlefield-stage");
+	if (canvas && canvas.isConnected && ctx) {
+		if (stage && canvas.parentElement !== stage) {
+			stage.appendChild(canvas);
+			syncCanvas();
+		}
+		return true;
+	}
+	const existing = stage?.querySelector?.("#blood-fx-canvas");
+	if (existing) {
+		canvas = existing;
+		ctx = canvas.getContext("2d");
+		return Boolean(ctx);
+	}
 	canvas = document.createElement("canvas");
+	canvas.id = "blood-fx-canvas";
 	canvas.className = "blood-fx-layer";
 	canvas.setAttribute("aria-hidden", "true");
-	document.body.appendChild(canvas);
+	if (stage) stage.appendChild(canvas);
+	else document.body.appendChild(canvas);
 	ctx = canvas.getContext("2d");
 	return Boolean(ctx);
 }
 function syncCanvas() {
 	if (!canvas || !ctx) return;
-	const stage = document.getElementById("battlefield-stage");
+	const stage = canvas.parentElement?.id === "battlefield-stage" ? canvas.parentElement : document.getElementById("battlefield-stage");
 	if (stage) stageRect = stage.getBoundingClientRect();
 	if (!stageRect || stageRect.width < 2) return;
 	const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -9100,10 +9427,19 @@ function syncCanvas() {
 		canvas.width = Math.round(w * dpr);
 		canvas.height = Math.round(h * dpr);
 	}
-	canvas.style.left = `${stageRect.left}px`;
-	canvas.style.top = `${stageRect.top}px`;
-	canvas.style.width = `${w}px`;
-	canvas.style.height = `${h}px`;
+	if (canvas.parentElement === stage) {
+		canvas.style.position = "absolute";
+		canvas.style.left = "0px";
+		canvas.style.top = "0px";
+		canvas.style.width = "100%";
+		canvas.style.height = "100%";
+	} else {
+		canvas.style.position = "fixed";
+		canvas.style.left = `${stageRect.left}px`;
+		canvas.style.top = `${stageRect.top}px`;
+		canvas.style.width = `${w}px`;
+		canvas.style.height = `${h}px`;
+	}
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function hitPoint(container, cellIdx) {
@@ -9112,37 +9448,57 @@ function hitPoint(container, cellIdx) {
 	if (!stage || !cell) return null;
 	const sprite = cell.querySelector(".entity-sprite-img");
 	const sr = stage.getBoundingClientRect();
-	const r = (sprite || cell).getBoundingClientRect();
+	const cr = cell.getBoundingClientRect();
+	const r = sprite ? sprite.getBoundingClientRect() : cr;
 	stageRect = sr;
 	return {
 		x: r.left - sr.left + r.width * .5,
-		y: r.top - sr.top + r.height * (sprite ? .46 : .58),
-		ground: Math.min(sr.height - 6, r.bottom - sr.top - 2)
+		y: r.top - sr.top + r.height * (sprite ? .44 : .55),
+		ground: Math.min(sr.height - 8, cr.bottom - sr.top - 20),
+		cellIdx: Number(cellIdx),
+		cellLeft: cr.left - sr.left,
+		cellWidth: cr.width
 	};
 }
 function pushParticle(p) {
 	particles.push(p);
 	if (particles.length > MAX_ALIVE) particles.splice(0, particles.length - MAX_ALIVE);
 }
-function emitWave(origin, ichor, amount, spec, lifeScale) {
+function emitWave(origin, ichor, amount, spec, lifeScale, fatal = false) {
 	const quiet = reducedMotion();
-	let count = Math.round((26 + Math.min(40, (amount || 1) * 8)) * spec.countMul);
+	let count = Math.round((28 + Math.min(50, (amount || 1) * 9)) * spec.countMul);
 	if (quiet) count = Math.min(14, count);
-	count = Math.max(spec.style === "drip" ? 10 : 18, Math.min(count, quiet ? 14 : 72));
+	count = Math.max(spec.style === "drip" ? 12 : 22, Math.min(count, quiet ? 14 : 96));
+	if (fatal && spec.style === "gush") pushParticle({
+		x: origin.x,
+		y: origin.y,
+		vx: 0,
+		vy: 0,
+		grav: 0,
+		drag: 1,
+		r: 6,
+		maxR: 48,
+		lineWidth: 3.5,
+		life: 380 * lifeScale,
+		maxLife: 380 * lifeScale,
+		color: PALETTE[ichor]?.mid?.[1] || "#dc2626",
+		kind: "shockwave",
+		ground: origin.ground
+	});
 	for (let i = 0; i < count; i++) {
-		const kind = rollKind(ichor, spec.style);
+		const kind = rollKind(ichor, spec.style, fatal);
 		const ang = spec.angle + rand(-spec.spread, spec.spread);
-		const speed = rand(spec.speed[0], spec.speed[1]) * (kind === "mist" ? .55 : kind === "glob" ? .72 : 1);
-		const maxLife = (kind === "mist" ? rand(420, 780) : kind === "glob" ? rand(520, 900) : rand(380, 760)) * lifeScale;
-		const grav = kind === "bubble" ? -.035 : kind === "mist" ? ichor === "blue" ? -.012 : .02 : kind === "spark" ? .02 : ichor === "green" ? .16 : .12;
+		const speed = rand(spec.speed[0], spec.speed[1]) * (kind === "mist" ? .55 : kind === "glob" ? .72 : kind === "spurt" ? 1.25 : 1);
+		const maxLife = (kind === "mist" ? rand(420, 850) : kind === "glob" ? rand(520, 920) : kind === "spurt" ? rand(320, 680) : rand(380, 780)) * lifeScale;
+		const grav = kind === "bubble" ? -.035 : kind === "mist" ? ichor === "blue" ? -.012 : .02 : kind === "spark" ? .02 : ichor === "green" ? .16 : .13;
 		pushParticle({
-			x: origin.x + rand(-10, 10),
-			y: origin.y + rand(-16, 12),
+			x: origin.x + rand(-8, 8),
+			y: origin.y + rand(-14, 10),
 			vx: Math.cos(ang) * speed,
 			vy: Math.sin(ang) * speed,
 			grav,
 			drag: kind === "mist" ? .985 : .992,
-			r: kind === "glob" ? rand(3.4, 6.2) : kind === "mist" ? rand(2.2, 5.5) : kind === "spark" ? rand(.8, 1.6) : rand(1.4, 3.1),
+			r: kind === "glob" ? rand(3.4, 6.2) : kind === "mist" ? rand(2.2, 5.5) : kind === "spark" ? rand(.9, 1.8) : kind === "spurt" ? rand(1.8, 3.6) : rand(1.4, 3.1),
 			life: maxLife,
 			maxLife,
 			color: colorFor(ichor, kind),
@@ -9159,6 +9515,12 @@ function stepParticles(dt) {
 	for (const p of particles) {
 		p.life -= dt;
 		if (p.life <= 0) continue;
+		if (p.kind === "shockwave") {
+			p.r += (p.maxR - p.r) * .18;
+			p.lineWidth = Math.max(.4, p.lineWidth * .94);
+			next.push(p);
+			continue;
+		}
 		if (p.kind !== "stain") {
 			p.vy += p.grav * (dt / 16.67);
 			p.vx *= p.drag;
@@ -9185,13 +9547,29 @@ function stepParticles(dt) {
 				});
 			}
 			if (p.kind !== "mist" && p.kind !== "bubble" && p.kind !== "spark" && p.y >= p.ground && p.vy > .2) {
+				if (p.vy > .4) for (let b = 0; b < 2; b++) spawned.push({
+					x: p.x,
+					y: p.ground - 1,
+					vx: p.vx * .35 + rand(-1.4, 1.4),
+					vy: rand(-1.1, -.3),
+					grav: .16,
+					drag: .96,
+					r: Math.max(.7, p.r * .38),
+					life: 240,
+					maxLife: 240,
+					color: p.color,
+					kind: "drop",
+					ground: p.ground,
+					rot: 0,
+					split: false
+				});
 				p.kind = "stain";
 				p.y = p.ground;
-				p.vx *= .12;
+				p.vx *= .1;
 				p.vy = 0;
 				p.grav = 0;
-				p.r *= 1.85;
-				p.life = Math.min(p.life, 640);
+				p.r *= 1.6;
+				p.life = Math.min(p.life, 420);
 				p.maxLife = Math.max(p.maxLife, p.life);
 			}
 		} else p.r *= .998;
@@ -9205,36 +9583,63 @@ function drawParticles() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for (const p of particles) {
 		const fade = Math.max(0, Math.min(1, p.life / p.maxLife));
-		const alpha = p.kind === "mist" ? fade * .38 : p.kind === "stain" ? fade * .8 : fade;
-		ctx.globalAlpha = alpha;
+		const alpha = p.kind === "mist" ? fade * .38 : p.kind === "stain" ? fade * .75 : fade;
+		ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
 		ctx.fillStyle = p.color;
-		if (p.kind === "streak" || p.kind === "spark") {
+		if (p.kind === "shockwave") {
+			ctx.beginPath();
+			ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+			ctx.lineWidth = p.lineWidth;
+			ctx.strokeStyle = p.color;
+			ctx.stroke();
+		} else if (p.kind === "spurt" || p.kind === "drop" && Math.hypot(p.vx, p.vy) > 1.2) {
+			const spd = Math.hypot(p.vx, p.vy);
+			const angle = Math.atan2(p.vy, p.vx);
+			const len = p.r * (1.2 + Math.min(3.2, spd * .45));
+			const thick = Math.max(.8, p.r * .85);
 			ctx.save();
 			ctx.translate(p.x, p.y);
-			ctx.rotate(Math.atan2(p.vy, p.vx));
-			const len = p.kind === "spark" ? p.r * 3.2 : p.r * 4.6;
-			ctx.fillRect(-len * .5, -p.r * .38, len, Math.max(1, p.r * .76));
+			ctx.rotate(angle);
+			ctx.beginPath();
+			ctx.ellipse(0, 0, len * .5, thick * .5, 0, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.globalAlpha = alpha * .75;
+			ctx.fillStyle = "#ffffff";
+			ctx.beginPath();
+			ctx.ellipse(len * .15, -thick * .15, Math.max(.4, len * .22), Math.max(.4, thick * .22), 0, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.restore();
+		} else if (p.kind === "spark") {
+			const len = p.r * 2.8;
+			ctx.save();
+			ctx.translate(p.x, p.y);
+			ctx.fillRect(-len * .5, -.75, len, 1.5);
+			ctx.fillRect(-.75, -len * .5, 1.5, len);
 			ctx.restore();
 		} else if (p.kind === "bubble") {
 			ctx.beginPath();
 			ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-			ctx.lineWidth = 1.5;
+			ctx.lineWidth = 1.4;
 			ctx.strokeStyle = p.color;
 			ctx.stroke();
-			ctx.globalAlpha = alpha * .22;
+			ctx.globalAlpha = alpha * .25;
 			ctx.fill();
 		} else if (p.kind === "stain") {
 			ctx.beginPath();
-			ctx.ellipse(p.x, p.y, p.r * 1.7, p.r * .62, p.rot, 0, Math.PI * 2);
+			ctx.ellipse(p.x, p.y, p.r * 1.8, p.r * .65, p.rot, 0, Math.PI * 2);
+			ctx.fill();
+		} else if (p.kind === "mist") {
+			ctx.beginPath();
+			ctx.arc(p.x, p.y, p.r * 1.8, 0, Math.PI * 2);
 			ctx.fill();
 		} else {
 			ctx.beginPath();
 			ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
 			ctx.fill();
-			ctx.globalAlpha = alpha * .65;
-			ctx.fillStyle = "rgba(255,255,255,0.7)";
+			ctx.globalAlpha = alpha * .7;
+			ctx.fillStyle = "#ffffff";
 			ctx.beginPath();
-			ctx.arc(p.x - p.r * .28, p.y - p.r * .32, Math.max(.4, p.r * .28), 0, Math.PI * 2);
+			ctx.arc(p.x - p.r * .28, p.y - p.r * .28, Math.max(.4, p.r * .28), 0, Math.PI * 2);
 			ctx.fill();
 		}
 	}
@@ -9259,17 +9664,17 @@ function kick() {
 function spawnBloodBurst(container, opts = {}) {
 	const ichor = opts.ichor;
 	if (!ichor || !PALETTE[ichor]) return;
-	if (!ensureCanvas()) return;
+	if (!ensureCanvas(container)) return;
 	const origin = hitPoint(container, opts.cell);
 	if (!origin) return;
 	syncCanvas();
 	const spec = spraySpec(opts.reason, opts.attackerCell, opts.cell, opts.fatal);
 	const speed = opts.animSpeed > 0 ? opts.animSpeed : 1;
 	const lifeScale = reducedMotion() ? .45 : 1 / Math.min(speed, 2.4);
-	emitWave(origin, ichor, opts.amount || 1, spec, lifeScale);
-	if (!reducedMotion() && spec.style !== "drip") window.setTimeout(() => {
+	emitWave(origin, ichor, opts.amount || 1, spec, lifeScale, opts.fatal);
+	if (!reducedMotion() && (spec.style !== "drip" || opts.fatal)) window.setTimeout(() => {
 		if (!document.getElementById("battlefield-stage")) return;
-		emitWave(origin, ichor, Math.max(1, (opts.amount || 1) * .65), spec, lifeScale);
+		emitWave(origin, ichor, Math.max(1, (opts.amount || 1) * .7), spec, lifeScale, false);
 		kick();
 	}, 70);
 	kick();
@@ -9401,8 +9806,10 @@ async function playHeroPose(container, pose, ms, animSpeed) {
 	}
 	if (!isHeroDead(container)) scheduleHeroIdle(container, 80, animSpeed);
 }
+var currentRenderState = null;
 function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
 	if (!container || !state) return;
+	currentRenderState = state;
 	const hoveredEnemyId = uiState.hoveredEnemyId || null;
 	const hoveredTileId = uiState.hoveredTileId || null;
 	const simPreview = Boolean(uiState.comboPreviewActive || uiState.hoveredExecute || typeof uiState.hoveredQueueSlot === "number" && uiState.hoveredQueueSlot >= 0) && (state.queue || []).length > 0 ? simulateComboImpact(state) : null;
@@ -9479,6 +9886,9 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
         <div class="cell-overlay-zone">
           ${overlayHtml}
         </div>
+        <div class="cell-ground-blood-zone" aria-hidden="true">
+          ${renderCellGroundBloodHtml(state.cellBlood?.[cellIdx] || cellIdx, state)}
+        </div>
         <div class="cell-entity-stage" id="cell-stage-${cellIdx}">
           ${entityHtml}
         </div>
@@ -9513,6 +9923,7 @@ function renderBattleBoard(container, state, uiState = {}, callbacks = {}) {
       <div class="battlefield-stone-track" id="battlefield-stone-track" style="grid-template-columns: repeat(${boardSize}, minmax(0, 1fr));">
         ${cellsHtml}
       </div>
+      <canvas class="blood-fx-layer" id="blood-fx-canvas" aria-hidden="true"></canvas>
       <div class="battlefield-foreground-layer" id="battlefield-foreground">
         <div class="foreground-vignette"></div>
         <div class="foreground-atmosphere-particles">
@@ -9722,6 +10133,7 @@ function renderEntityOnCellHtml(entity, initiativeRank = 1, impact = null) {
              class="entity-sprite-img gait-${gait} ${heroClass} ${entity.flying ? "sprite-flying" : ""}"
              style="--idle-delay: -${idleDelaySec(entity.id)}s"
              referrerpolicy="no-referrer" />
+        ${renderSpriteBloodHtml(entity, currentRenderState)}
       </div>
     </div>
   `;
@@ -9960,8 +10372,9 @@ async function playEntityMove(container, ev, animSpeed = 1) {
 	}
 	await sleep(moveDuration, animSpeed);
 }
-async function playEngineEvents(container, events, animSpeed = 1) {
+async function playEngineEvents(container, events, animSpeed = 1, state = null) {
 	if (!container || !events || events.length === 0) return;
+	const activeState = state || currentRenderState;
 	for (const ev of events) switch (ev.type) {
 		case "move":
 		case "leap":
@@ -10042,15 +10455,30 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 					scheduleHeroIdle(container, 340, animSpeed);
 				}
 			}
-			spawnBloodBurst(container, {
-				cell: ev.cell,
-				ichor: ev.ichor,
-				amount: ev.amount,
-				reason: ev.reason,
-				attackerCell: ev.attackerCell,
-				fatal: ev.fatal || ev.remainingHp <= 0,
-				animSpeed
-			});
+			if (ev.ichor) {
+				recordEntityHitBlood(activeState, {
+					targetId: ev.targetId,
+					attackerId: ev.attackerId,
+					cell: ev.cell,
+					attackerCell: ev.attackerCell,
+					amount: ev.amount,
+					ichor: ev.ichor,
+					reason: ev.reason,
+					fatal: ev.fatal || ev.remainingHp <= 0
+				});
+				spawnBloodBurst(container, {
+					cell: ev.cell,
+					ichor: ev.ichor,
+					amount: ev.amount,
+					reason: ev.reason,
+					attackerCell: ev.attackerCell,
+					fatal: ev.fatal || ev.remainingHp <= 0,
+					targetId: ev.targetId,
+					attackerId: ev.attackerId,
+					state: activeState,
+					animSpeed
+				});
+			}
 			spawnFloatingBadgeOnCell(container, ev.cell, `−${ev.amount} HP`, "float-dmg");
 			if (ev.attackerId && isHeroEntity(container, ev.attackerId) && !isHeroEntity(container, ev.targetId)) {
 				const heroImg = heroSprite(container);
@@ -10145,14 +10573,26 @@ async function playEngineEvents(container, events, animSpeed = 1) {
 				clearHeroPoseTimer();
 				setHeroPose(container, "dead", 0);
 			}
-			if (ev.ichor) spawnBloodBurst(container, {
-				cell: ev.cell,
-				ichor: ev.ichor,
-				amount: 6,
-				reason: "death",
-				fatal: true,
-				animSpeed
-			});
+			if (ev.ichor) {
+				recordEntityHitBlood(activeState, {
+					targetId: ev.targetId,
+					cell: ev.cell,
+					amount: 6,
+					ichor: ev.ichor,
+					reason: "death",
+					fatal: true
+				});
+				spawnBloodBurst(container, {
+					cell: ev.cell,
+					ichor: ev.ichor,
+					amount: 6,
+					reason: "death",
+					fatal: true,
+					targetId: ev.targetId,
+					state: activeState,
+					animSpeed
+				});
+			}
 			await sleep(ANIMATION_TIMINGS.DEATH_MS, animSpeed);
 			break;
 		}
@@ -11190,7 +11630,7 @@ function createBattleActions(deps) {
 	async function finishPlayerAction(state, res, turnBefore, extraCd = 0) {
 		const boardContainer = document.getElementById("center-stage");
 		appendEventsToLog(state, res.events, turnBefore);
-		await playEngineEvents(boardContainer, res.events, appState.settings.animSpeed);
+		await playEngineEvents(boardContainer, res.events, appState.settings.animSpeed, state);
 		clearTransientCorpses(state);
 		renderAll();
 		if (!res.ok || res.freeTurn || checkBattleOutcome(state) !== "playing") {
@@ -11202,7 +11642,7 @@ function createBattleActions(deps) {
 		const enemyEvents = [];
 		endPlayerTurn(state, enemyEvents, extraCd);
 		appendEventsToLog(state, enemyEvents, turnBefore);
-		await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
+		await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed, state);
 		clearTransientCorpses(state);
 		appState.isAnimating = false;
 		renderAll();
@@ -11266,7 +11706,7 @@ function createBattleActions(deps) {
 		const turnBefore = state.turn;
 		const endEvents = finalizeQueueExecution(state, comboLength);
 		appendEventsToLog(state, endEvents, turnBefore);
-		await playEngineEvents(boardContainer, endEvents, appState.settings.animSpeed);
+		await playEngineEvents(boardContainer, endEvents, appState.settings.animSpeed, state);
 		clearTransientCorpses(state);
 		renderAll();
 	}
@@ -11282,13 +11722,13 @@ function createBattleActions(deps) {
 		const stunned = consumeHeroStun(state);
 		if (stunned) {
 			appendEventsToLog(state, stunned.events, turnBefore);
-			await playEngineEvents(boardContainer, stunned.events, appState.settings.animSpeed);
+			await playEngineEvents(boardContainer, stunned.events, appState.settings.animSpeed, state);
 			clearTransientCorpses(state);
 			renderAll();
 			const enemyEvents = [];
 			endPlayerTurn(state, enemyEvents);
 			appendEventsToLog(state, enemyEvents, turnBefore);
-			await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed);
+			await playEngineEvents(boardContainer, enemyEvents, appState.settings.animSpeed, state);
 			clearTransientCorpses(state);
 			appState.isAnimating = false;
 			renderAll();
@@ -11301,7 +11741,7 @@ function createBattleActions(deps) {
 			const nextInstanceId = queueSnapshot[i + 1] || null;
 			const stepEvents = executeQueuedTileStep(state, tileInstanceId, i, comboLength, nextInstanceId);
 			appendEventsToLog(state, stepEvents, turnBefore);
-			await playEngineEvents(boardContainer, stepEvents, appState.settings.animSpeed);
+			await playEngineEvents(boardContainer, stepEvents, appState.settings.animSpeed, state);
 			clearTransientCorpses(state);
 			renderAll();
 			await sleep(ANIMATION_TIMINGS.QUEUE_STEP_MS, appState.settings.animSpeed);
@@ -11542,6 +11982,7 @@ async function bootstrap(token) {
 	startNewRun(appState.metaStats.lastSeed || "VENCA-1899");
 }
 function startNewRun(seedInput = "VENCA-1899") {
+	clearBattleBlood();
 	appState.settings.currentSeed = seedInput;
 	appState.metaStats.lastSeed = seedInput;
 	saveMetaStats();
@@ -11554,6 +11995,7 @@ function enterMapNode(node) {
 	const modalRoot = document.getElementById("modal-root");
 	run.currentNodeId = node.id;
 	if (node.type === NODE_TYPES.BATTLE || node.type === NODE_TYPES.ELITE || node.type === NODE_TYPES.BOSS) {
+		clearBattleBlood();
 		appState.screen = "battle";
 		appState.battleState = createBattleState({
 			seed: `${run.seed}_${node.id}`,
